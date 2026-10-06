@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B0820">
+<title>Los Marcianitos de Santi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0B0820; --surface:#1A1440; --surface2:#241C55; --deep:#07051A;
+  --green:#39FF88; --violet:#9B5CFF; --pink:#FF4FD8; --cyan:#22D3EE; --yellow:#FFD23F;
+  --text:#F4F1FF; --muted:#A8A2C8; --line:rgba(155,92,255,.28);
+  --display:'Fredoka','Trebuchet MS',system-ui,sans-serif;
+  --body:'Nunito',system-ui,-apple-system,'Segoe UI',sans-serif;
+  color-scheme:dark;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --bg:#0B0820; --text:#F4F1FF; } }
+:root[data-theme="dark"]{ --bg:#0B0820; --text:#F4F1FF; }
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px);background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--body);font-size:16px;line-height:1.45;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(1.2px 1.2px at 12% 18%,#fff,transparent),
+    radial-gradient(1px 1px at 72% 12%,#fffb,transparent),
+    radial-gradient(1.4px 1.4px at 40% 64%,#fff9,transparent),
+    radial-gradient(1px 1px at 86% 48%,#fff,transparent),
+    radial-gradient(1px 1px at 22% 82%,#fffa,transparent),
+    radial-gradient(1.3px 1.3px at 58% 90%,#fff8,transparent),
+    radial-gradient(1px 1px at 92% 86%,#fff9,transparent),
+    radial-gradient(600px 400px at 85% -5%,rgba(155,92,255,.35),transparent 70%),
+    radial-gradient(500px 380px at -10% 40%,rgba(255,79,216,.16),transparent 70%),
+    radial-gradient(500px 400px at 100% 100%,rgba(34,211,238,.14),transparent 70%);
+  background-size:260px 260px,260px 260px,260px 260px,260px 260px,260px 260px,260px 260px,260px 260px,auto,auto,auto;
+}
+img{max-width:100%}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--cyan);outline-offset:3px;border-radius:12px}
+.wrap{max-width:560px;margin:0 auto;padding:20px 16px 140px}
+h1,h2,h3{font-family:var(--display);margin:0;line-height:1.1}
+h2{font-size:24px;font-weight:600;margin-bottom:4px}
+.sub{color:var(--muted);font-size:14px;margin:0 0 14px}
+section{margin-top:34px}
+.hidden{display:none!important}
+
+/* ---------- Hero ---------- */
+.hero{text-align:center;padding-top:12px}
+.ufo{font-size:76px;display:inline-block;filter:drop-shadow(0 0 22px rgba(57,255,136,.55));animation:hover 4s ease-in-out infinite}
+@keyframes hover{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-10px) rotate(4deg)}}
+.hero h1{font-size:clamp(34px,9vw,46px);font-weight:700;letter-spacing:-.5px;margin-top:6px;
+  background:linear-gradient(180deg,#fff 10%,#CBB5FF 60%,var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent;
+  text-shadow:0 0 30px rgba(155,92,255,.35)}
+.hero p{color:var(--muted);margin:8px 0 18px}
+.status{display:inline-flex;align-items:center;gap:10px;padding:12px 18px;border-radius:999px;font-weight:800;font-size:15px;border:2px solid;background:rgba(7,5,26,.6)}
+.status.on{border-color:var(--green);color:var(--green);box-shadow:0 0 20px rgba(57,255,136,.3)}
+.status.off{border-color:var(--yellow);color:var(--yellow)}
+.status .dot{width:10px;height:10px;border-radius:50%;background:currentColor;box-shadow:0 0 10px currentColor}
+.status.on .dot{animation:blink 1.6s infinite}
+@keyframes blink{50%{opacity:.25}}
+
+/* ---------- Combos ---------- */
+.combos{display:flex;gap:12px;overflow-x:auto;padding:4px 2px 10px;scroll-snap-type:x mandatory}
+.combo{flex:0 0 auto;width:200px;scroll-snap-align:start;padding:16px;border-radius:22px;border:2px dashed var(--violet);background:linear-gradient(160deg,rgba(155,92,255,.22),rgba(26,20,64,.9))}
+.combo .ce{font-size:34px}
+.combo h3{font-size:18px;margin:6px 0 2px}
+.combo .cp{font-weight:800;color:var(--text)}
+.combo .cs{display:inline-block;margin-top:8px;font-size:13px;font-weight:800;color:var(--bg);background:var(--pink);padding:3px 10px;border-radius:999px}
+
+/* ---------- Sabores ---------- */
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:26px;padding:18px 12px 14px;text-align:center;position:relative;transition:border-color .2s,transform .15s}
+.card.has{border-color:var(--green);box-shadow:0 0 0 1px var(--green) inset,0 0 24px rgba(57,255,136,.18)}
+.planet{width:86px;height:86px;margin:0 auto 10px;border-radius:50%;display:grid;place-items:center;font-size:40px;position:relative;
+  background:radial-gradient(circle at 32% 28%,var(--c1),var(--c2) 72%);box-shadow:0 0 26px -2px var(--c2),inset -10px -12px 20px rgba(0,0,0,.35)}
+.planet::after{content:"";position:absolute;width:118px;height:26px;border-radius:50%;border:3px solid rgba(255,255,255,.28);transform:rotate(-18deg);pointer-events:none}
+.card h3{font-size:16px;font-weight:600;min-height:38px;display:flex;align-items:center;justify-content:center}
+.price{color:var(--muted);font-size:14px;margin:2px 0 10px}
+.badge{position:absolute;top:10px;right:10px;background:var(--green);color:var(--bg);font-family:var(--display);font-weight:700;min-width:30px;height:30px;border-radius:999px;display:grid;place-items:center;padding:0 8px}
+.stepper{display:flex;align-items:center;justify-content:center;gap:10px}
+.stepper button{width:46px;height:46px;border-radius:50%;border:2px solid var(--violet);background:var(--deep);font-size:24px;font-weight:800;line-height:1;display:grid;place-items:center}
+.stepper button.plus{background:var(--violet);border-color:var(--violet)}
+.stepper button:active{transform:scale(.9)}
+.stepper button:disabled{opacity:.35;cursor:default}
+.stepper .n{font-family:var(--display);font-size:22px;min-width:28px}
+
+/* ---------- Footer ---------- */
+.foot{text-align:center;color:var(--muted);font-size:14px;margin-top:40px}
+.linkbtn{background:none;border:none;color:var(--cyan);text-decoration:underline;padding:10px;font-weight:700}
+
+/* ---------- FAB + Sheet ---------- */
+.fab{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:20;
+  display:flex;align-items:center;gap:12px;padding:14px 24px;border:none;border-radius:999px;background:var(--green);color:var(--bg);
+  font-family:var(--display);font-weight:700;font-size:19px;box-shadow:0 0 0 4px rgba(57,255,136,.25),0 10px 30px rgba(57,255,136,.4);white-space:nowrap}
+.fab.pop{animation:pop .3s}
+@keyframes pop{50%{transform:translateX(-50%) scale(1.08)}}
+.overlay{position:fixed;inset:0;z-index:40;background:rgba(5,3,20,.75);display:flex;align-items:flex-end;justify-content:center;backdrop-filter:blur(3px)}
+.sheet{width:100%;max-width:560px;max-height:92%;overflow-y:auto;background:var(--surface);border-radius:28px 28px 0 0;border:1px solid var(--line);border-bottom:none;
+  padding:20px 18px calc(24px + env(safe-area-inset-bottom,0px));animation:up .25s ease-out}
+@keyframes up{from{transform:translateY(40px);opacity:0}}
+.sheet-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.close{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--deep);font-size:20px}
+.line{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px dashed var(--line)}
+.line.combo-line{color:var(--pink);font-weight:700}
+.total{display:flex;justify-content:space-between;align-items:baseline;margin:14px 0 18px;font-family:var(--display);font-size:24px}
+.total b{color:var(--green);font-size:30px}
+label{display:block;font-weight:800;font-size:14px;margin:12px 0 6px}
+input[type=text],input[type=email],input[type=tel],input[type=number],input[type=time],input[type=date],input[type=password]{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--line);background:var(--deep);font-size:16px}
+input:focus{border-color:var(--cyan);outline:none}
+.err{color:var(--yellow);font-weight:700;font-size:14px;min-height:20px;margin-top:8px}
+.sticker-note{margin:16px 0;padding:12px 14px;border-radius:16px;background:rgba(255,210,63,.1);border:1px solid rgba(255,210,63,.4);color:var(--yellow);font-weight:700;font-size:14px}
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:16px;border-radius:18px;border:none;font-family:var(--display);font-weight:700;font-size:19px;text-decoration:none;text-align:center}
+.btn.wa{background:#25D366;color:#062312;box-shadow:0 8px 24px rgba(37,211,102,.35)}
+.btn.primary{background:var(--violet);color:#fff;box-shadow:0 8px 24px rgba(155,92,255,.4)}
+.btn.ghost{background:transparent;border:1.5px solid var(--line);color:var(--text);font-size:16px}
+.btn.danger{background:transparent;border:1.5px solid #ff6b81;color:#ff8fa0;font-size:16px}
+.btn + .btn{margin-top:10px}
+
+/* ---------- Admin ---------- */
+.admin-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.admin-head h1{font-size:26px}
+.rank{font-family:var(--display);font-weight:600;font-size:14px;color:var(--bg);background:var(--yellow);padding:6px 12px;border-radius:999px;white-space:nowrap}
+.mission{display:grid;grid-template-columns:96px 1fr;gap:16px;margin-top:20px;padding:18px;border-radius:28px;background:linear-gradient(180deg,rgba(155,92,255,.18),var(--surface));border:1px solid var(--line)}
+.track{position:relative;height:330px;display:flex;flex-direction:column;align-items:center;justify-content:space-between}
+.track .goal{font-size:44px;filter:drop-shadow(0 0 14px rgba(255,210,63,.6));z-index:2}
+.track .earth{font-size:30px;z-index:2}
+.path{position:absolute;top:56px;bottom:42px;left:50%;width:10px;transform:translateX(-50%);border-radius:10px;background:repeating-linear-gradient(180deg,rgba(255,255,255,.18) 0 8px,transparent 8px 16px)}
+.path .fill{position:absolute;bottom:0;left:0;right:0;border-radius:10px;background:linear-gradient(0deg,var(--violet),var(--pink),var(--green));box-shadow:0 0 16px rgba(57,255,136,.5);transition:height 1.2s cubic-bezier(.2,.8,.2,1)}
+.path .tick{position:absolute;left:16px;font-size:12px;color:var(--muted);font-weight:800;transform:translateY(50%)}
+.rocket{position:absolute;left:50%;font-size:40px;transform:translate(-50%,50%) rotate(-45deg);transition:bottom 1.2s cubic-bezier(.2,.8,.2,1);filter:drop-shadow(0 6px 10px rgba(255,79,216,.6));z-index:3}
+.pct{font-family:var(--display);font-size:64px;font-weight:700;line-height:1;color:var(--green);text-shadow:0 0 26px rgba(57,255,136,.45)}
+.goalname{font-family:var(--display);font-size:20px;margin:6px 0 2px}
+.money{color:var(--muted)}
+.money b{color:var(--text)}
+.bar{height:14px;border-radius:999px;background:var(--deep);overflow:hidden;margin:14px 0 10px;border:1px solid var(--line)}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--violet),var(--green));transition:width 1.2s}
+.milestone{margin-top:12px;padding:12px;border-radius:16px;background:rgba(57,255,136,.08);border:1px solid rgba(57,255,136,.3);font-weight:700;font-size:15px}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:16px}
+.stat{padding:16px;border-radius:22px;background:var(--surface);border:1px solid var(--line)}
+.stat .k{font-size:13px;color:var(--muted);font-weight:700}
+.stat .v{font-family:var(--display);font-size:24px;font-weight:600;margin-top:4px;overflow-wrap:anywhere}
+.stat .s{font-size:13px;color:var(--muted)}
+.panel{margin-top:18px;padding:18px;border-radius:24px;background:var(--surface);border:1px solid var(--line)}
+.big-stepper{display:flex;align-items:center;justify-content:center;gap:22px;margin:8px 0}
+.big-stepper button{width:64px;height:64px;border-radius:50%;border:2px solid var(--violet);background:var(--deep);font-size:32px;font-weight:800}
+.big-stepper button.plus{background:var(--violet)}
+.big-stepper .n{font-family:var(--display);font-size:52px;min-width:70px;text-align:center}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:9px 14px;border-radius:999px;border:1.5px solid var(--line);background:var(--deep);font-size:14px;font-weight:700}
+.chip.on{background:var(--violet);border-color:var(--violet)}
+.loglist{list-style:none;padding:0;margin:0}
+.loglist li{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 0;border-bottom:1px dashed var(--line)}
+.loglist .x{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:none;color:var(--muted)}
+.empty{color:var(--muted);text-align:center;padding:14px 0}
+.medals{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:16px}
+.medal{padding:16px 12px;border-radius:22px;text-align:center;background:var(--surface);border:1px solid var(--line)}
+.medal .me{font-size:44px}
+.medal h3{font-size:16px;margin:6px 0 4px}
+.medal p{margin:0;font-size:13px;color:var(--muted)}
+.medal.lock .me{filter:grayscale(1) brightness(.5)}
+.medal.lock h3{color:var(--muted)}
+.medal.got{border-color:var(--yellow);box-shadow:0 0 22px rgba(255,210,63,.2)}
+.medal .when{display:block;margin-top:6px;font-size:12px;color:var(--yellow);font-weight:800}
+.crew{list-style:none;padding:0;margin:14px 0 0}
+.crew li{padding:14px;border-radius:20px;background:var(--deep);border:1px solid var(--line);margin-bottom:10px}
+.crew .top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.crew .name{font-family:var(--display);font-size:18px}
+.stars{display:flex;gap:6px;margin:10px 0}
+.stars span{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;border:2px dashed var(--line);font-size:18px}
+.stars span.f{border:2px solid var(--yellow);background:rgba(255,210,63,.15)}
+.row{display:flex;gap:8px}
+.row > *{flex:1}
+.mini{padding:10px 12px;border-radius:14px;border:1.5px solid var(--line);background:var(--surface2);font-weight:800;font-size:14px}
+.mini.gift{background:var(--yellow);color:var(--bg);border-color:var(--yellow)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.note{font-size:13px;color:var(--muted);margin-top:10px}
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(11,8,32,.94);border-top:1px solid var(--line);backdrop-filter:blur(8px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.nav-in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr)}
+.nav button{background:none;border:none;padding:10px 2px 12px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;font-weight:800;color:var(--muted)}
+.nav button span{font-size:24px}
+.nav button.on{color:var(--green)}
+.toast{position:fixed;left:50%;top:calc(16px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:60;background:var(--green);color:var(--bg);font-weight:800;padding:12px 20px;border-radius:999px;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.celebrate{text-align:center;padding:10px 6px}
+.celebrate .me{font-size:90px;animation:spin .9s ease-out}
+@keyframes spin{from{transform:scale(.2) rotate(-200deg)}}
+.celebrate h2{font-size:30px;color:var(--yellow);margin:8px 0}
+.confetti{position:fixed;top:-20px;z-index:70;width:10px;height:14px;border-radius:3px;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+.pin-box{max-width:340px;margin:0 auto;text-align:center}
+.pin-box input{text-align:center;font-size:30px;letter-spacing:12px;font-family:var(--display)}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+@media (max-width:360px){.grid{gap:10px}.planet{width:72px;height:72px;font-size:34px}.mission{grid-template-columns:80px 1fr}.pct{font-size:52px}}
+</style>
+</head>
+<body>
+
+<!-- ================= CLIENTE: MISIÓN MARCIANA ================= -->
+<main id="shop" class="wrap">
+  <header class="hero">
+    <div class="ufo" aria-hidden="true">🛸</div>
+    <h1>Los Marcianitos de Santi</h1>
+    <p>Helados caseros con entrega a domicilio</p>
+    <div id="status" class="status on" role="status"><span class="dot"></span><span id="statusText"></span></div>
+  </header>
+
+  <section aria-labelledby="t-combos">
+    <h2 id="t-combos">Combos espaciales</h2>
+    <p class="sub">Elegí los sabores que quieras: el mejor combo se aplica solo.</p>
+    <div class="combos" id="combos"></div>
+  </section>
+
+  <section aria-labelledby="t-sabores">
+    <h2 id="t-sabores">Sabores galácticos</h2>
+    <p class="sub">Tocá + para sumar a tu Bodega de Carga.</p>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <div class="foot">
+    <p>Hecho con 🚀 por Santi</p>
+    <button class="linkbtn" id="openAdmin">Centro de Control</button>
+  </div>
+</main>
+
+<button class="fab hidden" id="fab" aria-label="Abrir Bodega de Carga">🛒 <span id="fabText"></span></button>
+
+<div class="overlay hidden" id="cartOverlay" role="dialog" aria-modal="true" aria-labelledby="t-cart">
+  <div class="sheet">
+    <div class="sheet-head"><h2 id="t-cart">Bodega de Carga</h2><button class="close" data-close="cartOverlay" aria-label="Cerrar">✕</button></div>
+    <div id="cartLines"></div>
+    <div class="total"><span>Total</span><b id="cartTotal">$0</b></div>
+    <label for="cName">Tu nombre de tripulante</label>
+    <input id="cName" type="text" autocomplete="name" placeholder="Ej: Lucía">
+    <label for="cAddr">Dirección de aterrizaje</label>
+    <input id="cAddr" type="text" autocomplete="street-address" placeholder="Calle y número">
+    <label for="cRef">Referencia (opcional)</label>
+    <input id="cRef" type="text" placeholder="Ej: casa con portón verde">
+    <div class="sticker-note">⭐ Con esta compra sumás 1 sticker galáctico. ¡Juntá 5 y tu próximo marcianito es gratis!</div>
+    <a class="btn wa" id="sendWa" href="#" target="_blank" rel="noopener">Lanzar pedido por WhatsApp</a>
+    <div class="err" id="cartErr" role="alert"></div>
+    <p class="note" id="deliveryNote"></p>
+  </div>
+</div>
+
+<!-- ================= PIN ================= -->
+<div class="overlay hidden" id="pinOverlay" role="dialog" aria-modal="true" aria-labelledby="t-pin">
+  <div class="sheet">
+    <div class="sheet-head"><h2 id="t-pin">Centro de Control</h2><button class="close" data-close="pinOverlay" aria-label="Cerrar">✕</button></div>
+    <div class="pin-box">
+      <p class="sub" id="loginHint">Solo para el Comandante Santi. Ingresá tu PIN.</p>
+      <div id="pinLogin"><input id="pinInput" type="password" inputmode="numeric" maxlength="6" autocomplete="off" aria-label="PIN"></div>
+      <div id="cloudLogin" class="hidden" style="text-align:left">
+        <label for="loginEmail">Email</label><input id="loginEmail" type="email" autocomplete="username">
+        <label for="loginPass">Contraseña</label><input id="loginPass" type="password" autocomplete="current-password">
+      </div>
+      <div class="err" id="pinErr" role="alert"></div>
+      <button class="btn primary" id="pinGo">Entrar a la nave</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= SANTI: CENTRO DE CONTROL ================= -->
+<main id="admin" class="wrap hidden">
+  <div class="admin-head">
+    <h1 id="hello">Hola, Comandante</h1>
+    <span class="rank" id="rank"></span>
+  </div>
+
+  <!-- Despegue -->
+  <div data-view="home">
+    <div class="mission">
+      <div class="track" aria-hidden="true">
+        <div class="goal" id="goalEmoji">🚲</div>
+        <div class="path"><div class="fill" id="pathFill"></div>
+          <span class="tick" style="bottom:25%">25%</span><span class="tick" style="bottom:50%">50%</span><span class="tick" style="bottom:75%">75%</span>
+          <div class="rocket" id="rocket">🚀</div>
+        </div>
+        <div class="earth">🌍</div>
+      </div>
+      <div>
+        <div class="pct" id="pct">0%</div>
+        <div class="goalname" id="goalName">Bicicleta</div>
+        <div class="money" id="money"></div>
+        <div class="bar"><i id="barFill" style="width:0"></i></div>
+        <div class="money" id="left"></div>
+        <div class="milestone" id="milestone"></div>
+      </div>
+    </div>
+    <div class="stats" id="stats"></div>
+    <button class="btn primary" style="margin-top:18px" data-go="log">📝 Registrar la misión de hoy</button>
+  </div>
+
+  <!-- Bitácora -->
+  <div data-view="log" class="hidden">
+    <div class="panel">
+      <h2>Bitácora de hoy</h2>
+      <label for="logDate">Fecha</label>
+      <input id="logDate" type="date">
+      <label>¿Cuántos marcianitos vendiste?</label>
+      <div class="big-stepper">
+        <button id="qMinus" aria-label="Uno menos">−</button>
+        <span class="n" id="qN">0</span>
+        <button id="qPlus" class="plus" aria-label="Uno más">+</button>
+      </div>
+      <label for="logAmount">¿Cuánta plata juntaste? ($)</label>
+      <input id="logAmount" type="number" inputmode="numeric" min="0" step="50">
+      <p class="note" id="amountHint"></p>
+      <label>¿Qué sabor salió más? (opcional)</label>
+      <div class="chips" id="logFlavor"></div>
+      <div class="err" id="logErr" role="alert"></div>
+      <button class="btn primary" id="logSave">🚀 Registrar misión</button>
+    </div>
+    <div class="panel">
+      <h2>Últimas misiones</h2>
+      <ul class="loglist" id="logList"></ul>
+    </div>
+  </div>
+
+  <!-- Tripulantes -->
+  <div data-view="crew" class="hidden">
+    <div class="panel">
+      <h2>Tripulantes y stickers</h2>
+      <p class="sub">Cada pedido entregado suma 1 sticker. Con 5, un marcianito gratis.</p>
+      <div class="row">
+        <input id="crewName" type="text" placeholder="Nombre del cliente" aria-label="Nombre del cliente">
+        <button class="btn primary" id="crewAdd" style="flex:0 0 auto;width:auto;padding:0 18px;font-size:16px">Sumar</button>
+      </div>
+      <ul class="crew" id="crewList"></ul>
+    </div>
+  </div>
+
+  <!-- Medallas -->
+  <div data-view="medals" class="hidden">
+    <h2 style="margin-top:18px">Medallas de la Flota</h2>
+    <p class="sub" id="medalCount"></p>
+    <div class="medals" id="medals"></div>
+  </div>
+
+  <!-- Ajustes -->
+  <div data-view="settings" class="hidden">
+    <div class="panel">
+      <h2>Horario de reparto</h2>
+      <div class="two">
+        <div><label for="sStart">Desde</label><input id="sStart" type="time"></div>
+        <div><label for="sEnd">Hasta</label><input id="sEnd" type="time"></div>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>Precios</h2>
+      <div class="two">
+        <div><label for="sPrice">1 marcianito</label><input id="sPrice" type="number" inputmode="numeric" min="0"></div>
+        <div><label for="sApolo">Pack Apolo (3)</label><input id="sApolo" type="number" inputmode="numeric" min="0"></div>
+        <div><label for="sGalaxia">Pack Galaxia (5+1)</label><input id="sGalaxia" type="number" inputmode="numeric" min="0"></div>
+        <div><label for="sFamiliar">Pack Familiar (10)</label><input id="sFamiliar" type="number" inputmode="numeric" min="0"></div>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>Meta</h2>
+      <label>Ícono</label>
+      <div class="chips" id="sEmoji"></div>
+      <div class="two">
+        <div><label for="sGoalName">Nombre</label><input id="sGoalName" type="text"></div>
+        <div><label for="sGoalAmount">Monto ($)</label><input id="sGoalAmount" type="number" inputmode="numeric" min="1"></div>
+      </div>
+      <button class="btn ghost" id="newGoal" style="margin-top:14px">🌕 Empezar una meta nueva desde cero</button>
+    </div>
+    <div class="panel">
+      <h2>Sabores disponibles</h2>
+      <p class="sub">Los apagados no aparecen en la tienda.</p>
+      <div class="chips" id="sFlavors"></div>
+    </div>
+    <div class="panel">
+      <h2>Nave</h2>
+      <div class="two">
+        <div><label for="sPhone">WhatsApp (sin +)</label><input id="sPhone" type="tel"></div>
+        <div id="pinField"><label for="sPin">PIN</label><input id="sPin" type="text" inputmode="numeric" maxlength="6"></div>
+      </div>
+      <p class="note" id="storageNote">Los datos se guardan en este celular. Usá siempre el mismo dispositivo y navegador.</p>
+    </div>
+    <div class="err" id="setErr" role="alert"></div>
+    <button class="btn primary" id="setSave">Guardar cambios</button>
+    <button class="btn ghost" id="toShop">🛸 Ver la tienda</button>
+    <button class="btn ghost hidden" id="logout">🔒 Cerrar sesión</button>
+    <button class="btn danger" id="wipe">Borrar todos los datos</button>
+  </div>
+</main>
+
+<nav class="nav hidden" id="nav" aria-label="Centro de Control">
+  <div class="nav-in">
+    <button data-go="home" class="on"><span>🏠</span>Despegue</button>
+    <button data-go="log"><span>📝</span>Bitácora</button>
+    <button data-go="crew"><span>👽</span>Tripulantes</button>
+    <button data-go="medals"><span>🏅</span>Medallas</button>
+    <button data-go="settings"><span>⚙️</span>Ajustes</button>
+  </div>
+</nav>
+
+<div class="overlay hidden" id="celebrate" role="dialog" aria-modal="true">
+  <div class="sheet"><div class="celebrate" id="celebrateBody"></div>
+    <button class="btn primary" data-close="celebrate">¡Seguir volando!</button></div>
+</div>
+<div class="toast hidden" id="toast" role="status"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* =========================================================
+   CONFIGURACIÓN DE SUPABASE
+   Pegá acá los datos de tu proyecto (Project Settings > API).
+   Si los dejás vacíos, la app funciona igual guardando en el celular.
+   ========================================================= */
+const SUPABASE_URL = '';   // ej: 'https://abcdefgh.supabase.co'
+const SUPABASE_KEY = '';   // la clave "anon" o "publishable" (NUNCA la service_role)
+
+const sb = (SUPABASE_URL && SUPABASE_KEY && window.supabase) ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+let loggedIn = false;
+
+/* =================== DATOS BASE =================== */
+const FLAVORS = [
+  {id:'limon',   name:'Rayo de Limón',               e:'🍋', c:['#FFF59D','#9ACD00']},
+  {id:'frutilla',name:'Súper Frutilla Cósmica',      e:'🍓', c:['#FF9FBE','#E5194F']},
+  {id:'naranja', name:'Sol Naranja Supernova',       e:'🍊', c:['#FFD08A','#FF7A00']},
+  {id:'uva',     name:'Nebulosa de Uva',             e:'🍇', c:['#D3B2FF','#6B2BD9']},
+  {id:'choco',   name:'Agujero Negro de Chocolate',  e:'🍫', c:['#B07A52','#3B1F12']},
+  {id:'ddl',     name:'Vía Láctea de Dulce de Leche',e:'🥛', c:['#F5DEB3','#C68B3E']},
+  {id:'anana',   name:'Ananá Asteroide',             e:'🍍', c:['#FFF1A8','#E0A800']},
+  {id:'durazno', name:'Durazno Lunar',               e:'🍑', c:['#FFD3B8','#FF7A45']},
+  {id:'coco',    name:'Cometa de Coco',              e:'🥥', c:['#FFFFFF','#A89585']},
+  {id:'sandia',  name:'Marte Sandía',                e:'🍉', c:['#FFA3AB','#D92636']},
+  {id:'banana',  name:'Banana Satélite',             e:'🍌', c:['#FFF7B0','#EBBC00']},
+  {id:'menta',   name:'Brisa Plutoniana',            e:'🌿', c:['#C2FFE6','#12A56C']},
+];
+const GOAL_EMOJIS = ['🚲','🛹','🎮','⚽','🎧','🏆'];
+const MEDALS = [
+  {id:'first',  e:'🚀', n:'Primer Despegue',      d:'Registrá tu primera venta'},
+  {id:'streak3',e:'🔥', n:'Racha Orbital',        d:'Vendé 3 días seguidos'},
+  {id:'nova',   e:'💥', n:'Supernova',            d:'Vendé más de 20 en un día'},
+  {id:'half',   e:'🌗', n:'Piloto Experto',       d:'Llegá al 50% de tu meta'},
+  {id:'ten',    e:'💰', n:'Tesorero Galáctico',   d:'Juntá $10.000 en total'},
+  {id:'hundred',e:'🛸', n:'Flota Completa',       d:'Vendé 100 marcianitos'},
+  {id:'crew5',  e:'👽', n:'Capitán de Tripulación',d:'Anotá 5 tripulantes'},
+  {id:'moon',   e:'🌕', n:'Alunizaje',            d:'Llegá al 100% de tu meta'},
+];
+const DEFAULT = {
+  config:{
+    phone:'5492944135365', start:'17:00', end:'21:00',
+    price:500, apolo:1300, galaxia:2500, familiar:4500,
+    goalName:'Bicicleta', goalAmount:50000, goalEmoji:'🚲', pin:'1234',
+    available:{limon:true,frutilla:true,naranja:true,uva:true,choco:true,ddl:true,anana:false,durazno:false,coco:false,sandia:false,banana:false,menta:false}
+  },
+  log:[], crew:[], medals:{}, goalOffset:0, goalsDone:[]
+};
+
+/* =================== ESTADO =================== */
+const KEY = 'marcianitos-santi-v1';
+const clone = o => JSON.parse(JSON.stringify(o));
+function load(){
+  try{
+    const raw = localStorage.getItem(KEY);
+    if(raw){
+      const s = JSON.parse(raw);
+      const base = clone(DEFAULT);
+      return {...base, ...s,
+        config:{...base.config, ...(s.config||{}), available:{...base.config.available, ...((s.config||{}).available||{})}}};
+    }
+  }catch(e){}
+  return clone(DEFAULT);
+}
+let state = load();
+function saveLocal(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+function save(){ saveLocal(); clearTimeout(save.t); save.t = setTimeout(pushPrivate, 600); }
+
+/* =================== NUBE (SUPABASE) =================== */
+const PRIVATE_KEYS = ['log','crew','medals','goalOffset','goalsDone'];
+function publicConfig(){ const {pin, ...rest} = state.config; return rest; }
+async function pullConfig(){
+  if(!sb) return;
+  const {data, error} = await sb.from('config').select('data').eq('id',1).single();
+  if(error || !data || !data.data || !Object.keys(data.data).length) return;
+  const d = data.data;
+  state.config = {...state.config, ...d, available:{...state.config.available, ...(d.available||{})}};
+  saveLocal(); refreshShop();
+}
+async function pullPrivate(){
+  const {data, error} = await sb.from('santi_data').select('data').eq('id',1).single();
+  if(error) throw error;
+  const d = (data && data.data) || {};
+  if(Object.keys(d).length){ PRIVATE_KEYS.forEach(k => { if(d[k] !== undefined) state[k] = d[k]; }); saveLocal(); }
+  else { await pushPrivate(); await pushConfig(); }
+}
+async function pushPrivate(){
+  if(!sb || !loggedIn) return;
+  const payload = {}; PRIVATE_KEYS.forEach(k => payload[k] = state[k]);
+  const {error} = await sb.from('santi_data').update({data:payload, updated_at:new Date().toISOString()}).eq('id',1);
+  if(error) toast('⚠️ No se pudo guardar en la nube');
+}
+async function pushConfig(){
+  if(!sb || !loggedIn) return;
+  const {error} = await sb.from('config').update({data:publicConfig(), updated_at:new Date().toISOString()}).eq('id',1);
+  if(error) toast('⚠️ No se pudo publicar el cambio en la nube');
+}
+const cart = {};
+
+/* =================== UTILIDADES =================== */
+const $ = id => document.getElementById(id);
+const money = n => '$' + Math.round(n).toLocaleString('es-AR');
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const toMin = t => { const [h,m] = (t||'0:0').split(':').map(Number); return h*60+m; };
+const pad = n => String(n).padStart(2,'0');
+const dstr = d => d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const today = () => dstr(new Date());
+const addDays = (s,n) => { const [y,m,d] = s.split('-').map(Number); return dstr(new Date(y,m-1,d+n)); };
+const prettyDate = s => { const [y,m,d] = s.split('-'); return d+'/'+m; };
+function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.remove('hidden'); clearTimeout(toast.t); toast.t=setTimeout(()=>t.classList.add('hidden'),2200); }
+function open(id){ $(id).classList.remove('hidden'); }
+function close(id){ $(id).classList.add('hidden'); }
+document.addEventListener('click', e => { const c = e.target.closest('[data-close]'); if(c) close(c.dataset.close); });
+document.querySelectorAll('.overlay').forEach(o => o.addEventListener('click', e => { if(e.target === o) close(o.id); }));
+
+function windowState(){
+  const c = state.config, now = new Date(), m = now.getHours()*60 + now.getMinutes();
+  const s = toMin(c.start), e = toMin(c.end);
+  return m < s ? 'before' : (m >= e ? 'after' : 'on');
+}
+
+/* =================== TIENDA =================== */
+function renderStatus(){
+  const c = state.config, w = windowState(), box = $('status');
+  box.className = 'status ' + (w === 'on' ? 'on' : 'off');
+  $('statusText').textContent = w === 'on'
+    ? `Nave de reparto activa de ${c.start} a ${c.end} hs`
+    : w === 'before' ? `Nave en el hangar. Despega hoy a las ${c.start} hs`
+    : `Nave en el hangar. Vuelve mañana a las ${c.start} hs`;
+}
+function comboDefs(){
+  const c = state.config;
+  return [
+    {k:3,  p:c.apolo,    e:'🚀', n:'Pack Cohete Apolo',         t:'3 marcianitos'},
+    {k:6,  p:c.galaxia,  e:'🌌', n:'Pack Galaxia',              t:'5 + 1 de regalo'},
+    {k:10, p:c.familiar, e:'👨‍👩‍👧', n:'Pack Tripulación Familiar', t:'10 marcianitos'},
+  ];
+}
+function renderCombos(){
+  const unit = state.config.price;
+  $('combos').innerHTML = comboDefs().map(cb => {
+    const save = cb.k*unit - cb.p;
+    return `<div class="combo"><div class="ce">${cb.e}</div><h3>${esc(cb.n)}</h3>
+      <div class="cp">${esc(cb.t)} por ${money(cb.p)}</div>
+      ${save>0?`<span class="cs">Ahorrás ${money(save)}</span>`:''}</div>`;
+  }).join('');
+}
+function renderGrid(){
+  const c = state.config;
+  const list = FLAVORS.filter(f => c.available[f.id]);
+  Object.keys(cart).forEach(id => { if(!c.available[id]) delete cart[id]; });
+  $('grid').innerHTML = list.length ? list.map(f => {
+    const q = cart[f.id] || 0;
+    return `<article class="card ${q?'has':''}" style="--c1:${f.c[0]};--c2:${f.c[1]}">
+      ${q?`<span class="badge">${q}</span>`:''}
+      <div class="planet" aria-hidden="true">${f.e}</div>
+      <h3>${esc(f.name)}</h3>
+      <div class="price">${money(c.price)} c/u</div>
+      <div class="stepper">
+        <button data-id="${f.id}" data-d="-1" aria-label="Quitar ${esc(f.name)}" ${q?'':'disabled'}>−</button>
+        <span class="n" aria-live="polite">${q}</span>
+        <button class="plus" data-id="${f.id}" data-d="1" aria-label="Sumar ${esc(f.name)}">+</button>
+      </div></article>`;
+  }).join('') : `<p class="empty" style="grid-column:1/-1">Hoy la nave está recargando sabores. ¡Volvé pronto!</p>`;
+}
+$('grid').addEventListener('click', e => {
+  const b = e.target.closest('button[data-id]'); if(!b) return;
+  const id = b.dataset.id, d = Number(b.dataset.d);
+  cart[id] = Math.max(0, Math.min(50, (cart[id]||0) + d));
+  if(!cart[id]) delete cart[id];
+  renderGrid(); renderCart(d > 0);
+});
+function bestPrice(n){
+  const c = state.config;
+  const opts = [{k:1,p:c.price,n:null}, ...comboDefs().map(x => ({k:x.k,p:x.p,n:x.n}))];
+  const best = [{cost:0, used:[]}];
+  for(let i=1; i<=n; i++){
+    let b = null;
+    for(const o of opts){
+      if(i >= o.k){
+        const prev = best[i-o.k], cost = prev.cost + o.p;
+        if(!b || cost < b.cost) b = {cost, used: o.n ? [...prev.used, o.n] : prev.used};
+      }
+    }
+    best[i] = b;
+  }
+  return best[n];
+}
+function cartSummary(){
+  const items = FLAVORS.filter(f => cart[f.id]).map(f => ({f, q:cart[f.id]}));
+  const count = items.reduce((a,i) => a+i.q, 0);
+  const bp = bestPrice(count);
+  const combos = {};
+  bp.used.forEach(n => combos[n] = (combos[n]||0) + 1);
+  const comboText = Object.entries(combos).map(([n,k]) => (k>1?k+'x ':'') + n);
+  return {items, count, total:bp.cost, full:count*state.config.price, comboText};
+}
+function deliveryText(){
+  const c = state.config, w = windowState();
+  return w === 'on' ? `hoy entre ${c.start} y ${c.end} hs` : w === 'before' ? `hoy desde las ${c.start} hs` : `mañana entre ${c.start} y ${c.end} hs`;
+}
+function buildMessage(s){
+  const name = $('cName').value.trim(), addr = $('cAddr').value.trim(), ref = $('cRef').value.trim();
+  const L = ['🛸 NUEVO PEDIDO - Los Marcianitos de Santi', `👽 Tripulante: ${name}`, '', '🍧 Carga:'];
+  s.items.forEach(i => L.push(`• ${i.q}x ${i.f.name}`));
+  if(s.comboText.length) L.push(`🎁 Combo: ${s.comboText.join(' + ')}`);
+  L.push('', `📍 Destino: ${addr}`);
+  if(ref) L.push(`🗺️ Referencia: ${ref}`);
+  L.push(`🕔 Entrega: ${deliveryText()}`, `💰 Total: ${money(s.total)}`, '',
+         '⭐ Con esta compra sumás 1 sticker galáctico.', '¡Juntá 5 y tu próximo marcianito es gratis!');
+  return L.join('\n');
+}
+function renderCart(bump){
+  const s = cartSummary(), fab = $('fab');
+  fab.classList.toggle('hidden', !s.count || $('shop').classList.contains('hidden'));
+  $('fabText').textContent = `${s.count} · ${money(s.total)}`;
+  if(bump){ fab.classList.remove('pop'); void fab.offsetWidth; fab.classList.add('pop'); }
+  let html = s.items.map(i => `<div class="line"><span>${i.q}x ${esc(i.f.name)}</span><span>${money(i.q*state.config.price)}</span></div>`).join('');
+  if(s.comboText.length && s.full > s.total) html += `<div class="line combo-line"><span>🎁 ${esc(s.comboText.join(' + '))}</span><span>−${money(s.full - s.total)}</span></div>`;
+  $('cartLines').innerHTML = html || '<p class="empty">Tu bodega está vacía.</p>';
+  $('cartTotal').textContent = money(s.total);
+  $('deliveryNote').textContent = `Entrega a domicilio ${deliveryText()}. Pagás al recibir.`;
+  updateWaLink();
+  if(!s.count) close('cartOverlay');
+}
+function updateWaLink(){
+  const s = cartSummary();
+  $('sendWa').href = `https://wa.me/${state.config.phone.replace(/\D/g,'')}?text=${encodeURIComponent(buildMessage(s))}`;
+}
+['cName','cAddr','cRef'].forEach(id => $(id).addEventListener('input', () => { $('cartErr').textContent=''; updateWaLink(); }));
+$('fab').addEventListener('click', () => { renderCart(); open('cartOverlay'); });
+$('sendWa').addEventListener('click', e => {
+  const miss = !$('cName').value.trim() ? 'Escribí tu nombre de tripulante.' : !$('cAddr').value.trim() ? 'Falta la dirección de aterrizaje.' : '';
+  if(miss){ e.preventDefault(); $('cartErr').textContent = miss; return; }
+  updateWaLink();
+});
+
+/* =================== CÁLCULOS SANTI =================== */
+const totalAmount = () => state.log.reduce((a,l) => a + l.amount, 0);
+const totalQty = () => state.log.reduce((a,l) => a + l.qty, 0);
+const saved = () => Math.max(0, totalAmount() - state.goalOffset);
+const pct = () => Math.min(100, Math.floor(saved() / Math.max(1,state.config.goalAmount) * 100));
+function byDay(){ const m = {}; state.log.forEach(l => m[l.date] = (m[l.date]||0) + l.qty); return m; }
+function streak(){
+  const days = byDay(); let d = today(), s = 0;
+  if(!days[d]) d = addDays(d,-1);
+  while(days[d]){ s++; d = addDays(d,-1); }
+  return s;
+}
+function rank(){
+  const q = totalQty();
+  return q >= 100 ? '👨‍🚀 Comandante' : q >= 60 ? '🧑‍✈️ Capitán' : q >= 20 ? '🛩️ Piloto' : '🎒 Cadete';
+}
+const TESTS = {
+  first:()=>state.log.length>0, streak3:()=>streak()>=3,
+  nova:()=>Object.values(byDay()).some(q=>q>20), half:()=>pct()>=50,
+  ten:()=>totalAmount()>=10000, hundred:()=>totalQty()>=100,
+  crew5:()=>state.crew.length>=5, moon:()=>pct()>=100,
+};
+function checkMedals(){
+  const fresh = MEDALS.filter(m => !state.medals[m.id] && TESTS[m.id]());
+  fresh.forEach(m => state.medals[m.id] = today());
+  if(fresh.length){ save(); celebrate(fresh[0], fresh.length); }
+}
+function celebrate(m, n){
+  $('celebrateBody').innerHTML = `<div class="me">${m.e}</div><h2>¡Nueva medalla!</h2>
+    <h3 style="font-size:22px">${esc(m.n)}</h3><p class="sub" style="margin-top:6px">${esc(m.d)}</p>
+    ${n>1?`<p class="sub">¡Y ${n-1} medalla${n>2?'s':''} más en tu colección!</p>`:''}`;
+  open('celebrate'); confetti();
+}
+function confetti(){
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const colors = ['#39FF88','#9B5CFF','#FF4FD8','#22D3EE','#FFD23F'];
+  for(let i=0;i<70;i++){
+    const c = document.createElement('i'); c.className = 'confetti';
+    c.style.left = Math.random()*100 + 'vw';
+    c.style.background = colors[i % colors.length];
+    c.style.animationDuration = (1.6 + Math.random()*1.6) + 's';
+    c.style.animationDelay = (Math.random()*.4) + 's';
+    document.body.appendChild(c); setTimeout(() => c.remove(), 3800);
+  }
+}
+
+/* =================== VISTAS SANTI =================== */
+let view = 'home';
+function go(v){
+  view = v;
+  document.querySelectorAll('[data-view]').forEach(el => el.classList.toggle('hidden', el.dataset.view !== v));
+  document.querySelectorAll('.nav button').forEach(b => b.classList.toggle('on', b.dataset.go === v));
+  ({home:renderHome, log:renderLog, crew:renderCrew, medals:renderMedals, settings:renderSettings})[v]();
+  window.scrollTo(0,0);
+}
+document.addEventListener('click', e => { const b = e.target.closest('[data-go]'); if(b) go(b.dataset.go); });
+
+function renderHome(){
+  const c = state.config, p = pct(), s = saved();
+  $('rank').textContent = rank();
+  $('goalEmoji').textContent = c.goalEmoji;
+  $('goalName').textContent = c.goalName;
+  $('pct').textContent = p + '%';
+  $('money').innerHTML = `<b>${money(Math.min(s,c.goalAmount))}</b> de ${money(c.goalAmount)}`;
+  $('left').textContent = s >= c.goalAmount ? '¡Meta cumplida!' : `Faltan ${money(c.goalAmount - s)}`;
+  requestAnimationFrame(() => {
+    $('pathFill').style.height = p + '%';
+    $('rocket').style.bottom = p + '%';
+    $('barFill').style.width = p + '%';
+  });
+  const msg = p >= 100 ? `🌕 ¡Alunizaste! Ya podés ir a buscar tu ${c.goalName.toLowerCase()}.`
+    : p >= 75 ? '🔭 Ya se ve la Luna. ¡Último empujón!'
+    : p >= 50 ? '🌗 Pasaste la mitad del viaje. ¡Piloto experto!'
+    : p >= 25 ? '🛰️ Saliste de la atmósfera. ¡Primer cuarto listo!'
+    : state.log.length ? '🔥 Motores encendidos. Cada venta te empuja más arriba.'
+    : '🚀 Registrá tu primera venta para despegar.';
+  $('milestone').textContent = msg;
+
+  const weekStart = addDays(today(), -6);
+  const week = state.log.filter(l => l.date >= weekStart);
+  const wAmt = week.reduce((a,l)=>a+l.amount,0), wQty = week.reduce((a,l)=>a+l.qty,0);
+  const votes = {}; week.forEach(l => { if(l.flavor) votes[l.flavor] = (votes[l.flavor]||0) + 1; });
+  const topId = Object.entries(votes).sort((a,b)=>b[1]-a[1])[0];
+  const top = topId ? FLAVORS.find(f => f.id === topId[0]) : null;
+  const st = streak();
+  $('stats').innerHTML = `
+    <div class="stat"><div class="k">Esta semana</div><div class="v">${money(wAmt)}</div><div class="s">${wQty} marcianitos</div></div>
+    <div class="stat"><div class="k">Sabor estrella</div><div class="v">${top ? top.e : '—'}</div><div class="s">${top ? esc(top.name) : 'Marcá el sabor en la bitácora'}</div></div>
+    <div class="stat"><div class="k">Racha</div><div class="v">${st} ${st===1?'día':'días'}</div><div class="s">${st ? 'seguidos vendiendo' : 'Vendé hoy para arrancar'}</div></div>
+    <div class="stat"><div class="k">Total vendido</div><div class="v">${totalQty()}</div><div class="s">${money(totalAmount())} en total</div></div>`;
+}
+
+/* --- Bitácora --- */
+let qty = 0, amountTouched = false, logFlavor = null;
+function renderLog(){
+  if(!$('logDate').value) $('logDate').value = today();
+  $('qN').textContent = qty;
+  if(!amountTouched) $('logAmount').value = qty ? qty * state.config.price : '';
+  $('amountHint').textContent = `Sugerido: ${qty} × ${money(state.config.price)} = ${money(qty*state.config.price)}. Si hiciste combos, poné lo que cobraste de verdad.`;
+  $('logFlavor').innerHTML = FLAVORS.filter(f => state.config.available[f.id]).map(f =>
+    `<button class="chip ${logFlavor===f.id?'on':''}" data-flavor="${f.id}">${f.e} ${esc(f.name.split(' ').slice(0,2).join(' '))}</button>`).join('');
+  const recent = [...state.log].sort((a,b) => b.date.localeCompare(a.date) || b.id - a.id).slice(0,12);
+  $('logList').innerHTML = recent.length ? recent.map(l =>
+    `<li><span><b>${prettyDate(l.date)}</b> · ${l.qty} marcianitos · ${money(l.amount)}</span>
+     <button class="x" data-del="${l.id}" aria-label="Borrar registro">✕</button></li>`).join('')
+    : '<li class="empty">Todavía no hay misiones. ¡La primera te da una medalla!</li>';
+}
+$('qMinus').addEventListener('click', () => { qty = Math.max(0, qty-1); renderLog(); });
+$('qPlus').addEventListener('click', () => { qty = Math.min(500, qty+1); renderLog(); });
+$('logAmount').addEventListener('input', () => { amountTouched = true; });
+$('logFlavor').addEventListener('click', e => { const b = e.target.closest('[data-flavor]'); if(!b) return; logFlavor = logFlavor === b.dataset.flavor ? null : b.dataset.flavor; renderLog(); });
+$('logList').addEventListener('click', e => {
+  const b = e.target.closest('[data-del]'); if(!b) return;
+  if(confirm('¿Borrar este registro?')){ state.log = state.log.filter(l => l.id !== Number(b.dataset.del)); save(); renderLog(); }
+});
+$('logSave').addEventListener('click', () => {
+  const amount = Number($('logAmount').value);
+  if(!qty){ $('logErr').textContent = 'Sumá al menos 1 marcianito con el botón +.'; return; }
+  if(!(amount >= 0) || $('logAmount').value === ''){ $('logErr').textContent = 'Escribí cuánta plata juntaste.'; return; }
+  $('logErr').textContent = '';
+  state.log.push({id:Date.now(), date:$('logDate').value || today(), qty, amount, flavor:logFlavor});
+  save();
+  qty = 0; amountTouched = false; logFlavor = null; $('logAmount').value = '';
+  toast('🚀 ¡Misión registrada!');
+  go('home');
+  setTimeout(checkMedals, 900);
+});
+
+/* --- Tripulantes --- */
+function renderCrew(){
+  const list = [...state.crew].sort((a,b) => b.stickers - a.stickers || a.name.localeCompare(b.name));
+  $('crewList').innerHTML = list.length ? list.map(c => `
+    <li><div class="top"><span class="name">👽 ${esc(c.name)}</span>
+      <button class="x" data-crewdel="${c.id}" aria-label="Quitar a ${esc(c.name)}" style="width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:none;color:var(--muted)">✕</button></div>
+      <div class="stars">${[0,1,2,3,4].map(i => `<span class="${i<c.stickers?'f':''}">${i<c.stickers?'⭐':''}</span>`).join('')}</div>
+      <div class="row">
+        ${c.stickers >= 5
+          ? `<button class="mini gift" data-redeem="${c.id}">🎁 Canjear marcianito gratis</button>`
+          : `<button class="mini" data-stick="${c.id}">+1 sticker</button>`}
+      </div>
+      ${c.redeemed ? `<p class="note">Canjeó ${c.redeemed} ${c.redeemed===1?'premio':'premios'}</p>` : ''}
+    </li>`).join('') : '<li class="empty" style="border:none;background:none">Sumá a tu primer cliente para empezar a darle stickers.</li>';
+}
+function addCrew(){
+  const n = $('crewName').value.trim(); if(!n) return;
+  state.crew.push({id:Date.now(), name:n.slice(0,40), stickers:1, redeemed:0});
+  $('crewName').value = ''; save(); renderCrew(); toast(`⭐ ${n} sumó su primer sticker`);
+  setTimeout(checkMedals, 400);
+}
+$('crewAdd').addEventListener('click', addCrew);
+$('crewName').addEventListener('keydown', e => { if(e.key === 'Enter') addCrew(); });
+$('crewList').addEventListener('click', e => {
+  const t = e.target.closest('button'); if(!t) return;
+  const find = id => state.crew.find(c => c.id === Number(id));
+  if(t.dataset.stick){ const c = find(t.dataset.stick); c.stickers = Math.min(5, c.stickers+1); if(c.stickers===5) toast(`🎁 ¡${c.name} ganó un marcianito gratis!`); }
+  else if(t.dataset.redeem){ const c = find(t.dataset.redeem); c.stickers = 0; c.redeemed = (c.redeemed||0) + 1; toast('🎁 Premio entregado'); }
+  else if(t.dataset.crewdel){ if(!confirm('¿Quitar a este tripulante?')) return; state.crew = state.crew.filter(c => c.id !== Number(t.dataset.crewdel)); }
+  save(); renderCrew();
+});
+
+/* --- Medallas --- */
+function renderMedals(){
+  const got = MEDALS.filter(m => state.medals[m.id]).length;
+  $('medalCount').textContent = `Tenés ${got} de ${MEDALS.length}. ¡Seguí vendiendo para desbloquear el resto!`;
+  $('medals').innerHTML = MEDALS.map(m => {
+    const d = state.medals[m.id];
+    return `<div class="medal ${d?'got':'lock'}"><div class="me">${d ? m.e : '🔒'}</div><h3>${esc(m.n)}</h3><p>${esc(m.d)}</p>
+      ${d ? `<span class="when">Ganada el ${prettyDate(d)}</span>` : ''}</div>`;
+  }).join('');
+}
+
+/* --- Ajustes --- */
+let pickEmoji = null;
+function renderSettings(){
+  const c = state.config;
+  $('sStart').value = c.start; $('sEnd').value = c.end;
+  $('sPrice').value = c.price; $('sApolo').value = c.apolo; $('sGalaxia').value = c.galaxia; $('sFamiliar').value = c.familiar;
+  $('sGoalName').value = c.goalName; $('sGoalAmount').value = c.goalAmount;
+  $('sPhone').value = c.phone; $('sPin').value = c.pin;
+  pickEmoji = c.goalEmoji;
+  drawEmojiChips(); drawFlavorChips(clone(c.available));
+  $('setErr').textContent = '';
+  $('pinField').classList.toggle('hidden', !!sb);
+  $('logout').classList.toggle('hidden', !sb);
+  $('storageNote').textContent = sb ? 'Tus datos se guardan en la nube: podés entrar desde cualquier celular con tu email.' : 'Los datos se guardan en este celular. Usá siempre el mismo dispositivo y navegador.';
+}
+function drawEmojiChips(){
+  $('sEmoji').innerHTML = GOAL_EMOJIS.map(e => `<button class="chip ${pickEmoji===e?'on':''}" data-emoji="${e}" style="font-size:22px">${e}</button>`).join('');
+}
+let tmpAvail = {};
+function drawFlavorChips(av){
+  tmpAvail = av;
+  $('sFlavors').innerHTML = FLAVORS.map(f => `<button class="chip ${tmpAvail[f.id]?'on':''}" data-av="${f.id}">${f.e} ${esc(f.name)}</button>`).join('');
+}
+$('sEmoji').addEventListener('click', e => { const b = e.target.closest('[data-emoji]'); if(b){ pickEmoji = b.dataset.emoji; drawEmojiChips(); } });
+$('sFlavors').addEventListener('click', e => { const b = e.target.closest('[data-av]'); if(b){ tmpAvail[b.dataset.av] = !tmpAvail[b.dataset.av]; drawFlavorChips(tmpAvail); } });
+$('setSave').addEventListener('click', () => {
+  const num = id => Number($(id).value);
+  const start = $('sStart').value, end = $('sEnd').value;
+  if(!start || !end || toMin(end) <= toMin(start)){ $('setErr').textContent = 'El horario de fin tiene que ser después del de inicio.'; return; }
+  if(!(num('sPrice') > 0) || !(num('sGoalAmount') > 0)){ $('setErr').textContent = 'El precio y la meta tienen que ser mayores a 0.'; return; }
+  const pin = $('sPin').value.trim();
+  if(!sb && !/^\d{4,6}$/.test(pin)){ $('setErr').textContent = 'El PIN tiene que tener de 4 a 6 números.'; return; }
+  Object.assign(state.config, {
+    start, end, price:num('sPrice'), apolo:num('sApolo')||0, galaxia:num('sGalaxia')||0, familiar:num('sFamiliar')||0,
+    goalName:$('sGoalName').value.trim() || 'Mi meta', goalAmount:num('sGoalAmount'), goalEmoji:pickEmoji,
+    phone:$('sPhone').value.replace(/\D/g,'') || DEFAULT.config.phone, pin: sb ? state.config.pin : pin, available:{...tmpAvail}
+  });
+  save(); pushConfig(); refreshShop(); toast(sb ? '✅ Guardado y publicado para los clientes' : '✅ Cambios guardados');
+});
+$('newGoal').addEventListener('click', () => {
+  if(!confirm('Tu cohete vuelve a la Tierra y empieza una meta nueva. Tus ventas y medallas se guardan. ¿Seguimos?')) return;
+  state.goalsDone.push({name:state.config.goalName, amount:state.config.goalAmount, reached:pct()>=100, date:today()});
+  state.goalOffset = totalAmount();
+  delete state.medals.half; delete state.medals.moon;
+  save(); toast('🌍 Nueva meta lista. Cambiá nombre y monto y guardá.');
+});
+$('wipe').addEventListener('click', () => {
+  if(!confirm('Esto borra TODAS tus ventas, medallas y tripulantes. ¿Seguro?')) return;
+  state = clone(DEFAULT); save(); pushConfig(); refreshShop(); renderSettings(); toast('Datos borrados');
+});
+function showShop(){
+  $('admin').classList.add('hidden'); $('nav').classList.add('hidden'); $('shop').classList.remove('hidden');
+  refreshShop(); window.scrollTo(0,0);
+}
+$('logout').addEventListener('click', async () => { if(sb) await sb.auth.signOut(); loggedIn = false; showShop(); toast('🔒 Sesión cerrada'); });
+$('toShop').addEventListener('click', () => {
+  $('admin').classList.add('hidden'); $('nav').classList.add('hidden'); $('shop').classList.remove('hidden');
+  refreshShop(); window.scrollTo(0,0);
+});
+
+/* =================== ACCESO =================== */
+if(sb){
+  $('pinLogin').classList.add('hidden'); $('cloudLogin').classList.remove('hidden');
+  $('loginHint').textContent = 'Solo para el Comandante Santi. Entrá con tu email y contraseña.';
+}
+$('openAdmin').addEventListener('click', async () => {
+  if(sb){ const {data} = await sb.auth.getSession(); if(data && data.session){ enterAdmin(); return; } }
+  $('pinInput').value=''; $('loginPass').value=''; $('pinErr').textContent=''; open('pinOverlay');
+  setTimeout(() => (sb ? $('loginEmail') : $('pinInput')).focus(), 100);
+});
+async function enterAdmin(){
+  if(sb){
+    loggedIn = true;
+    try{ await pullPrivate(); }catch(e){ toast('⚠️ No se pudieron traer tus datos de la nube'); }
+  }
+  close('pinOverlay'); close('cartOverlay');
+  $('shop').classList.add('hidden'); $('fab').classList.add('hidden');
+  $('admin').classList.remove('hidden'); $('nav').classList.remove('hidden');
+  $('hello').textContent = 'Hola, Comandante Santi';
+  go('home');
+}
+async function tryPin(){
+  if(sb){
+    $('pinErr').textContent = 'Conectando con la nave...';
+    const {error} = await sb.auth.signInWithPassword({email:$('loginEmail').value.trim(), password:$('loginPass').value});
+    if(error){ $('pinErr').textContent = 'Email o contraseña incorrectos.'; return; }
+    $('pinErr').textContent = '';
+    enterAdmin();
+  } else if($('pinInput').value === state.config.pin){ enterAdmin(); }
+  else { $('pinErr').textContent = 'PIN incorrecto. Probá de nuevo.'; }
+}
+$('pinGo').addEventListener('click', tryPin);
+$('pinInput').addEventListener('keydown', e => { if(e.key === 'Enter') tryPin(); });
+$('loginPass').addEventListener('keydown', e => { if(e.key === 'Enter') tryPin(); });
+
+/* =================== INICIO =================== */
+function refreshShop(){ renderStatus(); renderCombos(); renderGrid(); renderCart(); }
+refreshShop();
+pullConfig();
+setInterval(() => { renderStatus(); updateWaLink(); }, 60000);
+</script>
+</body>
+</html>
