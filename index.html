@@ -43,7 +43,7 @@ img{max-width:100%}
 button,input,select{font:inherit;color:inherit}
 button{cursor:pointer}
 :focus-visible{outline:3px solid var(--cyan);outline-offset:3px;border-radius:12px}
-.wrap{max-width:560px;margin:0 auto;padding:20px 16px 140px}
+.wrap{max-width:560px;margin:0 auto;padding:20px 16px 230px}
 h1,h2,h3{font-family:var(--display);margin:0;line-height:1.1}
 h2{font-size:24px;font-weight:600;margin-bottom:4px}
 .sub{color:var(--muted);font-size:14px;margin:0 0 14px}
@@ -100,6 +100,52 @@ section{margin-top:34px}
   font-family:var(--display);font-weight:700;font-size:19px;box-shadow:0 0 0 4px rgba(57,255,136,.25),0 10px 30px rgba(57,255,136,.4);white-space:nowrap}
 .fab.pop{animation:pop .3s}
 @keyframes pop{50%{transform:translateX(-50%) scale(1.08)}}
+
+/* ---------- Nave nodriza ---------- */
+.dock{position:fixed;left:50%;bottom:calc(12px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:20;width:min(94vw,440px);
+  display:flex;align-items:center;gap:10px;padding:10px 14px 12px 6px;border-radius:28px;background:rgba(26,20,64,.93);
+  border:1.5px solid var(--line);backdrop-filter:blur(8px);box-shadow:0 12px 34px rgba(0,0,0,.5);transition:border-color .3s,box-shadow .3s}
+.dock.ready{border-color:var(--green);box-shadow:0 0 0 3px rgba(57,255,136,.16),0 12px 34px rgba(0,0,0,.5)}
+.ship{position:relative;flex:0 0 132px;width:132px;height:96px;background:none;border:none;padding:0;animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.ship .dome{position:absolute;left:50%;top:4px;transform:translateX(-50%);width:86px;height:50px;border-radius:50px 50px 10px 10px;
+  background:radial-gradient(circle at 34% 28%,rgba(255,255,255,.5),rgba(34,211,238,.22) 45%,rgba(34,211,238,.1));
+  border:2px solid rgba(34,211,238,.75);display:flex;flex-wrap:wrap-reverse;align-content:flex-start;justify-content:center;padding:4px 6px 8px;overflow:hidden}
+.ship .dome span{font-size:15px;line-height:1.15;display:inline-block}
+.ship .dome span.new{animation:board .4s ease-out}
+@keyframes board{from{transform:translateY(-16px) scale(.3);opacity:0}}
+.ship .empty-seat{font-size:20px;opacity:.45;align-self:center;margin:auto}
+.ship .hull{position:absolute;left:0;right:0;top:46px;height:30px;border-radius:50%;background:linear-gradient(180deg,#D8D2F5,#8174C4 50%,#463B8A);box-shadow:0 0 24px rgba(155,92,255,.6)}
+.ship .lights{position:absolute;left:16px;right:16px;top:57px;display:flex;justify-content:space-between;pointer-events:none}
+.ship .lights i{width:8px;height:8px;border-radius:50%;background:var(--yellow);box-shadow:0 0 8px var(--yellow);animation:blink 1.2s infinite}
+.ship .lights i:nth-child(2n){background:var(--pink);box-shadow:0 0 8px var(--pink);animation-delay:.6s}
+.ship .beam{position:absolute;left:50%;top:70px;transform:translateX(-50%);width:64px;height:26px;background:linear-gradient(180deg,rgba(57,255,136,.6),transparent);
+  clip-path:polygon(30% 0,70% 0,100% 100%,0 100%);opacity:.3;transition:opacity .2s}
+.ship .flame{display:none}
+.ship .more{position:absolute;right:14px;top:0;background:var(--pink);color:#fff;font-weight:800;font-size:12px;border-radius:999px;padding:1px 7px;z-index:2}
+.ship.bump .hull{animation:bump .45s}
+.ship.bump .beam{opacity:.95}
+@keyframes bump{40%{transform:scaleY(.8) scaleX(1.06)}}
+.dock-info{flex:1;min-width:0}
+.dock-info .t1{font-family:var(--display);font-weight:600;font-size:17px;line-height:1.15}
+.dock-info .t2{color:var(--muted);font-size:13px;margin-top:2px}
+.dock-go{margin-top:8px;width:100%;min-height:44px;padding:10px 12px;border:none;border-radius:16px;background:var(--green);color:var(--bg);font-family:var(--display);font-weight:700;font-size:16px}
+.dock-go:disabled{background:var(--surface2);color:var(--muted);cursor:default}
+.flyer{position:fixed;left:0;top:0;z-index:50;font-size:32px;line-height:1;pointer-events:none;will-change:transform;filter:drop-shadow(0 0 10px rgba(57,255,136,.7))}
+
+/* ---------- Despegue ---------- */
+.launch{position:fixed;inset:0;z-index:80;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;padding:24px;overflow:hidden;
+  background:radial-gradient(circle at 50% 45%,rgba(155,92,255,.45),transparent 65%),var(--bg)}
+.launch .ship{flex:none;animation:none;transform:scale(1.9);margin:30px 0 90px}
+.launch .ship .flame{display:block;position:absolute;left:50%;top:70px;width:46px;height:0;transform:translateX(-50%);
+  background:linear-gradient(180deg,#FFF6B0,var(--yellow) 30%,var(--pink) 70%,transparent);clip-path:polygon(20% 0,80% 0,50% 100%);transition:height .3s}
+.launch .ship.go{animation:takeoff 1.4s cubic-bezier(.55,0,.8,.2) forwards}
+.launch .ship.go .flame{height:70px;animation:flicker .12s infinite alternate}
+@keyframes flicker{to{transform:translateX(-50%) scaleX(.8)}}
+@keyframes takeoff{0%{transform:scale(1.9) translateY(0)}18%{transform:scale(1.9) translateY(8px)}100%{transform:scale(.7) translateY(-130vh)}}
+.launch h2{font-size:32px;color:var(--green);text-shadow:0 0 24px rgba(57,255,136,.5)}
+.launch p{color:var(--muted);margin:0;max-width:320px}
+.launch .btn{max-width:320px}
 .overlay{position:fixed;inset:0;z-index:40;background:rgba(5,3,20,.75);display:flex;align-items:flex-end;justify-content:center;backdrop-filter:blur(3px)}
 .sheet{width:100%;max-width:560px;max-height:92%;overflow-y:auto;background:var(--surface);border-radius:28px 28px 0 0;border:1px solid var(--line);border-bottom:none;
   padding:20px 18px calc(24px + env(safe-area-inset-bottom,0px));animation:up .25s ease-out}
@@ -227,7 +273,28 @@ input:focus{border-color:var(--cyan);outline:none}
   </div>
 </main>
 
-<button class="fab hidden" id="fab" aria-label="Abrir Bodega de Carga">🛒 <span id="fabText"></span></button>
+<div class="dock" id="fab">
+  <button class="ship" id="dockShip" aria-label="Ver los marcianitos a bordo">
+    <div class="beam"></div><div class="flame"></div><div class="dome" id="dome"></div><div class="hull"></div>
+    <div class="lights"><i></i><i></i><i></i><i></i><i></i></div><span class="more hidden" id="shipMore"></span>
+  </button>
+  <div class="dock-info">
+    <div class="t1" id="dockT1">Tu nave espera tripulantes</div>
+    <div class="t2" id="dockT2">Tocá + en un sabor para subirlo</div>
+    <button class="dock-go" id="dockGo" disabled>Nave vacía</button>
+  </div>
+</div>
+
+<div class="launch hidden" id="launch" role="status" aria-live="assertive">
+  <div class="ship" id="launchShip" aria-hidden="true">
+    <div class="beam"></div><div class="flame"></div><div class="dome" id="launchDome"></div><div class="hull"></div>
+    <div class="lights"><i></i><i></i><i></i><i></i><i></i></div><span class="more hidden" id="launchMore"></span>
+  </div>
+  <h2 id="launchTitle">Despegue en 3…</h2>
+  <p id="launchText"></p>
+  <a class="btn wa hidden" id="launchFallback" href="#" target="_blank" rel="noopener">Abrir WhatsApp</a>
+  <button class="btn ghost hidden" id="launchBack">Hacer otro pedido</button>
+</div>
 
 <div class="overlay hidden" id="cartOverlay" role="dialog" aria-modal="true" aria-labelledby="t-cart">
   <div class="sheet">
@@ -516,8 +583,31 @@ const today = () => dstr(new Date());
 const addDays = (s,n) => { const [y,m,d] = s.split('-').map(Number); return dstr(new Date(y,m-1,d+n)); };
 const prettyDate = s => { const [y,m,d] = s.split('-'); return d+'/'+m; };
 function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.remove('hidden'); clearTimeout(toast.t); toast.t=setTimeout(()=>t.classList.add('hidden'),2200); }
-function open(id){ $(id).classList.remove('hidden'); }
-function close(id){ $(id).classList.add('hidden'); }
+/* =================== NAVEGACIÓN (botón atrás del celular) ===================
+   Cada pantalla y ventana abierta crea una entrada en el historial del navegador.
+   Así, la flecha "atrás" cierra la ventana abierta o vuelve a la pantalla anterior
+   en lugar de salir del sitio. */
+const OVERLAYS = ['cartOverlay','pinOverlay','celebrate'];
+const HOME_NAV = {screen:'shop', view:'home', ov:null};
+let navState = {...HOME_NAV};
+let adminUnlocked = false;
+if('scrollRestoration' in history) history.scrollRestoration = 'manual';
+try{ history.replaceState(navState, ''); }catch(e){}
+function navPush(st){ navState = st; try{ history.pushState(st, ''); }catch(e){} }
+function navReplace(st){ navState = st; try{ history.replaceState(st, ''); }catch(e){} }
+
+function open(id){
+  if(navState.ov === id) return;
+  if(navState.ov){ $(navState.ov).classList.add('hidden'); navReplace({...navState, ov:id}); }
+  else navPush({...navState, ov:id});
+  $(id).classList.remove('hidden');
+}
+function close(id){
+  if($(id).classList.contains('hidden')) return;
+  if(navState.ov === id) history.back();          // el popstate la oculta
+  else $(id).classList.add('hidden');
+}
+function hideAllOverlays(){ OVERLAYS.forEach(o => $(o).classList.add('hidden')); }
 document.addEventListener('click', e => { const c = e.target.closest('[data-close]'); if(c) close(c.dataset.close); });
 document.querySelectorAll('.overlay').forEach(o => o.addEventListener('click', e => { if(e.target === o) close(o.id); }));
 
@@ -574,10 +664,64 @@ function renderGrid(){
 $('grid').addEventListener('click', e => {
   const b = e.target.closest('button[data-id]'); if(!b) return;
   const id = b.dataset.id, d = Number(b.dataset.d);
-  cart[id] = Math.max(0, Math.min(50, (cart[id]||0) + d));
+  const before = cart[id] || 0;
+  cart[id] = Math.max(0, Math.min(50, before + d));
   if(!cart[id]) delete cart[id];
-  renderGrid(); renderCart(d > 0);
+  const added = (cart[id] || 0) > before;
+  let from = null;
+  if(added){ const pl = b.closest('.card').querySelector('.planet'); from = pl.getBoundingClientRect(); }
+  if(added && !reduceMotion() && Element.prototype.animate){ pendingFlights++; }
+  renderGrid(); renderCart();
+  if(added){
+    const f = FLAVORS.find(x => x.id === id);
+    if(pendingFlights && !reduceMotion() && Element.prototype.animate) flyToShip(f.e, from);
+    else shipBump();
+  }
 });
+
+/* =================== NAVE NODRIZA =================== */
+const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const SEATS = 8;
+let pendingFlights = 0, shownPassengers = 0;
+function shipPassengers(){ const a = []; FLAVORS.forEach(f => { for(let i=0;i<(cart[f.id]||0);i++) a.push(f.e); }); return a; }
+function fillDome(domeId, moreId, list, animateFrom){
+  const vis = list.slice(0, SEATS);
+  $(domeId).innerHTML = vis.length
+    ? vis.map((e,i) => `<span class="${animateFrom!=null && i>=animateFrom ? 'new' : ''}">${e}</span>`).join('')
+    : '<span class="empty-seat">👽</span>';
+  const more = $(moreId);
+  more.textContent = list.length > SEATS ? '+' + (list.length - SEATS) : '';
+  more.classList.toggle('hidden', list.length <= SEATS);
+}
+function renderShip(){
+  const all = shipPassengers();
+  const list = all.slice(0, Math.max(0, all.length - pendingFlights));
+  fillDome('dome', 'shipMore', list, shownPassengers);
+  shownPassengers = Math.min(list.length, SEATS);
+}
+function shipBump(){
+  const sh = $('dockShip'); sh.classList.remove('bump'); void sh.offsetWidth; sh.classList.add('bump');
+}
+function flyToShip(emoji, from){
+  const land = () => { pendingFlights = Math.max(0, pendingFlights - 1); renderShip(); shipBump(); };
+  if(!from){ land(); return; }
+  const dome = $('dome').getBoundingClientRect();
+  const el = document.createElement('span'); el.className = 'flyer'; el.textContent = emoji; el.setAttribute('aria-hidden','true');
+  document.body.appendChild(el);
+  const sx = from.left + from.width/2 - 16, sy = from.top + from.height/2 - 16;
+  const ex = dome.left + dome.width/2 - 16, ey = dome.top + dome.height/2 - 16;
+  const mx = (sx + ex)/2 + (Math.random()*80 - 40), my = Math.min(sy, ey) - 90;
+  const anim = el.animate([
+    {transform:`translate(${sx}px,${sy}px) scale(1.25) rotate(0deg)`},
+    {transform:`translate(${mx}px,${my}px) scale(1) rotate(200deg)`, offset:.45},
+    {transform:`translate(${ex}px,${ey}px) scale(.45) rotate(360deg)`}
+  ], {duration:800, easing:'cubic-bezier(.4,.05,.5,1)'});
+  let done = false;
+  const finish = () => { if(done) return; done = true; el.remove(); land(); };
+  anim.onfinish = finish; anim.oncancel = finish; setTimeout(finish, 1200);
+}
+$('dockShip').addEventListener('click', () => { if(cartSummary().count){ renderCart(); open('cartOverlay'); } else toast('👽 Tocá + en un sabor para subir tu primer marcianito'); });
+$('dockGo').addEventListener('click', () => { renderCart(); open('cartOverlay'); });
 function bestPrice(n){
   const c = state.config;
   const opts = [{k:1,p:c.price,n:null}, ...comboDefs().map(x => ({k:x.k,p:x.p,n:x.n}))];
@@ -620,9 +764,14 @@ function buildMessage(s){
 }
 function renderCart(bump){
   const s = cartSummary(), fab = $('fab');
-  fab.classList.toggle('hidden', !s.count || $('shop').classList.contains('hidden'));
-  $('fabText').textContent = `${s.count} · ${money(s.total)}`;
-  if(bump){ fab.classList.remove('pop'); void fab.offsetWidth; fab.classList.add('pop'); }
+  fab.classList.toggle('hidden', $('shop').classList.contains('hidden'));
+  fab.classList.toggle('ready', s.count > 0);
+  $('dockT1').textContent = s.count ? `${s.count} marcianito${s.count===1?'':'s'} a bordo` : 'Tu nave espera tripulantes';
+  $('dockT2').textContent = s.count ? `Total ${money(s.total)}${s.comboText.length ? ' · ' + s.comboText.join(' + ') : ''}` : 'Tocá + en un sabor para subirlo';
+  $('dockGo').disabled = !s.count;
+  $('dockGo').textContent = s.count ? 'Ver carga 🚀' : 'Nave vacía';
+  if(shownPassengers > s.count) shownPassengers = s.count;
+  renderShip();
   let html = s.items.map(i => `<div class="line"><span>${i.q}x ${esc(i.f.name)}</span><span>${money(i.q*state.config.price)}</span></div>`).join('');
   if(s.comboText.length && s.full > s.total) html += `<div class="line combo-line"><span>🎁 ${esc(s.comboText.join(' + '))}</span><span>−${money(s.full - s.total)}</span></div>`;
   $('cartLines').innerHTML = html || '<p class="empty">Tu bodega está vacía.</p>';
@@ -641,6 +790,40 @@ $('sendWa').addEventListener('click', e => {
   const miss = !$('cName').value.trim() ? 'Escribí tu nombre de tripulante.' : !$('cAddr').value.trim() ? 'Falta la dirección de aterrizaje.' : '';
   if(miss){ e.preventDefault(); $('cartErr').textContent = miss; return; }
   updateWaLink();
+  if(reduceMotion()) return;              // sin animaciones: abre WhatsApp directo
+  e.preventDefault();
+  launchShip($('sendWa').href);
+});
+
+function launchShip(url){
+  const s = cartSummary();
+  hideAllOverlays(); navReplace({...navState, ov:null});
+  fillDome('launchDome', 'launchMore', shipPassengers(), null);
+  const ship = $('launchShip'); ship.classList.remove('go');
+  $('launchFallback').href = url;
+  $('launchFallback').classList.add('hidden'); $('launchBack').classList.add('hidden');
+  $('launchText').textContent = `${s.count} marcianito${s.count===1?'':'s'} a bordo, rumbo a Santi`;
+  $('launch').classList.remove('hidden');
+  let n = 3; $('launchTitle').textContent = 'Despegue en 3…';
+  const tick = setInterval(() => {
+    n--;
+    if(n > 0){ $('launchTitle').textContent = `Despegue en ${n}…`; return; }
+    clearInterval(tick);
+    $('launchTitle').textContent = '¡Despegue! 🚀';
+    void ship.offsetWidth; ship.classList.add('go');
+    setTimeout(() => {
+      $('launchTitle').textContent = '¡Pedido en camino!';
+      $('launchText').textContent = 'Si WhatsApp no se abrió solo, tocá el botón.';
+      $('launchFallback').classList.remove('hidden'); $('launchBack').classList.remove('hidden');
+      window.location.href = url;
+    }, 1300);
+  }, 700);
+}
+$('launchBack').addEventListener('click', () => {
+  Object.keys(cart).forEach(k => delete cart[k]);
+  shownPassengers = 0;
+  $('launch').classList.add('hidden');
+  renderGrid(); renderCart(); window.scrollTo(0,0);
 });
 
 /* =================== CÁLCULOS SANTI =================== */
@@ -692,6 +875,10 @@ function confetti(){
 /* =================== VISTAS SANTI =================== */
 let view = 'home';
 function go(v){
+  if(navState.screen === 'admin' && navState.view !== v && !navState.ov) navPush({screen:'admin', view:v, ov:null});
+  setView(v);
+}
+function setView(v){
   view = v;
   document.querySelectorAll('[data-view]').forEach(el => el.classList.toggle('hidden', el.dataset.view !== v));
   document.querySelectorAll('.nav button').forEach(b => b.classList.toggle('on', b.dataset.go === v));
@@ -864,14 +1051,37 @@ $('wipe').addEventListener('click', () => {
   if(!confirm('Esto borra TODAS tus ventas, medallas y tripulantes. ¿Seguro?')) return;
   state = clone(DEFAULT); save(); pushConfig(); refreshShop(); renderSettings(); toast('Datos borrados');
 });
-function showShop(){
+function showShopUI(){
   $('admin').classList.add('hidden'); $('nav').classList.add('hidden'); $('shop').classList.remove('hidden');
-  refreshShop(); window.scrollTo(0,0);
+  refreshShop();
 }
-$('logout').addEventListener('click', async () => { if(sb) await sb.auth.signOut(); loggedIn = false; showShop(); toast('🔒 Sesión cerrada'); });
-$('toShop').addEventListener('click', () => {
-  $('admin').classList.add('hidden'); $('nav').classList.add('hidden'); $('shop').classList.remove('hidden');
-  refreshShop(); window.scrollTo(0,0);
+function showAdminUI(){
+  $('shop').classList.add('hidden'); $('fab').classList.add('hidden');
+  $('admin').classList.remove('hidden'); $('nav').classList.remove('hidden');
+}
+function showShop(){ navPush({...HOME_NAV}); showShopUI(); window.scrollTo(0,0); }
+$('logout').addEventListener('click', async () => {
+  if(sb) await sb.auth.signOut();
+  loggedIn = false; adminUnlocked = false;
+  navReplace({...HOME_NAV}); showShopUI(); window.scrollTo(0,0); toast('🔒 Sesión cerrada');
+});
+$('toShop').addEventListener('click', showShop);
+
+/* Flecha atrás / adelante del navegador */
+window.addEventListener('popstate', e => {
+  let st = e.state || {...HOME_NAV};
+  if(st.screen === 'admin' && !adminUnlocked){ st = {...HOME_NAV}; navReplace(st); }
+  const prevScreen = navState.screen, prevView = navState.view;
+  navState = st;
+  OVERLAYS.forEach(o => $(o).classList.toggle('hidden', st.ov !== o));
+  if(st.screen === 'admin'){
+    showAdminUI();
+    if(prevScreen !== 'admin' || prevView !== st.view) setView(st.view);
+  } else if(prevScreen !== 'shop'){
+    showShopUI(); window.scrollTo(0,0);
+  } else {
+    renderCart();
+  }
 });
 
 /* =================== ACCESO =================== */
@@ -889,11 +1099,13 @@ async function enterAdmin(){
     loggedIn = true;
     try{ await pullPrivate(); }catch(e){ toast('⚠️ No se pudieron traer tus datos de la nube'); }
   }
-  close('pinOverlay'); close('cartOverlay');
-  $('shop').classList.add('hidden'); $('fab').classList.add('hidden');
-  $('admin').classList.remove('hidden'); $('nav').classList.remove('hidden');
+  adminUnlocked = true;
+  hideAllOverlays();
+  const st = {screen:'admin', view:'home', ov:null};
+  if(navState.ov) navReplace(st); else navPush(st);   // la ventana del PIN se reemplaza por el panel
+  showAdminUI();
   $('hello').textContent = 'Hola, Comandante Santi';
-  go('home');
+  setView('home');
 }
 async function tryPin(){
   if(sb){
@@ -914,7 +1126,6 @@ function refreshShop(){ renderStatus(); renderCombos(); renderGrid(); renderCart
 refreshShop();
 pullConfig();
 setInterval(() => { renderStatus(); updateWaLink(); }, 60000);
-</script>   const SUPABASE_URL = 'https://tu-proyecto.supabase.co';
-   const SUPABASE_KEY = 'tu-clave-anon-o-publishable';
+</script>
 </body>
 </html>
