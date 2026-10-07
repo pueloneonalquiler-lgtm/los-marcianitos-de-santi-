@@ -1,10 +1,12 @@
+[README.md](https://github.com/user-attachments/files/33132756/README.md)
 # 🛸 Los Marcianitos de Santi
 
 Tienda de helados con pedidos por WhatsApp y Centro de Control gamificado para Santi.
 
 ## Archivos
 - `index.html`: la app completa (tienda + Centro de Control).
-- `supabase.sql`: crea las tablas y la seguridad en Supabase.
+- `supabase.sql`: crea todas las tablas y la seguridad en Supabase (para proyectos nuevos).
+- `supabase-pedidos.sql`: agrega solo la tabla de pedidos (si ya habías corrido `supabase.sql` antes).
 
 ## Puesta en marcha
 1. **GitHub:** subí `index.html`, `supabase.sql` y este `README.md` a un repositorio nuevo.
@@ -18,3 +20,6 @@ Si dejás `SUPABASE_URL` y `SUPABASE_KEY` vacíos, la app funciona guardando en 
 ## Seguridad
 - Usá solo la clave **anon/publishable**. La **service_role** nunca va en el código.
 - Con los registros desactivados, la única cuenta que puede editar es la de Santi.
+
+## Pedidos
+Cada pedido que un cliente lanza por WhatsApp también se guarda en Supabase. En el Centro de Control, la pestaña **🛸 Pedidos** muestra los pendientes con dirección, mapa y sabores. Al tocar **✅ Entregado**, el cliente se suma solo a Tripulantes con 1 sticker y la venta se carga sola en la Bitácora.
