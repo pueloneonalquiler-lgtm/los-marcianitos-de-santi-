@@ -227,8 +227,8 @@ input:focus{border-color:var(--cyan);outline:none}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .note{font-size:13px;color:var(--muted);margin-top:10px}
 .nav{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(11,8,32,.94);border-top:1px solid var(--line);backdrop-filter:blur(8px);padding-bottom:env(safe-area-inset-bottom,0px)}
-.nav-in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr)}
-.nav button{background:none;border:none;padding:10px 2px 12px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;font-weight:800;color:var(--muted)}
+.nav-in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(6,1fr)}
+.nav button{position:relative;background:none;border:none;padding:10px 2px 12px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;font-weight:800;color:var(--muted)}
 .nav button span{font-size:24px}
 .nav button.on{color:var(--green)}
 .toast{position:fixed;left:50%;top:calc(16px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:60;background:var(--green);color:var(--bg);font-weight:800;padding:12px 20px;border-radius:999px;box-shadow:0 8px 24px rgba(0,0,0,.4)}
@@ -240,6 +240,29 @@ input:focus{border-color:var(--cyan);outline:none}
 @keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
 .pin-box{max-width:340px;margin:0 auto;text-align:center}
 .pin-box input{text-align:center;font-size:30px;letter-spacing:12px;font-family:var(--display)}
+.nbadge{position:absolute;top:4px;left:50%;margin-left:6px;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:var(--pink);color:#fff;font-size:12px;font-weight:800;display:grid;place-items:center}
+.orders{list-style:none;padding:0;margin:10px 0 0}
+.order{padding:14px;border-radius:20px;background:var(--deep);border:1.5px solid var(--line);margin-bottom:10px}
+.order.pendiente{border-color:rgba(57,255,136,.55)}
+.order.entregado,.order.cancelado{opacity:.62}
+.otop{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.oname{font-family:var(--display);font-size:19px;overflow-wrap:anywhere}
+.otime{color:var(--muted);font-size:13px;white-space:nowrap}
+.oaddr,.oitems{margin-top:8px;font-size:15px;overflow-wrap:anywhere}
+.oref{color:var(--muted);font-size:14px}
+.ocombo{color:var(--pink);font-size:14px;font-weight:700}
+.ototal{margin-top:8px;color:var(--muted)}
+.ototal b{color:var(--green);font-size:18px}
+.oact{margin-top:12px}
+.oact .mini{display:flex;align-items:center;justify-content:center;min-height:46px;text-align:center;text-decoration:none;color:var(--text)}
+.oact .mini.ok{flex:2;background:var(--green);border-color:var(--green);color:var(--bg)}
+.oact .mini.no{flex:0 0 52px}
+.ostatus{margin-top:8px;font-weight:800}
+.ohead{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ohead .mini{flex:0 0 auto}
+.alert-orders{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;margin-top:16px;padding:16px;border-radius:22px;border:2px solid var(--green);
+  background:rgba(57,255,136,.12);color:var(--green);font-family:var(--display);font-weight:700;font-size:18px;box-shadow:0 0 22px rgba(57,255,136,.2)}
+.webtag{color:var(--cyan);font-weight:800}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 @media (max-width:360px){.grid{gap:10px}.planet{width:72px;height:72px;font-size:34px}.mission{grid-template-columns:80px 1fr}.pct{font-size:52px}}
 </style>
@@ -358,9 +381,13 @@ input:focus{border-color:var(--cyan);outline:none}
         <div class="milestone" id="milestone"></div>
       </div>
     </div>
+    <button class="alert-orders hidden" id="ordersAlert" data-go="orders"></button>
     <div class="stats" id="stats"></div>
-    <button class="btn primary" style="margin-top:18px" data-go="log">📝 Registrar la misión de hoy</button>
+    <button class="btn primary" style="margin-top:18px" data-go="log">📝 Registrar una venta en persona</button>
   </div>
+
+  <!-- Pedidos -->
+  <div data-view="orders" class="hidden"><div id="ordersBody"></div></div>
 
   <!-- Bitácora -->
   <div data-view="log" class="hidden">
@@ -460,6 +487,7 @@ input:focus{border-color:var(--cyan);outline:none}
 <nav class="nav hidden" id="nav" aria-label="Centro de Control">
   <div class="nav-in">
     <button data-go="home" class="on"><span>🏠</span>Despegue</button>
+    <button data-go="orders"><span>🛸</span>Pedidos<b class="nbadge hidden" id="ordersBadge">0</b></button>
     <button data-go="log"><span>📝</span>Bitácora</button>
     <button data-go="crew"><span>👽</span>Tripulantes</button>
     <button data-go="medals"><span>🏅</span>Medallas</button>
@@ -790,13 +818,40 @@ $('sendWa').addEventListener('click', e => {
   const miss = !$('cName').value.trim() ? 'Escribí tu nombre de tripulante.' : !$('cAddr').value.trim() ? 'Falta la dirección de aterrizaje.' : '';
   if(miss){ e.preventDefault(); $('cartErr').textContent = miss; return; }
   updateWaLink();
-  if(reduceMotion()) return;              // sin animaciones: abre WhatsApp directo
+  rememberCustomer();
+  if(reduceMotion()){ saveOrder(cartSummary()); return; }   // sin animaciones: abre WhatsApp directo
   e.preventDefault();
   launchShip($('sendWa').href);
 });
 
+/* ---- Pedido guardado en la nube para el Centro de Control ---- */
+async function saveOrder(s){
+  if(!sb || !s.count) return;
+  const row = {
+    customer_name: $('cName').value.trim().slice(0,60),
+    address: $('cAddr').value.trim().slice(0,160),
+    reference: $('cRef').value.trim().slice(0,160) || null,
+    items: s.items.map(i => ({id:i.f.id, name:i.f.name, qty:i.q})),
+    combo: s.comboText.join(' + ').slice(0,200) || null,
+    qty: s.count, total: Math.round(s.total),
+    delivery: deliveryText().slice(0,80)
+  };
+  try{ const {error} = await sb.from('orders').insert(row); if(error) console.warn('Pedido no guardado', error); }
+  catch(e){ console.warn('Pedido no guardado', e); }
+}
+/* ---- El celular del cliente recuerda sus datos para el próximo pedido ---- */
+const CKEY = 'marcianitos-cliente';
+function rememberCustomer(){
+  try{ localStorage.setItem(CKEY, JSON.stringify({n:$('cName').value.trim(), a:$('cAddr').value.trim(), r:$('cRef').value.trim()})); }catch(e){}
+}
+try{
+  const mem = JSON.parse(localStorage.getItem(CKEY) || '{}');
+  if(mem.n) $('cName').value = mem.n; if(mem.a) $('cAddr').value = mem.a; if(mem.r) $('cRef').value = mem.r;
+}catch(e){}
+
 function launchShip(url){
   const s = cartSummary();
+  saveOrder(s);
   hideAllOverlays(); navReplace({...navState, ov:null});
   fillDome('launchDome', 'launchMore', shipPassengers(), null);
   const ship = $('launchShip'); ship.classList.remove('go');
@@ -882,12 +937,15 @@ function setView(v){
   view = v;
   document.querySelectorAll('[data-view]').forEach(el => el.classList.toggle('hidden', el.dataset.view !== v));
   document.querySelectorAll('.nav button').forEach(b => b.classList.toggle('on', b.dataset.go === v));
-  ({home:renderHome, log:renderLog, crew:renderCrew, medals:renderMedals, settings:renderSettings})[v]();
+  ({home:renderHome, orders:()=>{ renderOrders(); fetchOrders(); }, log:renderLog, crew:renderCrew, medals:renderMedals, settings:renderSettings})[v]();
   window.scrollTo(0,0);
 }
 document.addEventListener('click', e => { const b = e.target.closest('[data-go]'); if(b) go(b.dataset.go); });
 
 function renderHome(){
+  const np = pendingOrders().length, al = $('ordersAlert');
+  al.classList.toggle('hidden', !np);
+  al.textContent = `🛸 Tenés ${np} pedido${np===1?'':'s'} para entregar`;
   const c = state.config, p = pct(), s = saved();
   $('rank').textContent = rank();
   $('goalEmoji').textContent = c.goalEmoji;
@@ -933,7 +991,7 @@ function renderLog(){
     `<button class="chip ${logFlavor===f.id?'on':''}" data-flavor="${f.id}">${f.e} ${esc(f.name.split(' ').slice(0,2).join(' '))}</button>`).join('');
   const recent = [...state.log].sort((a,b) => b.date.localeCompare(a.date) || b.id - a.id).slice(0,12);
   $('logList').innerHTML = recent.length ? recent.map(l =>
-    `<li><span><b>${prettyDate(l.date)}</b> · ${l.qty} marcianitos · ${money(l.amount)}</span>
+    `<li><span><b>${prettyDate(l.date)}</b> · ${l.qty} marcianitos · ${money(l.amount)}${l.source==='web' ? ' · <span class="webtag">🛸 web</span>' : ''}</span>
      <button class="x" data-del="${l.id}" aria-label="Borrar registro">✕</button></li>`).join('')
     : '<li class="empty">Todavía no hay misiones. ¡La primera te da una medalla!</li>';
 }
@@ -1062,7 +1120,7 @@ function showAdminUI(){
 function showShop(){ navPush({...HOME_NAV}); showShopUI(); window.scrollTo(0,0); }
 $('logout').addEventListener('click', async () => {
   if(sb) await sb.auth.signOut();
-  loggedIn = false; adminUnlocked = false;
+  loggedIn = false; adminUnlocked = false; unsubscribeOrders();
   navReplace({...HOME_NAV}); showShopUI(); window.scrollTo(0,0); toast('🔒 Sesión cerrada');
 });
 $('toShop').addEventListener('click', showShop);
@@ -1084,6 +1142,119 @@ window.addEventListener('popstate', e => {
   }
 });
 
+/* =================== PEDIDOS =================== */
+let orders = [], ordersChannel = null;
+const pendingOrders = () => orders.filter(o => o.status === 'pendiente');
+const orderItems = o => (o.items || []).map(i => `${i.qty}x ${i.name}`).join(', ');
+const hhmm = iso => { const d = new Date(iso); return pad(d.getHours()) + ':' + pad(d.getMinutes()); };
+const isoDay = iso => dstr(new Date(iso));
+function updateOrderBadge(){
+  const n = pendingOrders().length, b = $('ordersBadge');
+  b.textContent = n; b.classList.toggle('hidden', !n);
+}
+function refreshOrderViews(){
+  updateOrderBadge();
+  if(navState.screen !== 'admin') return;
+  if(view === 'orders') renderOrders(); else if(view === 'home') renderHome();
+}
+async function fetchOrders(){
+  if(!sb || !loggedIn) return;
+  const since = new Date(); since.setDate(since.getDate() - 2); since.setHours(0,0,0,0);
+  const {data, error} = await sb.from('orders').select('*')
+    .or(`status.eq.pendiente,created_at.gte."${since.toISOString()}"`)
+    .order('created_at', {ascending:true}).limit(300);
+  if(error){ toast('⚠️ No se pudieron traer los pedidos'); return; }
+  orders = data || [];
+  refreshOrderViews();
+}
+function subscribeOrders(){
+  if(!sb || ordersChannel) return;
+  ordersChannel = sb.channel('pedidos-santi')
+    .on('postgres_changes', {event:'INSERT', schema:'public', table:'orders'}, payload => {
+      const o = payload.new;
+      if(!o || orders.some(x => x.id === o.id)) return;
+      orders.push(o);
+      toast(`🛸 ¡Nuevo pedido de ${o.customer_name}!`);
+      try{ if(navigator.vibrate) navigator.vibrate([150,80,150]); }catch(e){}
+      refreshOrderViews();
+    })
+    .subscribe();
+}
+function unsubscribeOrders(){
+  if(sb && ordersChannel){ sb.removeChannel(ordersChannel); }
+  ordersChannel = null; orders = []; updateOrderBadge();
+}
+function orderCard(o){
+  const t = today(), day = isoDay(o.created_at);
+  const map = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(o.address)}`;
+  return `<li class="order ${esc(o.status)}">
+    <div class="otop"><span class="oname">👽 ${esc(o.customer_name)}</span><span class="otime">${day === t ? 'Hoy' : prettyDate(day)} ${hhmm(o.created_at)}</span></div>
+    <div class="oaddr">📍 ${esc(o.address)}${o.reference ? `<br><span class="oref">🗺️ ${esc(o.reference)}</span>` : ''}</div>
+    <div class="oitems">🍧 ${esc(orderItems(o))}${o.combo ? `<br><span class="ocombo">🎁 ${esc(o.combo)}</span>` : ''}</div>
+    <div class="ototal">${o.qty} marcianito${o.qty===1?'':'s'} · <b>${money(o.total)}</b></div>
+    ${o.status === 'pendiente'
+      ? `<div class="row oact">
+          <a class="mini" href="${map}" target="_blank" rel="noopener">🗺️ Mapa</a>
+          <button class="mini ok" data-deliver="${o.id}">✅ Entregado</button>
+          <button class="mini no" data-cancel="${o.id}" aria-label="Cancelar pedido de ${esc(o.customer_name)}">✕</button>
+        </div>`
+      : `<div class="ostatus">${o.status === 'entregado' ? '✅ Entregado' : '❌ Cancelado'}</div>`}
+  </li>`;
+}
+function renderOrders(){
+  if(!sb){
+    $('ordersBody').innerHTML = `<div class="panel"><h2>Pedidos de la web</h2>
+      <p class="sub">Para ver acá los pedidos de los clientes hay que conectar Supabase (está explicado en el README). Mientras tanto, los pedidos te llegan solo por WhatsApp.</p></div>`;
+    return;
+  }
+  const pend = pendingOrders(), t = today();
+  const done = orders.filter(o => o.status !== 'pendiente' && isoDay(o.delivered_at || o.created_at) === t).reverse();
+  $('ordersBody').innerHTML = `
+    <div class="panel">
+      <div class="ohead"><h2>Para entregar</h2><button class="mini" id="ordersRefresh">↻ Actualizar</button></div>
+      <p class="sub">${pend.length ? `${pend.length} pedido${pend.length===1?'':'s'} esperando la nave de reparto. Los más viejos, primero.` : 'No hay pedidos pendientes. ¡Todo entregado!'}</p>
+      <ul class="orders">${pend.map(orderCard).join('')}</ul>
+    </div>
+    ${done.length ? `<div class="panel"><h2>Resueltos hoy</h2><ul class="orders">${done.map(orderCard).join('')}</ul></div>` : ''}`;
+}
+$('ordersBody').addEventListener('click', e => {
+  if(e.target.closest('#ordersRefresh')){ fetchOrders().then(() => toast('↻ Pedidos actualizados')); return; }
+  const d = e.target.closest('[data-deliver]'), c = e.target.closest('[data-cancel]');
+  if(d) deliverOrder(Number(d.dataset.deliver));
+  else if(c) cancelOrder(Number(c.dataset.cancel));
+});
+async function deliverOrder(id){
+  const o = orders.find(x => x.id === id);
+  if(!o || o.status !== 'pendiente') return;
+  const when = new Date().toISOString();
+  const {error} = await sb.from('orders').update({status:'entregado', delivered_at:when}).eq('id', id).eq('status', 'pendiente');
+  if(error){ toast('⚠️ No se pudo marcar como entregado'); return; }
+  o.status = 'entregado'; o.delivered_at = when;
+  // Tripulante automático + sticker galáctico
+  const key = o.customer_name.trim().toLowerCase();
+  let c = state.crew.find(x => x.name.trim().toLowerCase() === key);
+  if(!c){ c = {id:Date.now(), name:o.customer_name.trim().slice(0,40), stickers:0, redeemed:0}; state.crew.push(c); }
+  const hadPrize = c.stickers >= 5;
+  if(!hadPrize) c.stickers += 1;
+  // Venta automática en la Bitácora
+  const top = (o.items || []).slice().sort((a,b) => b.qty - a.qty)[0];
+  state.log.push({id:Date.now()+1, date:today(), qty:o.qty, amount:o.total,
+    flavor: top && FLAVORS.some(f => f.id === top.id) ? top.id : null, orderId:o.id, source:'web'});
+  save(); refreshOrderViews();
+  toast(hadPrize ? `🎁 ${c.name} tiene un marcianito gratis sin canjear`
+      : c.stickers === 5 ? `🎁 ¡${c.name} completó 5 stickers! El próximo es gratis`
+      : `⭐ ${c.name} sumó un sticker (${c.stickers}/5)`);
+  setTimeout(checkMedals, 700);
+}
+async function cancelOrder(id){
+  const o = orders.find(x => x.id === id);
+  if(!o || !confirm(`¿Cancelar el pedido de ${o.customer_name}?`)) return;
+  const {error} = await sb.from('orders').update({status:'cancelado', delivered_at:new Date().toISOString()}).eq('id', id);
+  if(error){ toast('⚠️ No se pudo cancelar'); return; }
+  o.status = 'cancelado'; o.delivered_at = new Date().toISOString();
+  refreshOrderViews();
+}
+
 /* =================== ACCESO =================== */
 if(sb){
   $('pinLogin').classList.add('hidden'); $('cloudLogin').classList.remove('hidden');
@@ -1098,6 +1269,7 @@ async function enterAdmin(){
   if(sb){
     loggedIn = true;
     try{ await pullPrivate(); }catch(e){ toast('⚠️ No se pudieron traer tus datos de la nube'); }
+    fetchOrders(); subscribeOrders();
   }
   adminUnlocked = true;
   hideAllOverlays();
