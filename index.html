@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0B0820">
-<meta name="description" content="Helados caseros con entrega a domicilio. Pedí tus marcianitos y juntá stickers galácticos.">
+<meta name="description" content="AREA 42 Club, los helados de Santi en la Comarca Andina del Paralelo 42. Pedí tus marcianitos y juntá stickers galácticos.">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Marcianitos">
+<meta name="apple-mobile-web-app-title" content="AREA 42">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <script>
@@ -16,7 +16,7 @@
   window.IS_IOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   if(!window.IS_IOS){ var ml = document.createElement('link'); ml.rel = 'manifest'; ml.href = 'manifest.json'; document.head.appendChild(ml); }
 </script>
-<title>Los Marcianitos de Santi</title>
+<title>AREA 42 Club · Los helados de Santi</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
@@ -66,10 +66,12 @@ section{margin-top:34px}
 .hero{text-align:center;padding-top:12px}
 .ufo{font-size:76px;display:inline-block;filter:drop-shadow(0 0 22px rgba(57,255,136,.55));animation:hover 4s ease-in-out infinite}
 @keyframes hover{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-10px) rotate(4deg)}}
-.hero h1{font-size:clamp(34px,9vw,46px);font-weight:700;letter-spacing:-.5px;margin-top:6px;
+.hero h1{font-size:clamp(44px,13vw,62px);font-weight:700;letter-spacing:1px;white-space:nowrap;margin-top:6px;
   background:linear-gradient(180deg,#fff 10%,#CBB5FF 60%,var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent;
   text-shadow:0 0 30px rgba(155,92,255,.35)}
 .hero p{color:var(--muted);margin:8px 0 18px}
+.hero p.tagline{margin:12px 0 0;color:var(--text);font-family:var(--display);font-weight:600;font-size:20px}
+.hero .club{display:inline-block;margin-top:6px;padding:5px 16px;border-radius:999px;border:1.5px solid var(--green);color:var(--green);font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:6px;text-transform:uppercase;box-shadow:0 0 16px rgba(57,255,136,.25)}
 .status{display:inline-flex;align-items:center;gap:10px;padding:12px 18px;border-radius:999px;font-weight:800;font-size:15px;border:2px solid;background:rgba(7,5,26,.6)}
 .status.on{border-color:var(--green);color:var(--green);box-shadow:0 0 20px rgba(57,255,136,.3)}
 .status.off{border-color:var(--yellow);color:var(--yellow)}
@@ -382,8 +384,10 @@ input[type=color]{width:100%;height:48px;padding:4px;border-radius:14px;border:1
 .lane-track::before{content:"";position:absolute;left:50%;top:0;bottom:8px;width:4px;transform:translateX(-50%);border-radius:4px;
   background:repeating-linear-gradient(180deg,rgba(255,255,255,.22) 0 6px,transparent 6px 12px)}
 .lane-fill{position:absolute;left:50%;bottom:8px;width:4px;height:0;transform:translateX(-50%);border-radius:4px;background:linear-gradient(0deg,transparent,var(--lc));box-shadow:0 0 12px var(--lc);transition:height 1.6s cubic-bezier(.2,.8,.2,1)}
-.lane-rocket{position:absolute;left:50%;bottom:4%;font-size:34px;line-height:1;transform:translate(-50%,50%) rotate(-45deg);transition:bottom 1.6s cubic-bezier(.2,.8,.2,1);filter:drop-shadow(0 0 10px var(--lc))}
-.lane.win .lane-rocket{transform:translate(-50%,50%) rotate(-45deg) scale(1.15)}
+.lane-rocket{position:absolute;left:50%;bottom:4%;font-size:34px;line-height:1;transform:translate(-50%,50%);transition:bottom 1.6s cubic-bezier(.2,.8,.2,1);filter:drop-shadow(0 0 10px var(--lc))}
+.lane-rocket .rk{display:block;transform:rotate(-45deg)}
+.lane.win .lane-rocket .rk{transform:scale(1.15)}
+.lane-rocket .av{position:absolute;right:calc(100% - 2px);top:50%;transform:translateY(-50%)}
 .lane-medal{font-size:28px;margin-top:6px;line-height:1}
 .lane-name{font-family:var(--display);font-weight:600;font-size:15px;text-align:center;line-height:1.15;margin-top:2px;max-width:100%;overflow-wrap:anywhere}
 .lane-qty{font-size:13px;color:var(--muted);text-align:center}
@@ -404,6 +408,34 @@ input[type=color]{width:100%;height:48px;padding:4px;border-radius:14px;border:1
 .rbar span{position:absolute;top:50%;font-size:18px;line-height:1;transform:translate(-50%,-50%) rotate(45deg)}
 .rqty{flex:none;font-family:var(--display);font-weight:700;font-size:16px;text-align:right;min-width:44px}
 .rqty small{display:block;font-family:var(--body);font-size:11px;color:var(--muted);font-weight:700}
+/* ---------- Premio con imagen ---------- */
+.prize-row{display:flex;gap:12px;align-items:stretch;margin:12px 0 14px}
+.prize-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;padding:12px 14px;border-radius:18px;background:rgba(11,8,32,.55);border:1px solid rgba(255,210,63,.35)}
+.pi-k{font-size:12px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--yellow)}
+.pi-v{font-family:var(--display);font-weight:600;font-size:18px;line-height:1.15;margin-bottom:6px;overflow-wrap:anywhere}
+.pi-v:last-child{margin-bottom:0}
+.prize-img{flex:0 0 42%;max-width:42%;min-height:120px;border-radius:18px;object-fit:cover;border:2px solid var(--yellow);box-shadow:0 0 18px rgba(255,210,63,.35);cursor:zoom-in;background:var(--deep)}
+.prize-img.big{position:fixed;inset:0;z-index:90;max-width:none;width:100%;height:100%;border:none;border-radius:0;object-fit:contain;background:rgba(5,3,20,.94);cursor:zoom-out;padding:20px}
+.prize-admin{display:flex;gap:12px;align-items:center;margin-top:8px}
+.prize-admin .pa-prev{flex:0 0 96px;width:96px;height:96px;border-radius:16px;border:1.5px dashed var(--line);background:var(--deep) center/cover no-repeat;display:grid;place-items:center;color:var(--muted);font-size:28px}
+.prize-admin .pa-btns{flex:1;display:flex;flex-direction:column;gap:8px}
+.filebtn{display:flex;align-items:center;justify-content:center;min-height:44px;cursor:pointer;text-align:center}
+/* ---------- Avatares ---------- */
+.av{display:inline-grid;place-items:center;flex:none;width:30px;height:30px;border-radius:50%;font-size:17px;line-height:1;
+  background:radial-gradient(circle at 34% 28%,rgba(255,255,255,.55),transparent 55%),var(--ac,#3A3360);box-shadow:0 0 0 2px #fff,0 0 10px var(--ac,#3A3360)}
+.av.sm{width:26px;height:26px;font-size:15px}
+.av.md{width:46px;height:46px;font-size:26px}
+.av.lg{width:88px;height:88px;font-size:50px;box-shadow:0 0 0 3px #fff,0 0 24px var(--ac,#3A3360)}
+.avgrid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin:14px 0 18px;justify-items:center}
+.avgrid button{background:none;border:none;padding:4px;border-radius:50%}
+.avgrid button.on{outline:3px solid var(--green);outline-offset:2px}
+.avrow{display:flex;align-items:center;gap:12px;margin:14px 0 4px;padding:10px 12px;border-radius:18px;background:var(--deep);border:1px solid var(--line)}
+.avrow div{flex:1;min-width:0}
+.avrow b{display:block;font-size:15px}
+.avrow span.t{display:block;font-size:13px;color:var(--muted)}
+.card-me{display:flex;flex-direction:column;align-items:center;gap:10px;margin:4px 0 14px}
+.rname .av{margin-right:8px;vertical-align:middle}
+.oname .av,.name .av{margin-right:6px;vertical-align:middle}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 @media (max-width:360px){.grid{gap:10px}.planet{width:72px;height:72px;font-size:34px}.mission{grid-template-columns:80px 1fr}.pct{font-size:52px}}
 </style>
@@ -415,8 +447,10 @@ input[type=color]{width:100%;height:48px;padding:4px;border-radius:14px;border:1
   <button class="cardchip hidden" id="cardChip" aria-label="Ver mi tarjeta galáctica">⭐ <span id="cardChipText">Mi tarjeta</span></button>
   <header class="hero">
     <div class="ufo" aria-hidden="true">🛸</div>
-    <h1>Los Marcianitos de Santi</h1>
-    <p>Helados caseros con entrega a domicilio</p>
+    <h1>AREA 42</h1>
+    <div class="club">Club</div>
+    <p class="tagline">Los helados de Santi</p>
+    <p>Comarca Andina del Paralelo 42 · Envíos a domicilio</p>
     <div id="status" class="status on" role="status"><span class="dot"></span><span id="statusText"></span></div>
     <div class="install hidden" id="installBanner">
       <img src="icons/icon-192.png" alt="">
@@ -427,8 +461,14 @@ input[type=color]{width:100%;height:48px;padding:4px;border-radius:14px;border:1
   </header>
 
   <section class="race hidden" id="race" aria-labelledby="t-race">
-    <div class="race-head"><h2 id="t-race">🏁 Carrera Galáctica</h2><span class="race-goal" id="raceGoalChip"></span></div>
-    <p class="sub" id="racePrize"></p>
+    <div class="race-head"><h2 id="t-race">🏁 Carrera Galáctica</h2></div>
+    <div class="prize-row">
+      <div class="prize-info">
+        <div class="pi-k">🏁 Meta</div><div class="pi-v" id="raceGoalTxt"></div>
+        <div class="pi-k">🏆 Premio</div><div class="pi-v" id="racePrizeTxt"></div>
+      </div>
+      <img class="prize-img hidden" id="prizeImg" alt="Foto del premio" title="Tocá para agrandar">
+    </div>
     <div class="finish" id="raceFinish"></div>
     <div class="podium" id="podium"></div>
     <div class="race-me hidden" id="raceMe"></div>
@@ -483,6 +523,7 @@ input[type=color]{width:100%;height:48px;padding:4px;border-radius:14px;border:1
     <div class="sheet-head"><h2 id="t-cart">Bodega de Carga</h2><button class="close" data-close="cartOverlay" aria-label="Cerrar">✕</button></div>
     <div id="cartLines"></div>
     <div class="total"><span>Total</span><b id="cartTotal">$0</b></div>
+    <div class="avrow"><span id="cartAv"></span><div><b>Tu avatar de tripulante</b><span class="t">Así aparecés en la Carrera Galáctica</span></div><button class="mini" id="cartAvBtn">Elegir</button></div>
     <label for="cName">Tu nombre de tripulante</label>
     <input id="cName" type="text" autocomplete="name" placeholder="Ej: Lucía">
     <label for="cAddr">Dirección de aterrizaje</label>
@@ -634,6 +675,16 @@ input[type=color]{width:100%;height:48px;padding:4px;border-radius:14px;border:1
       <input id="sRaceGoal" type="number" inputmode="numeric" min="5" max="1000">
       <label for="sRacePrize">Premio</label>
       <input id="sRacePrize" type="text" maxlength="80" placeholder="Ej: ¡Un Pack Galaxia gratis!">
+      <label>Imagen del premio (opcional)</label>
+      <div class="prize-admin">
+        <div class="pa-prev" id="paPrev">🏆</div>
+        <div class="pa-btns">
+          <label class="mini filebtn" for="sPrizeFile">📷 Subir imagen</label>
+          <input type="file" id="sPrizeFile" accept="image/*" hidden>
+          <button class="mini" id="sPrizeDel">🗑️ Quitar imagen</button>
+        </div>
+      </div>
+      <p class="note" id="paNote"></p>
       <p class="note" id="raceStartNote"></p>
       <button class="btn ghost" id="raceReset" style="margin-top:10px">🏁 Empezar una carrera nueva</button>
     </div>
@@ -697,11 +748,20 @@ input[type=color]{width:100%;height:48px;padding:4px;border-radius:14px;border:1
 <div class="overlay hidden" id="installOverlay" role="dialog" aria-modal="true" aria-labelledby="t-install">
   <div class="sheet">
     <div class="sheet-head"><h2 id="t-install">Instalá la nave</h2><button class="close" data-close="installOverlay" aria-label="Cerrar">✕</button></div>
-    <div class="app-preview"><img src="icons/icon-192.png" alt=""><span>Marcianitos</span></div>
+    <div class="app-preview"><img src="icons/icon-192.png" alt=""><span>AREA 42</span></div>
     <p class="sub" style="text-align:center">Te queda el ícono en el celular, como una app. Tu tarjeta de stickers viaja adentro.</p>
     <ol class="ios-steps" id="installSteps"></ol>
     <div class="ios-arrow hidden" id="iosArrow" aria-hidden="true">⬇️</div>
     <button class="btn primary" data-close="installOverlay">¡Entendido!</button>
+  </div>
+</div>
+
+<!-- Elegir avatar -->
+<div class="overlay hidden" id="avatarOverlay" role="dialog" aria-modal="true" aria-labelledby="t-avatar">
+  <div class="sheet">
+    <div class="sheet-head"><h2 id="t-avatar">Elegí tu avatar</h2><button class="close" data-close="avatarOverlay" aria-label="Cerrar">✕</button></div>
+    <p class="sub">Así te van a ver los demás tripulantes en la Carrera Galáctica.</p>
+    <div class="avgrid" id="avGrid"></div>
   </div>
 </div>
 
@@ -851,7 +911,7 @@ function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.remove('
    Cada pantalla y ventana abierta crea una entrada en el historial del navegador.
    Así, la flecha "atrás" cierra la ventana abierta o vuelve a la pantalla anterior
    en lugar de salir del sitio. */
-const OVERLAYS = ['cartOverlay','pinOverlay','celebrate','flavorOverlay','cardOverlay','envOverlay','installOverlay'];
+const OVERLAYS = ['cartOverlay','pinOverlay','celebrate','flavorOverlay','cardOverlay','envOverlay','installOverlay','avatarOverlay'];
 const HOME_NAV = {screen:'shop', view:'home', ov:null};
 let navState = {...HOME_NAV};
 let adminUnlocked = false;
@@ -1019,7 +1079,7 @@ function deliveryText(){
 }
 function buildMessage(s){
   const name = $('cName').value.trim(), addr = $('cAddr').value.trim(), ref = $('cRef').value.trim();
-  const L = ['🛸 NUEVO PEDIDO - Los Marcianitos de Santi', `👽 Tripulante: ${name}`, '', '🍧 Carga:'];
+  const L = ['🛸 NUEVO PEDIDO - AREA 42 Club · Los helados de Santi', `👽 Tripulante: ${name}`, '', '🍧 Carga:'];
   s.items.forEach(i => L.push(`• ${i.q}x ${i.f.name}`));
   if(s.comboText.length) L.push(`🎁 Combo: ${s.comboText.join(' + ')}`);
   if(s.voucher) L.push(`🎟️ Vale de canje #V${s.voucher.id}: 1 marcianito gratis (−${money(s.disc)})`);
@@ -1047,6 +1107,7 @@ function renderCart(bump){
   else if(av) html += `<div class="line voucher-line"><span>🎟️ Tenés un vale de canje</span><button class="vtoggle" data-vt="1">Usarlo</button></div>`;
   $('cartLines').innerHTML = html || '<p class="empty">Tu bodega está vacía.</p>';
   $('cartTotal').textContent = money(s.total);
+  renderCartAvatar();
   $('deliveryNote').textContent = `Entrega a domicilio ${deliveryText()}. Pagás al recibir.`;
   updateWaLink();
   if(!s.count) close('cartOverlay');
@@ -1078,6 +1139,7 @@ async function saveOrder(s){
     qty: s.count, total: Math.round(s.total),
     delivery: deliveryText().slice(0,80),
     card_code: ensureCardCode(),
+    avatar: myAvatar(),
     voucher_id: s.voucher ? s.voucher.id : null
   };
   try{ const {error} = await sb.from('orders').insert(row); if(error) console.warn('Pedido no guardado', error); }
@@ -1265,7 +1327,7 @@ $('logSave').addEventListener('click', () => {
 let cards = [];
 async function fetchCards(){
   if(!sb || !loggedIn) return;
-  const {data, error} = await sb.from('cards').select('code,name,created_at,hide_rank,stickers(id,redeemed_at),vouchers(id,status)')
+  const {data, error} = await sb.from('cards').select('code,name,created_at,hide_rank,avatar,stickers(id,redeemed_at),vouchers(id,status)')
     .order('created_at', {ascending:false}).limit(500);
   if(error){ toast('⚠️ No se pudieron traer las tarjetas'); console.warn(error); return; }
   cards = data || [];
@@ -1276,8 +1338,8 @@ function renderCloudCrew(){
     const act = (c.stickers || []).filter(x => !x.redeemed_at).sort((a,b) => a.id - b.id);
     const vs = (c.vouchers || []).filter(v => v.status === 'disponible');
     const used = (c.vouchers || []).length;
-    const msg = `¡Hola ${c.name}! 👽 Esta es tu Tarjeta Galáctica de Los Marcianitos de Santi: ${cardLink(c.code)} Juntá 5 stickers y canjeás un marcianito gratis 🎁`;
-    return `<li><div class="top"><span class="name">👽 ${esc(c.name)}</span>
+    const msg = `¡Hola ${c.name}! 👽 Esta es tu Tarjeta Galáctica de AREA 42 Club: ${cardLink(c.code)} Juntá 5 stickers y canjeás un marcianito gratis 🎁`;
+    return `<li><div class="top"><span class="name">${avHTML(c.avatar,'sm') || '👽 '}${esc(c.name)}</span>
         <button class="x" data-cdel="${c.code}" aria-label="Borrar tarjeta de ${esc(c.name)}" style="width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:none;color:var(--muted)">✕</button></div>
       <div class="stars">${[0,1,2,3,4].map(i => act[i] ? `<span class="f" title="#${act[i].id}">⭐</span>` : '<span></span>').join('')}${act.length > 5 ? `<b style="align-self:center">+${act.length-5}</b>` : ''}</div>
       ${vs.length ? `<p class="note" style="color:var(--green);font-weight:800">🎟️ ${vs.length} vale${vs.length===1?'':'s'} listo${vs.length===1?'':'s'} para usar</p>` : ''}
@@ -1376,6 +1438,7 @@ function renderSettings(){
   $('sGoalName').value = c.goalName; $('sGoalAmount').value = c.goalAmount;
   $('sPhone').value = c.phone; $('sPin').value = c.pin;
   $('sRaceOn').checked = c.raceOn !== false; $('sRaceGoal').value = c.raceGoal || 100; $('sRacePrize').value = c.racePrize || '';
+  renderPrizeAdmin();
   $('raceStartNote').textContent = c.raceStart ? `Carrera actual desde el ${prettyDate(isoDay(c.raceStart))}. Cuentan los marcianitos entregados desde ese día.` : 'Cuentan todos los marcianitos entregados con tarjeta.';
   pickEmoji = c.goalEmoji;
   drawEmojiChips(); renderFlavorList();
@@ -1496,7 +1559,7 @@ function orderCard(o){
   const t = today(), day = isoDay(o.created_at);
   const map = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(o.address)}`;
   return `<li class="order ${esc(o.status)}">
-    <div class="otop"><span class="oname">👽 ${esc(o.customer_name)}</span><span class="otime">${day === t ? 'Hoy' : prettyDate(day)} ${hhmm(o.created_at)}</span></div>
+    <div class="otop"><span class="oname">${avHTML(o.avatar,'sm') || '👽 '}${esc(o.customer_name)}</span><span class="otime">${day === t ? 'Hoy' : prettyDate(day)} ${hhmm(o.created_at)}</span></div>
     <div class="oaddr">📍 ${esc(o.address)}${o.reference ? `<br><span class="oref">🗺️ ${esc(o.reference)}</span>` : ''}</div>
     <div class="oitems">🍧 ${esc(orderItems(o))}${o.combo ? `<br><span class="ocombo">🎁 ${esc(o.combo)}</span>` : ''}</div>
     ${o.voucher_id ? `<div class="ocombo" style="margin-top:6px">🎟️ Usa vale de canje #V${o.voucher_id} (ya descontado)</div>` : ''}
@@ -1686,6 +1749,10 @@ async function fetchCard(){
   const {data, error} = await sb.rpc('get_card', {p_code: cardCode});
   if(error){ console.warn('Tarjeta', error); renderCardChip(); return; }
   card = data || null;
+  if(card && !Number.isInteger(card.avatar)){
+    let loc = null; try{ const v = localStorage.getItem(AVKEY); loc = v === null ? null : Number(v); }catch(e){}
+    if(Number.isInteger(loc)){ card.avatar = loc; sb.rpc('set_avatar', {p_code: cardCode, p_avatar: loc}).then(() => fetchRace()); }
+  }
   renderCardChip(); renderCart();
   if(!$('cardOverlay').classList.contains('hidden')) renderCardBody();
   checkNewStickers();
@@ -1700,7 +1767,8 @@ function renderCardChip(){
 function renderCardBody(){
   const st = card ? card.stickers : [], n = st.length, vs = card ? card.vouchers : [];
   const slots = [0,1,2,3,4].map(i => st[i] ? stickerHTML(st[i].id) : `<div class="slot">${i+1}</div>`).join('');
-  let html = `<p class="sub">${card ? `Tripulante <b>${esc(card.name)}</b>. ` : ''}Cada pedido entregado te suma 1 sticker único y numerado. Con 5 se activa tu sticker de CANJE.</p>
+  let html = `<div class="card-me">${avHTML(myAvatar(), 'lg') || '<span class="av lg" aria-hidden="true">❔</span>'}<button class="mini" id="cardAvBtn">${myAvatar() === null ? 'Elegir mi avatar' : 'Cambiar avatar'}</button></div>
+    <p class="sub">${card ? `Tripulante <b>${esc(card.name)}</b>. ` : ''}Cada pedido entregado te suma 1 sticker único y numerado. Con 5 se activa tu sticker de CANJE.</p>
     <div class="album">${slots}</div>`;
   if(n >= 5){
     html += `<div class="coupon" id="coupon"><span class="shine"></span>
@@ -1729,6 +1797,7 @@ $('cardChip').addEventListener('click', () => { renderCardBody(); open('cardOver
 $('cartLines').addEventListener('click', e => { const b = e.target.closest('[data-vt]'); if(b){ useVoucher = b.dataset.vt === '1'; renderCart(); } });
 $('cardBody').addEventListener('click', async e => {
   if(e.target.closest('#cardInstall')){ startInstall(); return; }
+  if(e.target.closest('#cardAvBtn')){ openAvatarPicker('cardOverlay'); return; }
   if(e.target.closest('#copyCard')){
     const link = cardLink(cardCode);
     try{ await navigator.clipboard.writeText(link); toast('🔗 Link copiado'); }catch(err){ prompt('Copiá el link de tu tarjeta:', link); }
@@ -1805,17 +1874,20 @@ function renderRace(){
   sec.classList.toggle('hidden', !show);
   if(!show) return;
   const rows = race.rows || [], me = race.me;
-  $('raceGoalChip').textContent = `Meta: ${goal} 🍦`;
-  $('racePrize').innerHTML = `🏆 El primero en llegar a <b>${goal} marcianitos</b> gana: <b>${esc(c.racePrize || 'un premio sorpresa')}</b>`;
+  $('raceGoalTxt').textContent = `${goal} marcianitos`;
+  $('racePrizeTxt').textContent = c.racePrize || 'Premio sorpresa 🎁';
+  const pimg = $('prizeImg');
+  if(c.racePrizeImg){ if(pimg.getAttribute('src') !== c.racePrizeImg) pimg.src = c.racePrizeImg; pimg.classList.remove('hidden'); }
+  else { pimg.classList.add('hidden'); pimg.removeAttribute('src'); }
   $('raceFinish').textContent = `🌕 LLEGADA · ${goal} 🌕`;
   const pct = q => Math.min(100, q / goal * 100);
   const lane = (r, place) => {
     const medal = ['🥇','🥈','🥉'][place-1], col = LANE_COLORS[place-1];
-    if(!r) return `<div class="lane empty" style="--lc:${col}"><div class="lane-track"><div class="lane-fill"></div><div class="lane-rocket">🚀</div></div>
+    if(!r) return `<div class="lane empty" style="--lc:${col}"><div class="lane-track"><div class="lane-fill"></div><div class="lane-rocket"><span class="rk">🚀</span></div></div>
       <div class="lane-medal">${medal}</div><div class="lane-name">¿Vos?</div><div class="lane-qty">Lugar libre</div></div>`;
     const p = pct(r.qty), win = r.qty >= goal;
     return `<div class="lane ${place===1?'first':''} ${r.me?'me':''} ${win?'win':''}" style="--lc:${col}">
-      <div class="lane-track"><div class="lane-fill" data-h="${p}"></div><div class="lane-rocket" data-b="${p}">${win ? '🏆' : '🚀'}</div></div>
+      <div class="lane-track"><div class="lane-fill" data-h="${p}"></div><div class="lane-rocket" data-b="${p}"><span class="rk">${win ? '🏆' : '🚀'}</span>${avHTML(r.avatar,'sm')}</div></div>
       <div class="lane-medal">${medal}</div><div class="lane-name">${esc(r.name)}${r.me ? ' (vos)' : ''}</div>
       <div class="lane-qty">${win ? '¡Llegó a la Luna!' : `${r.qty} 🍦`}</div></div>`;
   };
@@ -1839,12 +1911,108 @@ function renderRace(){
   $('raceList').classList.toggle('hidden', !raceOpen || !rest.length);
   $('raceList').innerHTML = rest.map(r => { const p = pct(r.qty); return `<li class="rrow ${r.me?'me':''}">
       <span class="rpos">${r.pos}</span>
-      <div class="rmid"><div class="rname">${esc(r.name)}${r.me ? ' (vos)' : ''}</div>
+      <div class="rmid"><div class="rname">${avHTML(r.avatar,'sm')}${esc(r.name)}${r.me ? ' (vos)' : ''}</div>
         <div class="rbar"><i style="width:${p}%"></i><span style="left:${Math.max(4,p)}%">${r.qty >= goal ? '🏆' : '🚀'}</span></div></div>
       <span class="rqty">${r.qty}<small>de ${goal}</small></span></li>`; }).join('');
   if(raceOpen && race.total > rows.length) $('raceList').insertAdjacentHTML('beforeend', `<li class="rrow"><span class="rpos">…</span><div class="rmid"><div class="rname" style="color:var(--muted)">y ${race.total - rows.length} naves más</div></div></li>`);
 }
 $('raceMore').addEventListener('click', () => { raceOpen = !raceOpen; renderRace(); });
+$('prizeImg').addEventListener('click', () => $('prizeImg').classList.toggle('big'));
+
+/* ---- Imagen del premio (Ajustes) ---- */
+function renderPrizeAdmin(){
+  const url = state.config.racePrizeImg || '', prev = $('paPrev');
+  prev.style.backgroundImage = url ? `url("${url.replace(/"/g,'')}")` : '';
+  prev.textContent = url ? '' : '🏆';
+  $('sPrizeDel').classList.toggle('hidden', !url);
+  $('paNote').textContent = sb ? (url ? 'Se muestra al lado del premio en la tienda.' : 'Si subís una foto del premio, aparece al lado de la meta y el premio.')
+                               : 'Para subir imágenes hace falta tener Supabase conectado.';
+}
+async function shrinkImage(file, max = 900){
+  const url = URL.createObjectURL(file);
+  try{
+    const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = url; });
+    const k = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+    const cv = document.createElement('canvas');
+    cv.width = Math.round(img.naturalWidth * k); cv.height = Math.round(img.naturalHeight * k);
+    cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+    return await new Promise(res => cv.toBlob(res, 'image/jpeg', 0.85));
+  } finally { URL.revokeObjectURL(url); }
+}
+function prizePath(url){ const m = (url || '').match(/\/premios\/([^?]+)/); return m ? decodeURIComponent(m[1]) : null; }
+$('sPrizeFile').addEventListener('change', async () => {
+  const f = $('sPrizeFile').files[0]; $('sPrizeFile').value = '';
+  if(!f) return;
+  if(!sb || !loggedIn){ toast('⚠️ Necesitás Supabase conectado'); return; }
+  if(!/^image\//.test(f.type)){ toast('⚠️ Elegí una imagen'); return; }
+  $('paNote').textContent = 'Subiendo imagen…';
+  try{
+    const blob = await shrinkImage(f);
+    if(!blob) throw new Error('No se pudo leer la imagen');
+    const path = `premio-${Date.now()}.jpg`;
+    const {error} = await sb.storage.from('premios').upload(path, blob, {contentType:'image/jpeg', cacheControl:'31536000'});
+    if(error) throw error;
+    const old = prizePath(state.config.racePrizeImg);
+    state.config.racePrizeImg = sb.storage.from('premios').getPublicUrl(path).data.publicUrl;
+    save(); await pushConfig(); renderPrizeAdmin(); renderRace();
+    if(old) sb.storage.from('premios').remove([old]).catch(() => {});
+    toast('🏆 Imagen del premio publicada');
+  }catch(e){ console.warn(e); renderPrizeAdmin(); toast('⚠️ No se pudo subir la imagen'); }
+});
+$('sPrizeDel').addEventListener('click', async () => {
+  if(!confirm('¿Quitar la imagen del premio?')) return;
+  const old = prizePath(state.config.racePrizeImg);
+  state.config.racePrizeImg = '';
+  save(); await pushConfig(); renderPrizeAdmin(); renderRace();
+  if(old && sb) sb.storage.from('premios').remove([old]).catch(() => {});
+  toast('Imagen quitada');
+});
+
+/* =================== AVATARES =================== */
+const AVATARS = [
+  {e:'👽',c:'#39FF88'},{e:'👾',c:'#9B5CFF'},{e:'🤖',c:'#22D3EE'},{e:'🧑‍🚀',c:'#FFD23F'},{e:'👩‍🚀',c:'#FF4FD8'},{e:'👨‍🚀',c:'#FF9A3D'},
+  {e:'🛸',c:'#7CFFB2'},{e:'🚀',c:'#FF6B81'},{e:'🪐',c:'#F2B705'},{e:'🌙',c:'#B39DFF'},{e:'⭐',c:'#FFE066'},{e:'☄️',c:'#FF7A45'},
+  {e:'🐙',c:'#FF8FB1'},{e:'🦄',c:'#E0AAFF'},{e:'🐲',c:'#4ADE80'},{e:'🦖',c:'#22C55E'},{e:'🐱',c:'#FDBA74'},{e:'🐶',c:'#D6A77A'},
+  {e:'🦊',c:'#FB923C'},{e:'🐼',c:'#E5E7EB'},{e:'🐸',c:'#86EFAC'},{e:'🐵',c:'#C08457'},{e:'🦁',c:'#FACC15'},{e:'🐧',c:'#93C5FD'},
+];
+const AVKEY = 'marcianitos-avatar';
+let avatarReturn = null;
+function avHTML(i, cls = ''){
+  const a = (i === null || i === undefined) ? null : AVATARS[i];
+  return a ? `<span class="av ${cls}" style="--ac:${a.c}" aria-hidden="true">${a.e}</span>` : '';
+}
+function myAvatar(){
+  if(card && Number.isInteger(card.avatar)) return card.avatar;
+  try{ const v = localStorage.getItem(AVKEY); return v === null ? null : Number(v); }catch(e){ return null; }
+}
+function renderCartAvatar(){
+  const a = myAvatar();
+  $('cartAv').innerHTML = avHTML(a, 'md') || '<span class="av md" aria-hidden="true">❔</span>';
+  $('cartAvBtn').textContent = a === null ? 'Elegir' : 'Cambiar';
+}
+function openAvatarPicker(from){
+  avatarReturn = from || null;
+  const cur = myAvatar();
+  $('avGrid').innerHTML = AVATARS.map((a, i) => `<button class="${cur === i ? 'on' : ''}" data-av="${i}" aria-label="Avatar ${a.e}">${avHTML(i, 'md')}</button>`).join('');
+  open('avatarOverlay');
+}
+$('avGrid').addEventListener('click', async e => {
+  const b = e.target.closest('[data-av]'); if(!b) return;
+  const i = Number(b.dataset.av);
+  try{ localStorage.setItem(AVKEY, String(i)); }catch(err){}
+  if(card) card.avatar = i;
+  renderCartAvatar();
+  if(sb && cardCode && card){
+    const {error} = await sb.rpc('set_avatar', {p_code: cardCode, p_avatar: i});
+    if(error) console.warn('Avatar', error);
+    fetchRace();
+  }
+  toast(`${AVATARS[i].e} ¡Avatar elegido!`);
+  if(avatarReturn === 'cardOverlay'){ renderCardBody(); open('cardOverlay'); }
+  else if(avatarReturn === 'cartOverlay'){ renderCart(); open('cartOverlay'); }
+  else close('avatarOverlay');
+});
+$('cartAvBtn').addEventListener('click', () => openAvatarPicker('cartOverlay'));
 $('raceReset').addEventListener('click', () => {
   if(!confirm('Empieza una carrera nueva: todas las naves vuelven a cero. Los pedidos y stickers no se borran. ¿Seguimos?')) return;
   state.config.raceStart = new Date().toISOString();
