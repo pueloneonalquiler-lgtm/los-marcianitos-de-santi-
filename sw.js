@@ -1,7 +1,7 @@
-/* Service worker de Los Marcianitos de Santi
+/* Service worker de AREA 42 Club
    Permite instalar la web como app. Siempre busca la versión nueva en internet
    y solo usa la copia guardada si no hay conexión. */
-const CACHE = 'marcianitos-v1';
+const CACHE = 'area42-v4';
 const BASICS = ['./', './index.html', './manifest.json', './icons/icon-192.png', './icons/icon-512.png'];
 
 self.addEventListener('install', e => {
