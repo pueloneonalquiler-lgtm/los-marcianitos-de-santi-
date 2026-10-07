@@ -508,8 +508,8 @@ input:focus{border-color:var(--cyan);outline:none}
    Pegá acá los datos de tu proyecto (Project Settings > API).
    Si los dejás vacíos, la app funciona igual guardando en el celular.
    ========================================================= */
-const SUPABASE_URL = '';   // ej: 'https://abcdefgh.supabase.co'
-const SUPABASE_KEY = '';   // la clave "anon" o "publishable" (NUNCA la service_role)
+const SUPABASE_URL = 'https://oqkzsqgvfkmhqhapxffj.supabase.co';   // ej: 'https://abcdefgh.supabase.co'
+const SUPABASE_KEY = 'sb_publishable_AeDABM9nlbBM1DZd3hXT8A_wFrXnezc';   // la clave "anon" o "publishable" (NUNCA la service_role)
 
 const sb = (SUPABASE_URL && SUPABASE_KEY && window.supabase) ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 let loggedIn = false;
