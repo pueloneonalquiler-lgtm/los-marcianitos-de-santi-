@@ -1,4 +1,4 @@
-[README.md](https://github.com/user-attachments/files/33132756/README.md)
+[README.md](https://github.com/user-attachments/files/33136418/README.md)
 # 🛸 Los Marcianitos de Santi
 
 Tienda de helados con pedidos por WhatsApp y Centro de Control gamificado para Santi.
@@ -7,6 +7,7 @@ Tienda de helados con pedidos por WhatsApp y Centro de Control gamificado para S
 - `index.html`: la app completa (tienda + Centro de Control).
 - `supabase.sql`: crea todas las tablas y la seguridad en Supabase (para proyectos nuevos).
 - `supabase-pedidos.sql`: agrega solo la tabla de pedidos (si ya habías corrido `supabase.sql` antes).
+- `supabase-stickers.sql`: agrega tarjetas, stickers y canjes (si ya habías corrido los anteriores).
 
 ## Puesta en marcha
 1. **GitHub:** subí `index.html`, `supabase.sql` y este `README.md` a un repositorio nuevo.
@@ -23,3 +24,9 @@ Si dejás `SUPABASE_URL` y `SUPABASE_KEY` vacíos, la app funciona guardando en 
 
 ## Pedidos
 Cada pedido que un cliente lanza por WhatsApp también se guarda en Supabase. En el Centro de Control, la pestaña **🛸 Pedidos** muestra los pendientes con dirección, mapa y sabores. Al tocar **✅ Entregado**, el cliente se suma solo a Tripulantes con 1 sticker y la venta se carga sola en la Bitácora.
+
+## Tarjeta galáctica y stickers
+Cada cliente tiene una tarjeta con un código secreto (se crea sola en su celular con el primer pedido y viaja en el mensaje de WhatsApp como link). Cuando Santi marca un pedido como entregado, se crea un sticker único y numerado. Al abrir la web, al cliente le llega un sobre animado con su sticker. Con 5 stickers aparece el sticker de CANJE: al tocar "¡Canjear ahora!" se genera un vale que se descuenta solo en su próximo pedido. Los stickers canjeados no se borran: quedan guardados como historial.
+
+## Sabores
+En Ajustes → Sabores, Santi puede crear sabores nuevos (nombre, ícono y colores del planeta), editarlos, ocultarlos o eliminarlos. Los cambios se publican al instante para todos los clientes.
