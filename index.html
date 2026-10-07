@@ -368,6 +368,42 @@ input[type=color]{width:100%;height:48px;padding:4px;border-radius:14px;border:1
 .app-preview span{font-size:13px;font-weight:700}
 .ios-arrow{text-align:center;font-size:30px;animation:bob 1.2s ease-in-out infinite}
 @keyframes bob{50%{transform:translateY(8px)}}
+/* ---------- Carrera Galáctica ---------- */
+.race{margin-top:30px;padding:18px 14px 14px;border-radius:28px;background:linear-gradient(180deg,rgba(255,210,63,.13),var(--surface) 55%);border:1.5px solid rgba(255,210,63,.45)}
+.race-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.race-goal{font-family:var(--display);font-weight:700;font-size:13px;color:var(--bg);background:var(--yellow);padding:5px 12px;border-radius:999px;white-space:nowrap}
+.race .sub{margin:6px 0 8px}
+.finish{text-align:center;font-family:var(--display);font-weight:700;font-size:14px;color:var(--yellow);letter-spacing:1px;padding:4px 0 6px;
+  background:repeating-linear-gradient(90deg,rgba(255,255,255,.85) 0 10px,rgba(11,8,32,.9) 10px 20px) bottom/100% 6px no-repeat}
+.podium{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:2px}
+.lane{display:flex;flex-direction:column;align-items:center;min-width:0}
+.lane-track{position:relative;width:100%;height:200px;border-radius:0 0 18px 18px;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(155,92,255,.12))}
+.lane.first .lane-track{background:linear-gradient(180deg,rgba(255,210,63,.12),rgba(155,92,255,.14))}
+.lane-track::before{content:"";position:absolute;left:50%;top:0;bottom:8px;width:4px;transform:translateX(-50%);border-radius:4px;
+  background:repeating-linear-gradient(180deg,rgba(255,255,255,.22) 0 6px,transparent 6px 12px)}
+.lane-fill{position:absolute;left:50%;bottom:8px;width:4px;height:0;transform:translateX(-50%);border-radius:4px;background:linear-gradient(0deg,transparent,var(--lc));box-shadow:0 0 12px var(--lc);transition:height 1.6s cubic-bezier(.2,.8,.2,1)}
+.lane-rocket{position:absolute;left:50%;bottom:4%;font-size:34px;line-height:1;transform:translate(-50%,50%) rotate(-45deg);transition:bottom 1.6s cubic-bezier(.2,.8,.2,1);filter:drop-shadow(0 0 10px var(--lc))}
+.lane.win .lane-rocket{transform:translate(-50%,50%) rotate(-45deg) scale(1.15)}
+.lane-medal{font-size:28px;margin-top:6px;line-height:1}
+.lane-name{font-family:var(--display);font-weight:600;font-size:15px;text-align:center;line-height:1.15;margin-top:2px;max-width:100%;overflow-wrap:anywhere}
+.lane-qty{font-size:13px;color:var(--muted);text-align:center}
+.lane.me .lane-name{color:var(--green)}
+.lane.empty .lane-rocket{opacity:.22;filter:grayscale(1)}
+.lane.empty .lane-name{color:var(--muted)}
+.race-me{margin-top:12px;padding:12px 14px;border-radius:16px;background:rgba(57,255,136,.1);border:1.5px solid rgba(57,255,136,.45);font-weight:700;font-size:15px;text-align:center}
+.race-more{display:block;width:100%;margin-top:12px;padding:12px;border-radius:16px;border:1.5px solid var(--line);background:var(--deep);color:var(--text);font-weight:800;font-size:15px}
+.race-list{list-style:none;padding:0;margin:10px 0 0}
+.rrow{display:flex;align-items:center;gap:10px;padding:10px 4px;border-bottom:1px dashed var(--line)}
+.rrow.me{background:rgba(57,255,136,.08);border-radius:12px;border-bottom-color:transparent}
+.rpos{flex:0 0 30px;font-family:var(--display);font-weight:700;color:var(--muted);text-align:center}
+.rmid{flex:1;min-width:0}
+.rname{font-weight:800;font-size:15px;overflow-wrap:anywhere}
+.rrow.me .rname{color:var(--green)}
+.rbar{position:relative;height:8px;margin:8px 14px 4px 0;border-radius:999px;background:var(--deep)}
+.rbar i{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:linear-gradient(90deg,var(--violet),var(--cyan))}
+.rbar span{position:absolute;top:50%;font-size:18px;line-height:1;transform:translate(-50%,-50%) rotate(45deg)}
+.rqty{flex:none;font-family:var(--display);font-weight:700;font-size:16px;text-align:right;min-width:44px}
+.rqty small{display:block;font-family:var(--body);font-size:11px;color:var(--muted);font-weight:700}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 @media (max-width:360px){.grid{gap:10px}.planet{width:72px;height:72px;font-size:34px}.mission{grid-template-columns:80px 1fr}.pct{font-size:52px}}
 </style>
@@ -389,6 +425,16 @@ input[type=color]{width:100%;height:48px;padding:4px;border-radius:14px;border:1
       <button class="ix" id="installClose" aria-label="Ahora no">✕</button>
     </div>
   </header>
+
+  <section class="race hidden" id="race" aria-labelledby="t-race">
+    <div class="race-head"><h2 id="t-race">🏁 Carrera Galáctica</h2><span class="race-goal" id="raceGoalChip"></span></div>
+    <p class="sub" id="racePrize"></p>
+    <div class="finish" id="raceFinish"></div>
+    <div class="podium" id="podium"></div>
+    <div class="race-me hidden" id="raceMe"></div>
+    <button class="race-more hidden" id="raceMore" aria-expanded="false" aria-controls="raceList">Ver carrera completa ▾</button>
+    <ol class="race-list hidden" id="raceList"></ol>
+  </section>
 
   <section aria-labelledby="t-combos">
     <h2 id="t-combos">Combos espaciales</h2>
@@ -582,6 +628,16 @@ input[type=color]{width:100%;height:48px;padding:4px;border-radius:14px;border:1
       <ul class="flist" id="sFlavors"></ul>
     </div>
     <div class="panel">
+      <h2>Carrera Galáctica</h2>
+      <label class="checkrow"><input type="checkbox" id="sRaceOn"> Mostrar la carrera en la tienda</label>
+      <label for="sRaceGoal">Meta (marcianitos para ganar)</label>
+      <input id="sRaceGoal" type="number" inputmode="numeric" min="5" max="1000">
+      <label for="sRacePrize">Premio</label>
+      <input id="sRacePrize" type="text" maxlength="80" placeholder="Ej: ¡Un Pack Galaxia gratis!">
+      <p class="note" id="raceStartNote"></p>
+      <button class="btn ghost" id="raceReset" style="margin-top:10px">🏁 Empezar una carrera nueva</button>
+    </div>
+    <div class="panel">
       <h2>Nave</h2>
       <div class="two">
         <div><label for="sPhone">WhatsApp (sin +)</label><input id="sPhone" type="tel"></div>
@@ -718,6 +774,7 @@ const DEFAULT = {
     phone:'5492944135365', start:'17:00', end:'21:00',
     price:500, apolo:1300, galaxia:2500, familiar:4500,
     goalName:'Bicicleta', goalAmount:50000, goalEmoji:'🚲', pin:'1234',
+    raceOn:true, raceGoal:100, racePrize:'¡Un Pack Galaxia gratis! (5 + 1)', raceStart:'',
     flavors: DEFAULT_FLAVORS,
     available:{limon:true,frutilla:true,naranja:true,uva:true,choco:true,ddl:true,anana:false,durazno:false,coco:false,sandia:false,banana:false,menta:false}
   },
@@ -757,7 +814,7 @@ async function pullConfig(){
   if(error || !data || !data.data || !Object.keys(data.data).length) return;
   const d = data.data;
   state.config = {...state.config, ...d, available:{...state.config.available, ...(d.available||{})}};
-  syncFlavors(); saveLocal(); refreshShop();
+  syncFlavors(); saveLocal(); refreshShop(); fetchRace();
 }
 async function pullPrivate(){
   const {data, error} = await sb.from('santi_data').select('data').eq('id',1).single();
@@ -1208,7 +1265,7 @@ $('logSave').addEventListener('click', () => {
 let cards = [];
 async function fetchCards(){
   if(!sb || !loggedIn) return;
-  const {data, error} = await sb.from('cards').select('code,name,created_at,stickers(id,redeemed_at),vouchers(id,status)')
+  const {data, error} = await sb.from('cards').select('code,name,created_at,hide_rank,stickers(id,redeemed_at),vouchers(id,status)')
     .order('created_at', {ascending:false}).limit(500);
   if(error){ toast('⚠️ No se pudieron traer las tarjetas'); console.warn(error); return; }
   cards = data || [];
@@ -1227,9 +1284,11 @@ function renderCloudCrew(){
       ${act.length >= 5 ? '<p class="note" style="color:var(--yellow);font-weight:800">🎟️ Tarjeta completa: puede canjear desde su celular</p>' : ''}
       <div class="row">
         <button class="mini" data-cstick="${c.code}">+1 sticker</button>
+        <button class="mini" data-crace="${c.code}">🏁 + en persona</button>
         <a class="mini" style="text-align:center;text-decoration:none;color:var(--text)" href="https://wa.me/?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener">📤 Mandar tarjeta</a>
       </div>
       ${vs.length ? `<button class="mini gift" style="width:100%;margin-top:8px" data-cvused="${vs[0].id}">✅ Ya le di el gratis en persona</button>` : ''}
+      <button class="mini" style="width:100%;margin-top:8px" data-chide="${c.code}" data-h="${c.hide_rank ? 1 : 0}">${c.hide_rank ? '🙈 Oculto en la carrera · Mostrar' : '👁️ Visible en la carrera · Ocultar'}</button>
       <p class="note">Código ${esc(c.code)}${used ? ` · ${used} canje${used===1?'':'s'}` : ''}</p>
     </li>`;
   }).join('') : '<li class="empty" style="border:none;background:none">Las tarjetas se crean solas cuando entregás un pedido de la web. También podés crear una para un cliente en persona.</li>';
@@ -1267,7 +1326,17 @@ $('crewName').addEventListener('keydown', e => { if(e.key === 'Enter') addCrew()
 $('crewList').addEventListener('click', async e => {
   const t = e.target.closest('button'); if(!t) return;
   if(sb){
-    if(t.dataset.cstick){
+    if(t.dataset.crace){
+      const q = Math.round(Number(prompt('¿Cuántos marcianitos le vendiste en persona? (suman a la carrera)', '1')));
+      if(!(q >= 1 && q <= 200)) return;
+      const {error} = await sb.from('race_bonus').insert({card_code:t.dataset.crace, qty:q});
+      toast(error ? '⚠️ No se pudo sumar' : `🏁 +${q} en la carrera`);
+      fetchRace();
+    } else if(t.dataset.chide){
+      const {error} = await sb.from('cards').update({hide_rank: t.dataset.h !== '1'}).eq('code', t.dataset.chide);
+      toast(error ? '⚠️ No se pudo cambiar' : (t.dataset.h !== '1' ? '🙈 Oculto del ranking' : '👁️ Visible en el ranking'));
+      fetchRace();
+    } else if(t.dataset.cstick){
       const {error} = await sb.from('stickers').insert({card_code:t.dataset.cstick});
       toast(error ? '⚠️ No se pudo sumar el sticker' : '⭐ Sticker sumado. Le llega en un sobre al abrir la web');
     } else if(t.dataset.cvused){
@@ -1306,6 +1375,8 @@ function renderSettings(){
   $('sPrice').value = c.price; $('sApolo').value = c.apolo; $('sGalaxia').value = c.galaxia; $('sFamiliar').value = c.familiar;
   $('sGoalName').value = c.goalName; $('sGoalAmount').value = c.goalAmount;
   $('sPhone').value = c.phone; $('sPin').value = c.pin;
+  $('sRaceOn').checked = c.raceOn !== false; $('sRaceGoal').value = c.raceGoal || 100; $('sRacePrize').value = c.racePrize || '';
+  $('raceStartNote').textContent = c.raceStart ? `Carrera actual desde el ${prettyDate(isoDay(c.raceStart))}. Cuentan los marcianitos entregados desde ese día.` : 'Cuentan todos los marcianitos entregados con tarjeta.';
   pickEmoji = c.goalEmoji;
   drawEmojiChips(); renderFlavorList();
   $('setErr').textContent = '';
@@ -1324,13 +1395,16 @@ $('setSave').addEventListener('click', () => {
   if(!start || !end || toMin(end) <= toMin(start)){ $('setErr').textContent = 'El horario de fin tiene que ser después del de inicio.'; return; }
   if(!(num('sPrice') > 0) || !(num('sGoalAmount') > 0)){ $('setErr').textContent = 'El precio y la meta tienen que ser mayores a 0.'; return; }
   const pin = $('sPin').value.trim();
+  const rg = Math.round(num('sRaceGoal'));
+  if(!(rg >= 5 && rg <= 1000)){ $('setErr').textContent = 'La meta de la carrera tiene que ser entre 5 y 1000.'; return; }
   if(!sb && !/^\d{4,6}$/.test(pin)){ $('setErr').textContent = 'El PIN tiene que tener de 4 a 6 números.'; return; }
   Object.assign(state.config, {
     start, end, price:num('sPrice'), apolo:num('sApolo')||0, galaxia:num('sGalaxia')||0, familiar:num('sFamiliar')||0,
     goalName:$('sGoalName').value.trim() || 'Mi meta', goalAmount:num('sGoalAmount'), goalEmoji:pickEmoji,
-    phone:$('sPhone').value.replace(/\D/g,'') || DEFAULT.config.phone, pin: sb ? state.config.pin : pin
+    phone:$('sPhone').value.replace(/\D/g,'') || DEFAULT.config.phone, pin: sb ? state.config.pin : pin,
+    raceOn:$('sRaceOn').checked, raceGoal:rg, racePrize:$('sRacePrize').value.trim().slice(0,80)
   });
-  save(); pushConfig(); refreshShop(); toast(sb ? '✅ Guardado y publicado para los clientes' : '✅ Cambios guardados');
+  save(); pushConfig(); refreshShop(); renderRace(); toast(sb ? '✅ Guardado y publicado para los clientes' : '✅ Cambios guardados');
 });
 $('newGoal').addEventListener('click', () => {
   if(!confirm('Tu cohete vuelve a la Tierra y empieza una meta nueva. Tus ventas y medallas se guardan. ¿Seguimos?')) return;
@@ -1714,7 +1788,69 @@ function openEnvelope(){
 $('envelope').addEventListener('click', () => { if(!envOpened) openEnvelope(); });
 $('envelope').addEventListener('keydown', e => { if((e.key === 'Enter' || e.key === ' ') && !envOpened){ e.preventDefault(); openEnvelope(); } });
 $('envBtn').addEventListener('click', openEnvelope);
-document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'visible' && !$('shop').classList.contains('hidden')) fetchCard(); });
+document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'visible' && !$('shop').classList.contains('hidden')){ fetchCard(); fetchRace(); } });
+
+/* =================== CARRERA GALÁCTICA =================== */
+let race = null, raceOpen = false;
+const LANE_COLORS = ['#FFD23F','#C9D3E8','#FF9A5A'];
+async function fetchRace(){
+  if(!sb || state.config.raceOn === false){ renderRace(); return; }
+  const {data, error} = await sb.rpc('get_race', {p_code: cardCode || null});
+  if(error){ console.warn('Carrera', error); return; }
+  race = data; renderRace();
+}
+function renderRace(){
+  const sec = $('race'), c = state.config, goal = Math.max(5, Number(c.raceGoal) || 100);
+  const show = !!(sb && c.raceOn !== false && race);
+  sec.classList.toggle('hidden', !show);
+  if(!show) return;
+  const rows = race.rows || [], me = race.me;
+  $('raceGoalChip').textContent = `Meta: ${goal} 🍦`;
+  $('racePrize').innerHTML = `🏆 El primero en llegar a <b>${goal} marcianitos</b> gana: <b>${esc(c.racePrize || 'un premio sorpresa')}</b>`;
+  $('raceFinish').textContent = `🌕 LLEGADA · ${goal} 🌕`;
+  const pct = q => Math.min(100, q / goal * 100);
+  const lane = (r, place) => {
+    const medal = ['🥇','🥈','🥉'][place-1], col = LANE_COLORS[place-1];
+    if(!r) return `<div class="lane empty" style="--lc:${col}"><div class="lane-track"><div class="lane-fill"></div><div class="lane-rocket">🚀</div></div>
+      <div class="lane-medal">${medal}</div><div class="lane-name">¿Vos?</div><div class="lane-qty">Lugar libre</div></div>`;
+    const p = pct(r.qty), win = r.qty >= goal;
+    return `<div class="lane ${place===1?'first':''} ${r.me?'me':''} ${win?'win':''}" style="--lc:${col}">
+      <div class="lane-track"><div class="lane-fill" data-h="${p}"></div><div class="lane-rocket" data-b="${p}">${win ? '🏆' : '🚀'}</div></div>
+      <div class="lane-medal">${medal}</div><div class="lane-name">${esc(r.name)}${r.me ? ' (vos)' : ''}</div>
+      <div class="lane-qty">${win ? '¡Llegó a la Luna!' : `${r.qty} 🍦`}</div></div>`;
+  };
+  // Podio: 2.º a la izquierda, 1.º al centro, 3.º a la derecha
+  $('podium').innerHTML = lane(rows[1], 2) + lane(rows[0], 1) + lane(rows[2], 3);
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    document.querySelectorAll('#podium .lane-fill[data-h]').forEach(el => el.style.height = `calc((100% - 8px) * ${el.dataset.h / 100})`);
+    document.querySelectorAll('#podium .lane-rocket[data-b]').forEach(el => el.style.bottom = (4 + el.dataset.b * 0.86) + '%');
+  }));
+  const meBox = $('raceMe');
+  if(me && me.qty >= goal) meBox.innerHTML = `🏆 ¡Llegaste a la Luna con ${me.qty} marcianitos! Avisale a Santi para tu premio.`;
+  else if(me && me.pos <= 3) meBox.innerHTML = `🔥 ¡Estás en el podio! Puesto #${me.pos}. Te faltan ${goal - me.qty} para la meta.`;
+  else if(me) meBox.innerHTML = `🚀 Tu nave va en el puesto <b>#${me.pos}</b> con ${me.qty} marcianitos. ¡Te faltan ${goal - me.qty}!`;
+  else if(cardCode) meBox.innerHTML = '🛸 Tu nave entra a la carrera con tu primer pedido entregado.';
+  else meBox.innerHTML = '🛸 Hacé tu primer pedido y sumá tu nave a la carrera.';
+  meBox.classList.remove('hidden');
+  const rest = rows.slice(3);
+  $('raceMore').classList.toggle('hidden', !rest.length);
+  $('raceMore').textContent = raceOpen ? 'Ocultar ▴' : `Ver carrera completa (${race.total} naves) ▾`;
+  $('raceMore').setAttribute('aria-expanded', raceOpen);
+  $('raceList').classList.toggle('hidden', !raceOpen || !rest.length);
+  $('raceList').innerHTML = rest.map(r => { const p = pct(r.qty); return `<li class="rrow ${r.me?'me':''}">
+      <span class="rpos">${r.pos}</span>
+      <div class="rmid"><div class="rname">${esc(r.name)}${r.me ? ' (vos)' : ''}</div>
+        <div class="rbar"><i style="width:${p}%"></i><span style="left:${Math.max(4,p)}%">${r.qty >= goal ? '🏆' : '🚀'}</span></div></div>
+      <span class="rqty">${r.qty}<small>de ${goal}</small></span></li>`; }).join('');
+  if(raceOpen && race.total > rows.length) $('raceList').insertAdjacentHTML('beforeend', `<li class="rrow"><span class="rpos">…</span><div class="rmid"><div class="rname" style="color:var(--muted)">y ${race.total - rows.length} naves más</div></div></li>`);
+}
+$('raceMore').addEventListener('click', () => { raceOpen = !raceOpen; renderRace(); });
+$('raceReset').addEventListener('click', () => {
+  if(!confirm('Empieza una carrera nueva: todas las naves vuelven a cero. Los pedidos y stickers no se borran. ¿Seguimos?')) return;
+  state.config.raceStart = new Date().toISOString();
+  save(); pushConfig(); renderSettings(); toast('🏁 ¡Arrancó una carrera nueva!');
+  setTimeout(fetchRace, 800);
+});
 
 /* =================== INSTALAR COMO APP =================== */
 const IKEY = 'marcianitos-instalar-oculto';
@@ -1800,7 +1936,7 @@ $('loginPass').addEventListener('keydown', e => { if(e.key === 'Enter') tryPin()
 function refreshShop(){ renderStatus(); renderCombos(); renderGrid(); renderCart(); }
 refreshShop();
 pullConfig();
-renderCardChip(); fetchCard(); renderInstallBanner();
+renderCardChip(); fetchCard(); renderInstallBanner(); fetchRace();
 setInterval(() => { renderStatus(); updateWaLink(); }, 60000);
 </script>
 </body>
