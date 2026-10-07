@@ -1,7 +1,7 @@
 {
-  "name": "Los Marcianitos de Santi",
-  "short_name": "Marcianitos",
-  "description": "Helados caseros con entrega a domicilio. Pedí tus marcianitos y juntá stickers galácticos.",
+  "name": "AREA 42 Club · Los helados de Santi",
+  "short_name": "AREA 42",
+  "description": "AREA 42 Club, los helados de Santi en la Comarca Andina del Paralelo 42. Pedí tus marcianitos y juntá stickers galácticos.",
   "lang": "es-AR",
   "start_url": "./?source=app",
   "scope": "./",
