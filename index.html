@@ -263,6 +263,81 @@ input:focus{border-color:var(--cyan);outline:none}
 .alert-orders{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;margin-top:16px;padding:16px;border-radius:22px;border:2px solid var(--green);
   background:rgba(57,255,136,.12);color:var(--green);font-family:var(--display);font-weight:700;font-size:18px;box-shadow:0 0 22px rgba(57,255,136,.2)}
 .webtag{color:var(--cyan);font-weight:800}
+/* ---------- Editor de sabores ---------- */
+.flist{list-style:none;padding:0;margin:8px 0 0}
+.frow{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px dashed var(--line)}
+.fedit{flex:1;min-width:0;display:flex;align-items:center;gap:12px;background:none;border:none;padding:6px 0;text-align:left}
+.fdot{flex:0 0 44px;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:22px;background:radial-gradient(circle at 32% 28%,var(--c1),var(--c2) 72%);box-shadow:0 0 12px -2px var(--c2)}
+.fname{flex:1;min-width:0;font-weight:700;overflow-wrap:anywhere}
+.fpen{opacity:.6}
+.switch{flex:0 0 54px;width:54px;height:32px;border-radius:999px;border:1.5px solid var(--line);background:var(--deep);position:relative;padding:0}
+.switch i{position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:var(--muted);transition:left .2s,background .2s}
+.switch.on{background:rgba(57,255,136,.2);border-color:var(--green)}
+.switch.on i{left:25px;background:var(--green)}
+.fpreview{display:flex;flex-direction:column;align-items:center;gap:6px;margin:4px 0 6px}
+.fprevname{font-family:var(--display);font-size:20px;text-align:center}
+.emojis .chip{font-size:22px;padding:6px 10px}
+.swatch{width:44px;height:44px;border-radius:50%;border:3px solid transparent;background:radial-gradient(circle at 32% 28%,var(--c1),var(--c2) 72%)}
+.swatch.on{border-color:#fff;box-shadow:0 0 0 2px var(--violet)}
+input[type=color]{width:100%;height:48px;padding:4px;border-radius:14px;border:1.5px solid var(--line);background:var(--deep)}
+.checkrow{display:flex;align-items:center;gap:10px;margin:16px 0 4px;font-size:16px}
+.checkrow input{width:22px;height:22px;accent-color:var(--green)}
+
+/* ---------- Stickers y tarjeta galáctica ---------- */
+.cardchip{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));right:12px;z-index:25;display:flex;align-items:center;gap:6px;padding:10px 14px;border-radius:999px;
+  border:2px solid var(--yellow);background:rgba(11,8,32,.9);color:var(--yellow);font-family:var(--display);font-weight:700;font-size:15px;box-shadow:0 0 18px rgba(255,210,63,.3);backdrop-filter:blur(6px)}
+.cardchip.gift{animation:throb 1.2s ease-in-out infinite;border-color:var(--pink);color:#fff;background:linear-gradient(135deg,#FF9A3D,#FF4FD8)}
+.stk{--s:76px;position:relative;flex:none;width:var(--s);height:var(--s);border-radius:50%;display:grid;place-items:center;font-size:calc(var(--s) * .46);
+  background:radial-gradient(circle at 32% 28%,var(--c1),var(--c2) 75%);border:4px solid #fff;box-shadow:0 6px 14px rgba(0,0,0,.45),0 0 18px var(--c2);transform:rotate(var(--rot,0deg))}
+.stk::after{content:"";position:absolute;inset:0;border-radius:50%;background:linear-gradient(130deg,rgba(255,255,255,.6) 0 16%,transparent 34%);pointer-events:none}
+.stk b{position:absolute;bottom:-11px;left:50%;transform:translateX(-50%);background:#fff;color:#1A1440;font-family:var(--display);font-size:11px;font-weight:700;padding:1px 7px;border-radius:999px;white-space:nowrap;z-index:1}
+.album{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin:18px 0 26px;justify-items:center}
+.album .stk{--s:58px;border-width:3px}
+.slot{width:58px;height:58px;border-radius:50%;border:2.5px dashed var(--line);display:grid;place-items:center;color:var(--muted);font-family:var(--display);font-weight:700;font-size:20px}
+.cardcode{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:16px;padding:12px 14px;border-radius:16px;background:var(--deep);border:1px solid var(--line);font-size:14px}
+.cardcode b{font-family:var(--display);letter-spacing:2px;color:var(--cyan)}
+.coupon{position:relative;overflow:hidden;margin:8px 0 16px;padding:20px 18px;border-radius:22px;text-align:center;color:#3B0A2A;
+  background:linear-gradient(135deg,#FFE066,#FF9A3D 55%,#FF4FD8);box-shadow:inset 0 0 0 3px rgba(255,255,255,.85),0 12px 30px rgba(255,79,216,.45);animation:throb 1.6s ease-in-out infinite}
+.coupon::before,.coupon::after{content:"";position:absolute;top:50%;width:28px;height:28px;border-radius:50%;background:var(--surface);transform:translateY(-50%)}
+.coupon::before{left:-14px}.coupon::after{right:-14px}
+.coupon .shine{position:absolute;top:0;bottom:0;width:60px;left:-80px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.7),transparent);transform:skewX(-20deg);animation:sweep 2.4s ease-in-out infinite}
+.coupon .ck{font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase}
+.coupon .cbig{font-family:var(--display);font-size:clamp(24px,7vw,30px);font-weight:700;line-height:1.05;margin:6px 0}
+.coupon .cdash{border-top:2px dashed rgba(59,10,42,.35);margin:12px 8px}
+.coupon .csmall{font-weight:700;font-size:14px}
+.coupon .cbtn{position:relative;margin-top:14px;width:100%;padding:16px;border:none;border-radius:999px;background:#2A0B3F;color:#FFE066;font-family:var(--display);font-size:21px;font-weight:700;
+  box-shadow:0 6px 0 #12031d;animation:shake 2.2s infinite}
+.coupon .cbtn:active{transform:translateY(4px);box-shadow:0 2px 0 #12031d}
+.coupon .cbtn:disabled{opacity:.7;animation:none}
+.voucher{margin:8px 0 14px;padding:16px;border-radius:20px;text-align:center;border:2px dashed var(--green);background:rgba(57,255,136,.1)}
+.voucher .vk{font-size:13px;font-weight:800;letter-spacing:1.5px;color:var(--green)}
+.voucher .vbig{font-family:var(--display);font-size:24px;margin:4px 0}
+.voucher .vsmall{color:var(--muted);font-size:14px}
+@keyframes throb{50%{transform:scale(1.025)}}
+@keyframes shake{0%,84%,100%{transform:rotate(0)}88%{transform:rotate(-3deg)}92%{transform:rotate(3deg)}96%{transform:rotate(-2deg)}}
+@keyframes sweep{0%{left:-80px}60%,100%{left:110%}}
+.line.voucher-line{color:var(--green);font-weight:800;align-items:center}
+.line.voucher-line > span:last-child{white-space:nowrap}
+.vtoggle{background:none;border:1.5px solid var(--green);color:var(--green);border-radius:999px;padding:6px 12px;font-weight:800;font-size:13px}
+.overlay.center{align-items:center}
+.env-stage{width:100%;max-width:400px;text-align:center;padding:24px 18px calc(24px + env(safe-area-inset-bottom,0px))}
+.env-stage h2{font-size:26px;color:var(--yellow);margin-bottom:8px}
+.envelope{position:relative;width:260px;height:170px;margin:120px auto 26px;cursor:pointer;perspective:900px}
+.envelope:not(.open){animation:wiggle 1.8s ease-in-out infinite}
+@keyframes wiggle{0%,78%,100%{transform:rotate(0)}84%{transform:rotate(-4deg)}90%{transform:rotate(4deg)}96%{transform:rotate(-2deg)}}
+.env-back{position:absolute;inset:0;border-radius:14px;background:linear-gradient(160deg,#5B34C8,#2E1A78)}
+.env-cards{position:absolute;left:0;right:0;bottom:20px;z-index:2;height:80px}
+.env-cards .stk{position:absolute;left:50%;bottom:0;margin-left:-38px;transition:transform .7s cubic-bezier(.2,1.5,.4,1)}
+.envelope.open .env-cards{z-index:6}
+.envelope.open .env-cards .stk{transform:translate(var(--dx,0px),-170px) rotate(var(--rot,0deg)) scale(1.1)}
+.env-front{position:absolute;inset:0;z-index:3;border-radius:14px;background:linear-gradient(160deg,#B28CFF,#6A3FE0);clip-path:polygon(0 0,50% 56%,100% 0,100% 100%,0 100%)}
+.env-flap{position:absolute;left:0;right:0;top:0;height:100%;z-index:4;background:linear-gradient(180deg,#C7A8FF,#7C4DFF);clip-path:polygon(0 0,100% 0,50% 58%);
+  transform-origin:top center;transition:transform .55s ease}
+.envelope.open .env-flap{transform:rotateX(180deg)}
+.env-seal{position:absolute;left:50%;top:56%;transform:translate(-50%,-50%);z-index:5;width:50px;height:50px;border-radius:50%;background:var(--pink);display:grid;place-items:center;font-size:24px;
+  box-shadow:0 0 20px rgba(255,79,216,.8);transition:opacity .2s,transform .3s}
+.envelope.open .env-seal{opacity:0;transform:translate(-50%,-50%) scale(1.6)}
+.env-stage .sub{font-size:16px;color:var(--text);min-height:44px}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 @media (max-width:360px){.grid{gap:10px}.planet{width:72px;height:72px;font-size:34px}.mission{grid-template-columns:80px 1fr}.pct{font-size:52px}}
 </style>
@@ -271,6 +346,7 @@ input:focus{border-color:var(--cyan);outline:none}
 
 <!-- ================= CLIENTE: MISIÓN MARCIANA ================= -->
 <main id="shop" class="wrap">
+  <button class="cardchip hidden" id="cardChip" aria-label="Ver mi tarjeta galáctica">⭐ <span id="cardChipText">Mi tarjeta</span></button>
   <header class="hero">
     <div class="ufo" aria-hidden="true">🛸</div>
     <h1>Los Marcianitos de Santi</h1>
@@ -330,7 +406,7 @@ input:focus{border-color:var(--cyan);outline:none}
     <input id="cAddr" type="text" autocomplete="street-address" placeholder="Calle y número">
     <label for="cRef">Referencia (opcional)</label>
     <input id="cRef" type="text" placeholder="Ej: casa con portón verde">
-    <div class="sticker-note">⭐ Con esta compra sumás 1 sticker galáctico. ¡Juntá 5 y tu próximo marcianito es gratis!</div>
+    <div class="sticker-note">⭐ Con esta compra sumás 1 sticker galáctico único. ¡Juntá 5 y canjeás un marcianito gratis!</div>
     <a class="btn wa" id="sendWa" href="#" target="_blank" rel="noopener">Lanzar pedido por WhatsApp</a>
     <div class="err" id="cartErr" role="alert"></div>
     <p class="note" id="deliveryNote"></p>
@@ -464,9 +540,9 @@ input:focus{border-color:var(--cyan);outline:none}
       <button class="btn ghost" id="newGoal" style="margin-top:14px">🌕 Empezar una meta nueva desde cero</button>
     </div>
     <div class="panel">
-      <h2>Sabores disponibles</h2>
-      <p class="sub">Los apagados no aparecen en la tienda.</p>
-      <div class="chips" id="sFlavors"></div>
+      <div class="ohead"><h2>Sabores</h2><button class="mini" id="flavorNew">＋ Nuevo sabor</button></div>
+      <p class="sub">Tocá un sabor para editarlo. El interruptor lo muestra u oculta en la tienda.</p>
+      <ul class="flist" id="sFlavors"></ul>
     </div>
     <div class="panel">
       <h2>Nave</h2>
@@ -501,6 +577,53 @@ input:focus{border-color:var(--cyan);outline:none}
 </div>
 <div class="toast hidden" id="toast" role="status"></div>
 
+<!-- Editor de sabores -->
+<div class="overlay hidden" id="flavorOverlay" role="dialog" aria-modal="true" aria-labelledby="t-flavor">
+  <div class="sheet">
+    <div class="sheet-head"><h2 id="t-flavor">Nuevo sabor</h2><button class="close" data-close="flavorOverlay" aria-label="Cerrar">✕</button></div>
+    <div class="fpreview"><div class="planet" id="fPrev" aria-hidden="true"></div><div class="fprevname" id="fPrevName"></div></div>
+    <label for="fName">Nombre galáctico</label>
+    <input id="fName" type="text" maxlength="40" placeholder="Ej: Cereza Cuántica">
+    <label>Ícono</label>
+    <div class="chips emojis" id="fEmojis"></div>
+    <input id="fEmojiCustom" type="text" maxlength="8" placeholder="O escribí otro emoji" aria-label="Otro emoji" style="margin-top:8px">
+    <label>Colores del planeta</label>
+    <div class="chips" id="fPalettes"></div>
+    <div class="two" style="margin-top:8px">
+      <div><label for="fC1">Color claro</label><input id="fC1" type="color"></div>
+      <div><label for="fC2">Color oscuro</label><input id="fC2" type="color"></div>
+    </div>
+    <label class="checkrow"><input type="checkbox" id="fOn"> Mostrar en la tienda</label>
+    <div class="err" id="fErr" role="alert"></div>
+    <button class="btn primary" id="fSave">Guardar sabor</button>
+    <button class="btn danger hidden" id="fDelete">Eliminar sabor</button>
+  </div>
+</div>
+
+<!-- Tarjeta galáctica del cliente -->
+<div class="overlay hidden" id="cardOverlay" role="dialog" aria-modal="true" aria-labelledby="t-card">
+  <div class="sheet">
+    <div class="sheet-head"><h2 id="t-card">Tu tarjeta galáctica</h2><button class="close" data-close="cardOverlay" aria-label="Cerrar">✕</button></div>
+    <div id="cardBody"></div>
+  </div>
+</div>
+
+<!-- Sobre con stickers nuevos -->
+<div class="overlay center hidden" id="envOverlay" role="dialog" aria-modal="true" aria-labelledby="t-env">
+  <div class="env-stage">
+    <h2 id="t-env">¡Te llegó correo galáctico! 💌</h2>
+    <div class="envelope" id="envelope" role="button" tabindex="0" aria-label="Abrir sobre">
+      <div class="env-back"></div>
+      <div class="env-cards" id="envCards"></div>
+      <div class="env-front"></div>
+      <div class="env-flap"></div>
+      <div class="env-seal">⭐</div>
+    </div>
+    <p class="sub" id="envText">Tocá el sobre para abrirlo</p>
+    <button class="btn primary" id="envBtn">Abrir sobre</button>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 /* =========================================================
@@ -515,7 +638,7 @@ const sb = (SUPABASE_URL && SUPABASE_KEY && window.supabase) ? window.supabase.c
 let loggedIn = false;
 
 /* =================== DATOS BASE =================== */
-const FLAVORS = [
+const DEFAULT_FLAVORS = [
   {id:'limon',   name:'Rayo de Limón',               e:'🍋', c:['#FFF59D','#9ACD00']},
   {id:'frutilla',name:'Súper Frutilla Cósmica',      e:'🍓', c:['#FF9FBE','#E5194F']},
   {id:'naranja', name:'Sol Naranja Supernova',       e:'🍊', c:['#FFD08A','#FF7A00']},
@@ -529,6 +652,7 @@ const FLAVORS = [
   {id:'banana',  name:'Banana Satélite',             e:'🍌', c:['#FFF7B0','#EBBC00']},
   {id:'menta',   name:'Brisa Plutoniana',            e:'🌿', c:['#C2FFE6','#12A56C']},
 ];
+let FLAVORS = DEFAULT_FLAVORS;   // se reemplaza por la lista editable de Ajustes
 const GOAL_EMOJIS = ['🚲','🛹','🎮','⚽','🎧','🏆'];
 const MEDALS = [
   {id:'first',  e:'🚀', n:'Primer Despegue',      d:'Registrá tu primera venta'},
@@ -545,6 +669,7 @@ const DEFAULT = {
     phone:'5492944135365', start:'17:00', end:'21:00',
     price:500, apolo:1300, galaxia:2500, familiar:4500,
     goalName:'Bicicleta', goalAmount:50000, goalEmoji:'🚲', pin:'1234',
+    flavors: DEFAULT_FLAVORS,
     available:{limon:true,frutilla:true,naranja:true,uva:true,choco:true,ddl:true,anana:false,durazno:false,coco:false,sandia:false,banana:false,menta:false}
   },
   log:[], crew:[], medals:{}, goalOffset:0, goalsDone:[]
@@ -566,6 +691,11 @@ function load(){
   return clone(DEFAULT);
 }
 let state = load();
+function syncFlavors(){
+  if(!Array.isArray(state.config.flavors) || !state.config.flavors.length) state.config.flavors = clone(DEFAULT_FLAVORS);
+  FLAVORS = state.config.flavors;
+}
+syncFlavors();
 function saveLocal(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
 function save(){ saveLocal(); clearTimeout(save.t); save.t = setTimeout(pushPrivate, 600); }
 
@@ -578,7 +708,7 @@ async function pullConfig(){
   if(error || !data || !data.data || !Object.keys(data.data).length) return;
   const d = data.data;
   state.config = {...state.config, ...d, available:{...state.config.available, ...(d.available||{})}};
-  saveLocal(); refreshShop();
+  syncFlavors(); saveLocal(); refreshShop();
 }
 async function pullPrivate(){
   const {data, error} = await sb.from('santi_data').select('data').eq('id',1).single();
@@ -615,7 +745,7 @@ function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.remove('
    Cada pantalla y ventana abierta crea una entrada en el historial del navegador.
    Así, la flecha "atrás" cierra la ventana abierta o vuelve a la pantalla anterior
    en lugar de salir del sitio. */
-const OVERLAYS = ['cartOverlay','pinOverlay','celebrate'];
+const OVERLAYS = ['cartOverlay','pinOverlay','celebrate','flavorOverlay','cardOverlay','envOverlay'];
 const HOME_NAV = {screen:'shop', view:'home', ov:null};
 let navState = {...HOME_NAV};
 let adminUnlocked = false;
@@ -679,7 +809,7 @@ function renderGrid(){
     const q = cart[f.id] || 0;
     return `<article class="card ${q?'has':''}" style="--c1:${f.c[0]};--c2:${f.c[1]}">
       ${q?`<span class="badge">${q}</span>`:''}
-      <div class="planet" aria-hidden="true">${f.e}</div>
+      <div class="planet" aria-hidden="true">${esc(f.e)}</div>
       <h3>${esc(f.name)}</h3>
       <div class="price">${money(c.price)} c/u</div>
       <div class="stepper">
@@ -715,7 +845,7 @@ function shipPassengers(){ const a = []; FLAVORS.forEach(f => { for(let i=0;i<(c
 function fillDome(domeId, moreId, list, animateFrom){
   const vis = list.slice(0, SEATS);
   $(domeId).innerHTML = vis.length
-    ? vis.map((e,i) => `<span class="${animateFrom!=null && i>=animateFrom ? 'new' : ''}">${e}</span>`).join('')
+    ? vis.map((e,i) => `<span class="${animateFrom!=null && i>=animateFrom ? 'new' : ''}">${esc(e)}</span>`).join('')
     : '<span class="empty-seat">👽</span>';
   const more = $(moreId);
   more.textContent = list.length > SEATS ? '+' + (list.length - SEATS) : '';
@@ -773,7 +903,9 @@ function cartSummary(){
   const combos = {};
   bp.used.forEach(n => combos[n] = (combos[n]||0) + 1);
   const comboText = Object.entries(combos).map(([n,k]) => (k>1?k+'x ':'') + n);
-  return {items, count, total:bp.cost, full:count*state.config.price, comboText};
+  const v = (count && useVoucher) ? usableVoucher() : null;
+  const disc = v ? Math.min(state.config.price, bp.cost) : 0;
+  return {items, count, sub:bp.cost, total:bp.cost - disc, full:count*state.config.price, comboText, voucher:v, disc};
 }
 function deliveryText(){
   const c = state.config, w = windowState();
@@ -784,10 +916,12 @@ function buildMessage(s){
   const L = ['🛸 NUEVO PEDIDO - Los Marcianitos de Santi', `👽 Tripulante: ${name}`, '', '🍧 Carga:'];
   s.items.forEach(i => L.push(`• ${i.q}x ${i.f.name}`));
   if(s.comboText.length) L.push(`🎁 Combo: ${s.comboText.join(' + ')}`);
+  if(s.voucher) L.push(`🎟️ Vale de canje #V${s.voucher.id}: 1 marcianito gratis (−${money(s.disc)})`);
   L.push('', `📍 Destino: ${addr}`);
   if(ref) L.push(`🗺️ Referencia: ${ref}`);
   L.push(`🕔 Entrega: ${deliveryText()}`, `💰 Total: ${money(s.total)}`, '',
-         '⭐ Con esta compra sumás 1 sticker galáctico.', '¡Juntá 5 y tu próximo marcianito es gratis!');
+         '⭐ Con esta compra sumás 1 sticker galáctico.', '¡Juntá 5 y canjeás un marcianito gratis!');
+  if(sb){ ensureCardCode(); L.push(`🪪 Mi tarjeta galáctica: ${cardLink(cardCode)}`); }
   return L.join('\n');
 }
 function renderCart(bump){
@@ -801,7 +935,10 @@ function renderCart(bump){
   if(shownPassengers > s.count) shownPassengers = s.count;
   renderShip();
   let html = s.items.map(i => `<div class="line"><span>${i.q}x ${esc(i.f.name)}</span><span>${money(i.q*state.config.price)}</span></div>`).join('');
-  if(s.comboText.length && s.full > s.total) html += `<div class="line combo-line"><span>🎁 ${esc(s.comboText.join(' + '))}</span><span>−${money(s.full - s.total)}</span></div>`;
+  if(s.comboText.length && s.full > s.sub) html += `<div class="line combo-line"><span>🎁 ${esc(s.comboText.join(' + '))}</span><span>−${money(s.full - s.sub)}</span></div>`;
+  const av = s.count ? usableVoucher() : null;
+  if(av && s.voucher) html += `<div class="line voucher-line"><span>🎟️ Vale #V${av.id}: 1 gratis <button class="vtoggle" data-vt="0">Guardar para otro día</button></span><span>−${money(s.disc)}</span></div>`;
+  else if(av) html += `<div class="line voucher-line"><span>🎟️ Tenés un vale de canje</span><button class="vtoggle" data-vt="1">Usarlo</button></div>`;
   $('cartLines').innerHTML = html || '<p class="empty">Tu bodega está vacía.</p>';
   $('cartTotal').textContent = money(s.total);
   $('deliveryNote').textContent = `Entrega a domicilio ${deliveryText()}. Pagás al recibir.`;
@@ -813,13 +950,12 @@ function updateWaLink(){
   $('sendWa').href = `https://wa.me/${state.config.phone.replace(/\D/g,'')}?text=${encodeURIComponent(buildMessage(s))}`;
 }
 ['cName','cAddr','cRef'].forEach(id => $(id).addEventListener('input', () => { $('cartErr').textContent=''; updateWaLink(); }));
-$('fab').addEventListener('click', () => { renderCart(); open('cartOverlay'); });
 $('sendWa').addEventListener('click', e => {
   const miss = !$('cName').value.trim() ? 'Escribí tu nombre de tripulante.' : !$('cAddr').value.trim() ? 'Falta la dirección de aterrizaje.' : '';
   if(miss){ e.preventDefault(); $('cartErr').textContent = miss; return; }
   updateWaLink();
   rememberCustomer();
-  if(reduceMotion()){ saveOrder(cartSummary()); return; }   // sin animaciones: abre WhatsApp directo
+  if(reduceMotion()){ const s0 = cartSummary(); saveOrder(s0); markVoucherPending(s0); return; }   // sin animaciones: abre WhatsApp directo
   e.preventDefault();
   launchShip($('sendWa').href);
 });
@@ -834,7 +970,9 @@ async function saveOrder(s){
     items: s.items.map(i => ({id:i.f.id, name:i.f.name, qty:i.q})),
     combo: s.comboText.join(' + ').slice(0,200) || null,
     qty: s.count, total: Math.round(s.total),
-    delivery: deliveryText().slice(0,80)
+    delivery: deliveryText().slice(0,80),
+    card_code: ensureCardCode(),
+    voucher_id: s.voucher ? s.voucher.id : null
   };
   try{ const {error} = await sb.from('orders').insert(row); if(error) console.warn('Pedido no guardado', error); }
   catch(e){ console.warn('Pedido no guardado', e); }
@@ -851,7 +989,7 @@ try{
 
 function launchShip(url){
   const s = cartSummary();
-  saveOrder(s);
+  saveOrder(s); markVoucherPending(s);
   hideAllOverlays(); navReplace({...navState, ov:null});
   fillDome('launchDome', 'launchMore', shipPassengers(), null);
   const ship = $('launchShip'); ship.classList.remove('go');
@@ -901,7 +1039,7 @@ const TESTS = {
   first:()=>state.log.length>0, streak3:()=>streak()>=3,
   nova:()=>Object.values(byDay()).some(q=>q>20), half:()=>pct()>=50,
   ten:()=>totalAmount()>=10000, hundred:()=>totalQty()>=100,
-  crew5:()=>state.crew.length>=5, moon:()=>pct()>=100,
+  crew5:()=>(sb ? cards.length : state.crew.length)>=5, moon:()=>pct()>=100,
 };
 function checkMedals(){
   const fresh = MEDALS.filter(m => !state.medals[m.id] && TESTS[m.id]());
@@ -937,7 +1075,7 @@ function setView(v){
   view = v;
   document.querySelectorAll('[data-view]').forEach(el => el.classList.toggle('hidden', el.dataset.view !== v));
   document.querySelectorAll('.nav button').forEach(b => b.classList.toggle('on', b.dataset.go === v));
-  ({home:renderHome, orders:()=>{ renderOrders(); fetchOrders(); }, log:renderLog, crew:renderCrew, medals:renderMedals, settings:renderSettings})[v]();
+  ({home:renderHome, orders:()=>{ renderOrders(); fetchOrders(); }, log:renderLog, crew:()=>{ renderCrew(); fetchCards(); }, medals:renderMedals, settings:renderSettings})[v]();
   window.scrollTo(0,0);
 }
 document.addEventListener('click', e => { const b = e.target.closest('[data-go]'); if(b) go(b.dataset.go); });
@@ -975,7 +1113,7 @@ function renderHome(){
   const st = streak();
   $('stats').innerHTML = `
     <div class="stat"><div class="k">Esta semana</div><div class="v">${money(wAmt)}</div><div class="s">${wQty} marcianitos</div></div>
-    <div class="stat"><div class="k">Sabor estrella</div><div class="v">${top ? top.e : '—'}</div><div class="s">${top ? esc(top.name) : 'Marcá el sabor en la bitácora'}</div></div>
+    <div class="stat"><div class="k">Sabor estrella</div><div class="v">${top ? esc(top.e) : '—'}</div><div class="s">${top ? esc(top.name) : 'Marcá el sabor en la bitácora'}</div></div>
     <div class="stat"><div class="k">Racha</div><div class="v">${st} ${st===1?'día':'días'}</div><div class="s">${st ? 'seguidos vendiendo' : 'Vendé hoy para arrancar'}</div></div>
     <div class="stat"><div class="k">Total vendido</div><div class="v">${totalQty()}</div><div class="s">${money(totalAmount())} en total</div></div>`;
 }
@@ -988,7 +1126,7 @@ function renderLog(){
   if(!amountTouched) $('logAmount').value = qty ? qty * state.config.price : '';
   $('amountHint').textContent = `Sugerido: ${qty} × ${money(state.config.price)} = ${money(qty*state.config.price)}. Si hiciste combos, poné lo que cobraste de verdad.`;
   $('logFlavor').innerHTML = FLAVORS.filter(f => state.config.available[f.id]).map(f =>
-    `<button class="chip ${logFlavor===f.id?'on':''}" data-flavor="${f.id}">${f.e} ${esc(f.name.split(' ').slice(0,2).join(' '))}</button>`).join('');
+    `<button class="chip ${logFlavor===f.id?'on':''}" data-flavor="${f.id}">${esc(f.e)} ${esc(f.name.split(' ').slice(0,2).join(' '))}</button>`).join('');
   const recent = [...state.log].sort((a,b) => b.date.localeCompare(a.date) || b.id - a.id).slice(0,12);
   $('logList').innerHTML = recent.length ? recent.map(l =>
     `<li><span><b>${prettyDate(l.date)}</b> · ${l.qty} marcianitos · ${money(l.amount)}${l.source==='web' ? ' · <span class="webtag">🛸 web</span>' : ''}</span>
@@ -1017,7 +1155,39 @@ $('logSave').addEventListener('click', () => {
 });
 
 /* --- Tripulantes --- */
+let cards = [];
+async function fetchCards(){
+  if(!sb || !loggedIn) return;
+  const {data, error} = await sb.from('cards').select('code,name,created_at,stickers(id,redeemed_at),vouchers(id,status)')
+    .order('created_at', {ascending:false}).limit(500);
+  if(error){ toast('⚠️ No se pudieron traer las tarjetas'); console.warn(error); return; }
+  cards = data || [];
+  if(navState.screen === 'admin' && view === 'crew') renderCrew();
+}
+function renderCloudCrew(){
+  $('crewList').innerHTML = cards.length ? cards.map(c => {
+    const act = (c.stickers || []).filter(x => !x.redeemed_at).sort((a,b) => a.id - b.id);
+    const vs = (c.vouchers || []).filter(v => v.status === 'disponible');
+    const used = (c.vouchers || []).length;
+    const msg = `¡Hola ${c.name}! 👽 Esta es tu Tarjeta Galáctica de Los Marcianitos de Santi: ${cardLink(c.code)} Juntá 5 stickers y canjeás un marcianito gratis 🎁`;
+    return `<li><div class="top"><span class="name">👽 ${esc(c.name)}</span>
+        <button class="x" data-cdel="${c.code}" aria-label="Borrar tarjeta de ${esc(c.name)}" style="width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:none;color:var(--muted)">✕</button></div>
+      <div class="stars">${[0,1,2,3,4].map(i => act[i] ? `<span class="f" title="#${act[i].id}">⭐</span>` : '<span></span>').join('')}${act.length > 5 ? `<b style="align-self:center">+${act.length-5}</b>` : ''}</div>
+      ${vs.length ? `<p class="note" style="color:var(--green);font-weight:800">🎟️ ${vs.length} vale${vs.length===1?'':'s'} listo${vs.length===1?'':'s'} para usar</p>` : ''}
+      ${act.length >= 5 ? '<p class="note" style="color:var(--yellow);font-weight:800">🎟️ Tarjeta completa: puede canjear desde su celular</p>' : ''}
+      <div class="row">
+        <button class="mini" data-cstick="${c.code}">+1 sticker</button>
+        <a class="mini" style="text-align:center;text-decoration:none;color:var(--text)" href="https://wa.me/?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener">📤 Mandar tarjeta</a>
+      </div>
+      ${vs.length ? `<button class="mini gift" style="width:100%;margin-top:8px" data-cvused="${vs[0].id}">✅ Ya le di el gratis en persona</button>` : ''}
+      <p class="note">Código ${esc(c.code)}${used ? ` · ${used} canje${used===1?'':'s'}` : ''}</p>
+    </li>`;
+  }).join('') : '<li class="empty" style="border:none;background:none">Las tarjetas se crean solas cuando entregás un pedido de la web. También podés crear una para un cliente en persona.</li>';
+}
 function renderCrew(){
+  $('crewName').placeholder = sb ? 'Nombre (cliente en persona)' : 'Nombre del cliente';
+  $('crewAdd').textContent = sb ? 'Crear tarjeta' : 'Sumar';
+  if(sb){ renderCloudCrew(); return; }
   const list = [...state.crew].sort((a,b) => b.stickers - a.stickers || a.name.localeCompare(b.name));
   $('crewList').innerHTML = list.length ? list.map(c => `
     <li><div class="top"><span class="name">👽 ${esc(c.name)}</span>
@@ -1031,16 +1201,35 @@ function renderCrew(){
       ${c.redeemed ? `<p class="note">Canjeó ${c.redeemed} ${c.redeemed===1?'premio':'premios'}</p>` : ''}
     </li>`).join('') : '<li class="empty" style="border:none;background:none">Sumá a tu primer cliente para empezar a darle stickers.</li>';
 }
-function addCrew(){
+async function addCrew(){
   const n = $('crewName').value.trim(); if(!n) return;
+  if(sb){
+    const {error} = await sb.from('cards').insert({code:newCode(), name:n.slice(0,60)});
+    if(error){ toast('⚠️ No se pudo crear la tarjeta'); return; }
+    $('crewName').value = ''; toast(`🪪 Tarjeta creada para ${n}`); fetchCards(); setTimeout(checkMedals, 800); return;
+  }
   state.crew.push({id:Date.now(), name:n.slice(0,40), stickers:1, redeemed:0});
   $('crewName').value = ''; save(); renderCrew(); toast(`⭐ ${n} sumó su primer sticker`);
   setTimeout(checkMedals, 400);
 }
 $('crewAdd').addEventListener('click', addCrew);
 $('crewName').addEventListener('keydown', e => { if(e.key === 'Enter') addCrew(); });
-$('crewList').addEventListener('click', e => {
+$('crewList').addEventListener('click', async e => {
   const t = e.target.closest('button'); if(!t) return;
+  if(sb){
+    if(t.dataset.cstick){
+      const {error} = await sb.from('stickers').insert({card_code:t.dataset.cstick});
+      toast(error ? '⚠️ No se pudo sumar el sticker' : '⭐ Sticker sumado. Le llega en un sobre al abrir la web');
+    } else if(t.dataset.cvused){
+      const {error} = await sb.from('vouchers').update({status:'usado', used_at:new Date().toISOString()}).eq('id', Number(t.dataset.cvused)).eq('status','disponible');
+      toast(error ? '⚠️ No se pudo marcar' : '🎁 Vale marcado como usado');
+    } else if(t.dataset.cdel){
+      if(!confirm('¿Borrar esta tarjeta con todos sus stickers? No se puede deshacer.')) return;
+      const {error} = await sb.from('cards').delete().eq('code', t.dataset.cdel);
+      toast(error ? '⚠️ No se pudo borrar' : 'Tarjeta borrada');
+    }
+    fetchCards(); return;
+  }
   const find = id => state.crew.find(c => c.id === Number(id));
   if(t.dataset.stick){ const c = find(t.dataset.stick); c.stickers = Math.min(5, c.stickers+1); if(c.stickers===5) toast(`🎁 ¡${c.name} ganó un marcianito gratis!`); }
   else if(t.dataset.redeem){ const c = find(t.dataset.redeem); c.stickers = 0; c.redeemed = (c.redeemed||0) + 1; toast('🎁 Premio entregado'); }
@@ -1068,7 +1257,7 @@ function renderSettings(){
   $('sGoalName').value = c.goalName; $('sGoalAmount').value = c.goalAmount;
   $('sPhone').value = c.phone; $('sPin').value = c.pin;
   pickEmoji = c.goalEmoji;
-  drawEmojiChips(); drawFlavorChips(clone(c.available));
+  drawEmojiChips(); renderFlavorList();
   $('setErr').textContent = '';
   $('pinField').classList.toggle('hidden', !!sb);
   $('logout').classList.toggle('hidden', !sb);
@@ -1077,13 +1266,8 @@ function renderSettings(){
 function drawEmojiChips(){
   $('sEmoji').innerHTML = GOAL_EMOJIS.map(e => `<button class="chip ${pickEmoji===e?'on':''}" data-emoji="${e}" style="font-size:22px">${e}</button>`).join('');
 }
-let tmpAvail = {};
-function drawFlavorChips(av){
-  tmpAvail = av;
-  $('sFlavors').innerHTML = FLAVORS.map(f => `<button class="chip ${tmpAvail[f.id]?'on':''}" data-av="${f.id}">${f.e} ${esc(f.name)}</button>`).join('');
-}
+
 $('sEmoji').addEventListener('click', e => { const b = e.target.closest('[data-emoji]'); if(b){ pickEmoji = b.dataset.emoji; drawEmojiChips(); } });
-$('sFlavors').addEventListener('click', e => { const b = e.target.closest('[data-av]'); if(b){ tmpAvail[b.dataset.av] = !tmpAvail[b.dataset.av]; drawFlavorChips(tmpAvail); } });
 $('setSave').addEventListener('click', () => {
   const num = id => Number($(id).value);
   const start = $('sStart').value, end = $('sEnd').value;
@@ -1094,7 +1278,7 @@ $('setSave').addEventListener('click', () => {
   Object.assign(state.config, {
     start, end, price:num('sPrice'), apolo:num('sApolo')||0, galaxia:num('sGalaxia')||0, familiar:num('sFamiliar')||0,
     goalName:$('sGoalName').value.trim() || 'Mi meta', goalAmount:num('sGoalAmount'), goalEmoji:pickEmoji,
-    phone:$('sPhone').value.replace(/\D/g,'') || DEFAULT.config.phone, pin: sb ? state.config.pin : pin, available:{...tmpAvail}
+    phone:$('sPhone').value.replace(/\D/g,'') || DEFAULT.config.phone, pin: sb ? state.config.pin : pin
   });
   save(); pushConfig(); refreshShop(); toast(sb ? '✅ Guardado y publicado para los clientes' : '✅ Cambios guardados');
 });
@@ -1107,7 +1291,7 @@ $('newGoal').addEventListener('click', () => {
 });
 $('wipe').addEventListener('click', () => {
   if(!confirm('Esto borra TODAS tus ventas, medallas y tripulantes. ¿Seguro?')) return;
-  state = clone(DEFAULT); save(); pushConfig(); refreshShop(); renderSettings(); toast('Datos borrados');
+  state = clone(DEFAULT); syncFlavors(); save(); pushConfig(); refreshShop(); renderSettings(); toast('Datos borrados');
 });
 function showShopUI(){
   $('admin').classList.add('hidden'); $('nav').classList.add('hidden'); $('shop').classList.remove('hidden');
@@ -1191,6 +1375,7 @@ function orderCard(o){
     <div class="otop"><span class="oname">👽 ${esc(o.customer_name)}</span><span class="otime">${day === t ? 'Hoy' : prettyDate(day)} ${hhmm(o.created_at)}</span></div>
     <div class="oaddr">📍 ${esc(o.address)}${o.reference ? `<br><span class="oref">🗺️ ${esc(o.reference)}</span>` : ''}</div>
     <div class="oitems">🍧 ${esc(orderItems(o))}${o.combo ? `<br><span class="ocombo">🎁 ${esc(o.combo)}</span>` : ''}</div>
+    ${o.voucher_id ? `<div class="ocombo" style="margin-top:6px">🎟️ Usa vale de canje #V${o.voucher_id} (ya descontado)</div>` : ''}
     <div class="ototal">${o.qty} marcianito${o.qty===1?'':'s'} · <b>${money(o.total)}</b></div>
     ${o.status === 'pendiente'
       ? `<div class="row oact">
@@ -1226,24 +1411,19 @@ $('ordersBody').addEventListener('click', e => {
 async function deliverOrder(id){
   const o = orders.find(x => x.id === id);
   if(!o || o.status !== 'pendiente') return;
-  const when = new Date().toISOString();
-  const {error} = await sb.from('orders').update({status:'entregado', delivered_at:when}).eq('id', id).eq('status', 'pendiente');
-  if(error){ toast('⚠️ No se pudo marcar como entregado'); return; }
-  o.status = 'entregado'; o.delivered_at = when;
-  // Tripulante automático + sticker galáctico
-  const key = o.customer_name.trim().toLowerCase();
-  let c = state.crew.find(x => x.name.trim().toLowerCase() === key);
-  if(!c){ c = {id:Date.now(), name:o.customer_name.trim().slice(0,40), stickers:0, redeemed:0}; state.crew.push(c); }
-  const hadPrize = c.stickers >= 5;
-  if(!hadPrize) c.stickers += 1;
+  const {data:res, error} = await sb.rpc('deliver_order', {p_order_id: id});
+  if(error){ toast('⚠️ No se pudo marcar como entregado'); console.warn(error); return; }
+  o.status = 'entregado'; o.delivered_at = new Date().toISOString();
   // Venta automática en la Bitácora
   const top = (o.items || []).slice().sort((a,b) => b.qty - a.qty)[0];
   state.log.push({id:Date.now()+1, date:today(), qty:o.qty, amount:o.total,
     flavor: top && FLAVORS.some(f => f.id === top.id) ? top.id : null, orderId:o.id, source:'web'});
   save(); refreshOrderViews();
-  toast(hadPrize ? `🎁 ${c.name} tiene un marcianito gratis sin canjear`
-      : c.stickers === 5 ? `🎁 ¡${c.name} completó 5 stickers! El próximo es gratis`
-      : `⭐ ${c.name} sumó un sticker (${c.stickers}/5)`);
+  const r = res || {}, nm = o.customer_name;
+  if(r.voucher_requested && !r.voucher_used) alert(`⚠️ ${nm} pidió usar un vale que ya estaba usado. Cobrale el marcianito completo (${money(state.config.price)}).`);
+  toast(r.sticker_id == null ? `✅ Entregado (pedido sin tarjeta)`
+      : r.active >= 5 ? `🎟️ ¡${nm} completó su tarjeta! Ya puede canjear`
+      : `⭐ ${nm} ganó el sticker #${String(r.sticker_id).padStart(4,'0')} (${r.active}/5)`);
   setTimeout(checkMedals, 700);
 }
 async function cancelOrder(id){
@@ -1254,6 +1434,232 @@ async function cancelOrder(id){
   o.status = 'cancelado'; o.delivered_at = new Date().toISOString();
   refreshOrderViews();
 }
+
+/* =================== EDITOR DE SABORES =================== */
+const FLAVOR_EMOJIS = ['🍋','🍓','🍊','🍇','🍫','🥛','🍍','🍑','🥥','🍉','🍌','🌿','🍒','🫐','🥭','🍏','🍎','🍐','🥝','🍈','🍯','☕','🍪','🍬','🍭','🍦','🌶️','🥤'];
+const PALETTES = [['#FFF59D','#9ACD00'],['#FF9FBE','#E5194F'],['#FFD08A','#FF7A00'],['#D3B2FF','#6B2BD9'],['#B07A52','#3B1F12'],
+  ['#F5DEB3','#C68B3E'],['#A9F1FF','#0E9FC2'],['#C2FFE6','#12A56C'],['#FFB3E6','#E5198F'],['#E6E6F0','#6B6B80']];
+const HEX = /^#[0-9a-f]{6}$/i;
+let fEdit = null, fDraft = null;
+function renderFlavorList(){
+  $('sFlavors').innerHTML = FLAVORS.map(f => {
+    const on = !!state.config.available[f.id];
+    return `<li class="frow">
+      <button class="fedit" data-fedit="${f.id}"><span class="fdot" style="--c1:${f.c[0]};--c2:${f.c[1]}">${esc(f.e)}</span><span class="fname">${esc(f.name)}</span><span class="fpen" aria-hidden="true">✏️</span></button>
+      <button class="switch ${on?'on':''}" data-ftoggle="${f.id}" role="switch" aria-checked="${on}" aria-label="Mostrar ${esc(f.name)} en la tienda"><i></i></button>
+    </li>`;
+  }).join('') || '<li class="empty">No hay sabores. Creá el primero.</li>';
+}
+function commitFlavors(msg){
+  state.config.flavors = FLAVORS;
+  save(); pushConfig(); refreshShop(); renderFlavorList();
+  if(msg) toast(msg);
+}
+$('sFlavors').addEventListener('click', e => {
+  const t = e.target.closest('[data-ftoggle]'), ed = e.target.closest('[data-fedit]');
+  if(t){ const id = t.dataset.ftoggle; state.config.available[id] = !state.config.available[id];
+         commitFlavors(state.config.available[id] ? '🟢 Sabor visible en la tienda' : '⚪ Sabor oculto'); }
+  else if(ed) openFlavorEditor(ed.dataset.fedit);
+});
+$('flavorNew').addEventListener('click', () => openFlavorEditor(null));
+function openFlavorEditor(id){
+  const f = id ? FLAVORS.find(x => x.id === id) : null;
+  fEdit = f ? f.id : null;
+  fDraft = f ? {name:f.name, e:f.e, c:[...f.c], on:!!state.config.available[f.id]}
+             : {name:'', e:'🍒', c:['#FFB3C1','#D6194F'], on:true};
+  $('t-flavor').textContent = f ? 'Editar sabor' : 'Nuevo sabor';
+  $('fName').value = fDraft.name;
+  $('fEmojiCustom').value = FLAVOR_EMOJIS.includes(fDraft.e) ? '' : fDraft.e;
+  $('fOn').checked = fDraft.on; $('fErr').textContent = '';
+  $('fDelete').classList.toggle('hidden', !f);
+  drawFlavorEditor(); open('flavorOverlay');
+}
+function drawFlavorEditor(){
+  $('fEmojis').innerHTML = FLAVOR_EMOJIS.map(e => `<button class="chip ${fDraft.e===e?'on':''}" data-fe="${e}">${e}</button>`).join('');
+  $('fPalettes').innerHTML = PALETTES.map((p,i) => `<button class="swatch ${fDraft.c[0]===p[0]&&fDraft.c[1]===p[1]?'on':''}" data-fp="${i}" style="--c1:${p[0]};--c2:${p[1]}" aria-label="Combinación de colores ${i+1}"></button>`).join('');
+  $('fC1').value = fDraft.c[0]; $('fC2').value = fDraft.c[1];
+  drawFlavorPreview();
+}
+function drawFlavorPreview(){
+  const pr = $('fPrev'); pr.style.setProperty('--c1', fDraft.c[0]); pr.style.setProperty('--c2', fDraft.c[1]); pr.textContent = fDraft.e;
+  $('fPrevName').textContent = fDraft.name.trim() || 'Tu sabor nuevo';
+}
+$('fName').addEventListener('input', () => { fDraft.name = $('fName').value; drawFlavorPreview(); });
+$('fEmojis').addEventListener('click', e => { const b = e.target.closest('[data-fe]'); if(b){ fDraft.e = b.dataset.fe; $('fEmojiCustom').value = ''; drawFlavorEditor(); } });
+$('fEmojiCustom').addEventListener('input', () => { const v = $('fEmojiCustom').value.trim(); if(v){ fDraft.e = v; drawFlavorEditor(); } });
+$('fPalettes').addEventListener('click', e => { const b = e.target.closest('[data-fp]'); if(b){ fDraft.c = [...PALETTES[Number(b.dataset.fp)]]; drawFlavorEditor(); } });
+$('fC1').addEventListener('input', () => { fDraft.c[0] = $('fC1').value; drawFlavorPreview(); });
+$('fC2').addEventListener('input', () => { fDraft.c[1] = $('fC2').value; drawFlavorPreview(); });
+$('fOn').addEventListener('change', () => { fDraft.on = $('fOn').checked; });
+$('fSave').addEventListener('click', () => {
+  const name = fDraft.name.trim().replace(/\s+/g,' ');
+  if(name.length < 2){ $('fErr').textContent = 'Ponele un nombre de al menos 2 letras.'; return; }
+  if(!fDraft.e){ $('fErr').textContent = 'Elegí un ícono.'; return; }
+  if(!HEX.test(fDraft.c[0]) || !HEX.test(fDraft.c[1])){ $('fErr').textContent = 'Elegí los colores del planeta.'; return; }
+  if(FLAVORS.some(x => x.id !== fEdit && x.name.toLowerCase() === name.toLowerCase())){ $('fErr').textContent = 'Ya existe un sabor con ese nombre.'; return; }
+  const data = {name, e:fDraft.e.slice(0,8), c:[fDraft.c[0], fDraft.c[1]]};
+  let id = fEdit;
+  if(id){ Object.assign(FLAVORS.find(x => x.id === id), data); }
+  else { id = 'f' + Date.now().toString(36); FLAVORS.push({id, ...data}); }
+  state.config.available[id] = fDraft.on;
+  close('flavorOverlay');
+  commitFlavors(fEdit ? '✅ Sabor actualizado' : '🪐 ¡Sabor nuevo en la tienda!');
+});
+$('fDelete').addEventListener('click', () => {
+  const f = FLAVORS.find(x => x.id === fEdit); if(!f) return;
+  if(!confirm(`¿Eliminar "${f.name}"? Los pedidos viejos no se modifican.`)) return;
+  FLAVORS.splice(FLAVORS.indexOf(f), 1);
+  delete state.config.available[f.id]; delete cart[f.id];
+  close('flavorOverlay');
+  commitFlavors('🗑️ Sabor eliminado');
+});
+
+/* =================== TARJETA GALÁCTICA (cliente) =================== */
+const STICKER_DESIGNS = [
+  {e:'👽', c:['#7CFFB2','#12A56C']}, {e:'🚀', c:['#FFB3E6','#E5198F']}, {e:'🪐', c:['#FFE38A','#F29A00']},
+  {e:'🛸', c:['#A9F1FF','#0E9FC2']}, {e:'🌙', c:['#E0D4FF','#7B4DFF']}, {e:'⭐', c:['#FFF3A8','#FFB800']},
+  {e:'☄️', c:['#FFC3A0','#FF5E3A']}, {e:'🌍', c:['#B6F5C9','#1F9E6B']}, {e:'👾', c:['#D7B8FF','#9B2BD9']},
+  {e:'🍦', c:['#FFD6EC','#FF5FA8']},
+];
+const TKEY = 'marcianitos-tarjeta', SEENKEY = 'marcianitos-vistos', VPKEY = 'marcianitos-vale-pendiente';
+const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+let cardCode = null, card = null, useVoucher = true, envOpened = false, openCardOnLoad = false;
+try{ cardCode = localStorage.getItem(TKEY) || null; }catch(e){}
+(function readCardLink(){
+  try{
+    const u = new URL(location.href), t = (u.searchParams.get('t') || '').toUpperCase();
+    if(/^[A-Z0-9]{10}$/.test(t)){
+      cardCode = t; localStorage.setItem(TKEY, t); openCardOnLoad = true;
+      u.searchParams.delete('t'); history.replaceState(history.state, '', u.pathname + u.search + u.hash);
+    }
+  }catch(e){}
+})();
+function newCode(){
+  const a = new Uint32Array(10); crypto.getRandomValues(a);
+  return Array.from(a, n => CODE_CHARS[n % CODE_CHARS.length]).join('');
+}
+function ensureCardCode(){
+  if(!cardCode){ cardCode = newCode(); try{ localStorage.setItem(TKEY, cardCode); }catch(e){} }
+  return cardCode;
+}
+const cardLink = code => location.origin + location.pathname + '?t=' + code;
+function stickerHTML(id, extra=''){
+  const d = STICKER_DESIGNS[id % STICKER_DESIGNS.length], rot = ((id * 37) % 17) - 8;
+  return `<div class="stk" style="--c1:${d.c[0]};--c2:${d.c[1]};--rot:${rot}deg;${extra}">${d.e}<b>#${String(id).padStart(4,'0')}</b></div>`;
+}
+function pendingVoucher(){ try{ const p = JSON.parse(localStorage.getItem(VPKEY) || 'null'); return p && (Date.now() - p.at) < 48*3600*1000 ? p.id : null; }catch(e){ return null; } }
+function markVoucherPending(s){ if(s && s.voucher){ try{ localStorage.setItem(VPKEY, JSON.stringify({id:s.voucher.id, at:Date.now()})); }catch(e){} } }
+function usableVoucher(){
+  if(!sb || !card || !card.vouchers || !card.vouchers.length) return null;
+  const pend = pendingVoucher();
+  return card.vouchers.find(v => v.id !== pend) || null;
+}
+async function fetchCard(){
+  if(!sb || !cardCode){ renderCardChip(); return; }
+  const {data, error} = await sb.rpc('get_card', {p_code: cardCode});
+  if(error){ console.warn('Tarjeta', error); renderCardChip(); return; }
+  card = data || null;
+  renderCardChip(); renderCart();
+  if(!$('cardOverlay').classList.contains('hidden')) renderCardBody();
+  checkNewStickers();
+}
+function renderCardChip(){
+  const chip = $('cardChip');
+  chip.classList.toggle('hidden', !(sb && cardCode));
+  const n = card ? card.stickers.length : 0, ready = n >= 5, vs = card && card.vouchers.length;
+  chip.classList.toggle('gift', !!(ready || vs));
+  $('cardChipText').textContent = ready ? '¡CANJEAR!' : vs ? 'Vale listo 🎟️' : `${Math.min(n,5)}/5`;
+}
+function renderCardBody(){
+  const st = card ? card.stickers : [], n = st.length, vs = card ? card.vouchers : [];
+  const slots = [0,1,2,3,4].map(i => st[i] ? stickerHTML(st[i].id) : `<div class="slot">${i+1}</div>`).join('');
+  let html = `<p class="sub">${card ? `Tripulante <b>${esc(card.name)}</b>. ` : ''}Cada pedido entregado te suma 1 sticker único y numerado. Con 5 se activa tu sticker de CANJE.</p>
+    <div class="album">${slots}</div>`;
+  if(n >= 5){
+    html += `<div class="coupon" id="coupon"><span class="shine"></span>
+      <div class="ck">🎟️ Sticker de canje</div>
+      <div class="cbig">¡1 MARCIANITO GRATIS!</div>
+      <div class="cdash"></div>
+      <div class="csmall">Completaste tu tarjeta galáctica</div>
+      <button class="cbtn" id="redeemBtn">¡CANJEAR AHORA! 🎁</button></div>`;
+    if(n > 5) html += `<p class="note">Y tenés ${n-5} sticker${n-5===1?'':'s'} más guardado${n-5===1?'':'s'} para la próxima tarjeta.</p>`;
+  } else {
+    html += `<div class="bar"><i style="width:${n*20}%"></i></div>
+      <p class="sub">${n ? `Te falta${5-n===1?'':'n'} ${5-n} para tu marcianito gratis` : (card && card.redeemed) ? 'Arrancó tu tarjeta nueva. ¡A juntar 5 más! 🚀' : 'Tu primer sticker llega cuando Santi entrega tu primer pedido 🚀'}</p>`;
+  }
+  vs.forEach(v => {
+    const pend = v.id === pendingVoucher();
+    html += `<div class="voucher"><div class="vk">✅ VALE LISTO · #V${v.id}</div><div class="vbig">1 marcianito gratis</div>
+      <div class="vsmall">${pend ? 'Ya lo usaste en un pedido que está en camino' : 'Se descuenta solo en tu próximo pedido'}</div></div>`;
+  });
+  if(card && card.redeemed) html += `<p class="note">Canjes realizados: ${card.redeemed} 🏆</p>`;
+  html += `<div class="cardcode"><span>Tu código: <b>${esc(cardCode)}</b></span><button class="mini" id="copyCard">🔗 Copiar link</button></div>
+    <p class="note">Guardá el link para ver tu tarjeta desde otro celular.</p>`;
+  $('cardBody').innerHTML = html;
+}
+$('cardChip').addEventListener('click', () => { renderCardBody(); open('cardOverlay'); fetchCard(); });
+$('cartLines').addEventListener('click', e => { const b = e.target.closest('[data-vt]'); if(b){ useVoucher = b.dataset.vt === '1'; renderCart(); } });
+$('cardBody').addEventListener('click', async e => {
+  if(e.target.closest('#copyCard')){
+    const link = cardLink(cardCode);
+    try{ await navigator.clipboard.writeText(link); toast('🔗 Link copiado'); }catch(err){ prompt('Copiá el link de tu tarjeta:', link); }
+    return;
+  }
+  const b = e.target.closest('#redeemBtn'); if(!b) return;
+  b.disabled = true; b.textContent = 'Canjeando…';
+  const {data, error} = await sb.rpc('redeem_card', {p_code: cardCode});
+  if(error){ b.disabled = false; b.textContent = '¡CANJEAR AHORA! 🎁'; toast('⚠️ No se pudo canjear. Probá de nuevo'); return; }
+  await suckStickers();
+  card = data; markSeen((card.stickers || []).map(x => x.id));
+  renderCardBody(); renderCardChip(); renderCart(); confetti();
+  toast('🎉 ¡Vale listo! Se usa en tu próximo pedido');
+});
+function suckStickers(){
+  return new Promise(res => {
+    const coupon = $('coupon'), els = [...document.querySelectorAll('#cardBody .album .stk')];
+    if(!coupon || reduceMotion() || !Element.prototype.animate || !els.length) return res();
+    const c = coupon.getBoundingClientRect(), cx = c.left + c.width/2, cy = c.top + c.height/2;
+    els.forEach((el, i) => {
+      const r = el.getBoundingClientRect();
+      el.animate([{transform:'translate(0,0) scale(1)'}, {transform:`translate(${cx-(r.left+r.width/2)}px,${cy-(r.top+r.height/2)}px) scale(.2) rotate(360deg)`, opacity:0}],
+        {duration:600, delay:i*70, easing:'cubic-bezier(.5,0,.8,.4)', fill:'forwards'});
+    });
+    setTimeout(res, 600 + els.length*70);
+  });
+}
+function seenIds(){ try{ return JSON.parse(localStorage.getItem(SEENKEY) || '[]'); }catch(e){ return []; } }
+function markSeen(ids){ const s = new Set(seenIds()); ids.forEach(i => s.add(i)); try{ localStorage.setItem(SEENKEY, JSON.stringify([...s].slice(-300))); }catch(e){} }
+function checkNewStickers(){
+  if(!card || $('shop').classList.contains('hidden')) return;
+  const seen = new Set(seenIds()), fresh = card.stickers.filter(x => !seen.has(x.id));
+  if(fresh.length && navState.ov === null){ showEnvelope(fresh); return; }
+  if(openCardOnLoad && navState.ov === null){ openCardOnLoad = false; renderCardBody(); open('cardOverlay'); }
+}
+function showEnvelope(fresh){
+  openCardOnLoad = false; envOpened = false;
+  const list = fresh.slice(-5), n = list.length;
+  $('envCards').innerHTML = list.map((x,i) => stickerHTML(x.id, `--dx:${Math.round((i-(n-1)/2)*58)}px;transition-delay:${(.3+i*.12).toFixed(2)}s`)).join('');
+  $('envelope').classList.remove('open');
+  $('t-env').textContent = n > 1 ? `¡Te llegaron ${n} stickers galácticos! 💌` : '¡Te llegó un sticker galáctico! 💌';
+  $('envText').textContent = 'Tocá el sobre para abrirlo';
+  $('envBtn').textContent = 'Abrir sobre';
+  open('envOverlay');
+}
+function openEnvelope(){
+  if(envOpened){
+    markSeen(card.stickers.map(x => x.id));
+    renderCardBody(); open('cardOverlay');      // reemplaza el sobre por la tarjeta
+    return;
+  }
+  envOpened = true; $('envelope').classList.add('open'); setTimeout(confetti, 450);
+  const n = card.stickers.length;
+  $('envText').textContent = n >= 5 ? '¡Completaste tu tarjeta! Tu sticker de CANJE te espera 🎟️' : `Ya tenés ${n} de 5. ¡Te falta${5-n===1?'':'n'} ${5-n}!`;
+  $('envBtn').textContent = 'Guardar en mi tarjeta ⭐';
+}
+$('envelope').addEventListener('click', () => { if(!envOpened) openEnvelope(); });
+$('envelope').addEventListener('keydown', e => { if((e.key === 'Enter' || e.key === ' ') && !envOpened){ e.preventDefault(); openEnvelope(); } });
+$('envBtn').addEventListener('click', openEnvelope);
+document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'visible' && !$('shop').classList.contains('hidden')) fetchCard(); });
 
 /* =================== ACCESO =================== */
 if(sb){
@@ -1269,7 +1675,7 @@ async function enterAdmin(){
   if(sb){
     loggedIn = true;
     try{ await pullPrivate(); }catch(e){ toast('⚠️ No se pudieron traer tus datos de la nube'); }
-    fetchOrders(); subscribeOrders();
+    fetchOrders(); subscribeOrders(); fetchCards();
   }
   adminUnlocked = true;
   hideAllOverlays();
@@ -1297,6 +1703,7 @@ $('loginPass').addEventListener('keydown', e => { if(e.key === 'Enter') tryPin()
 function refreshShop(){ renderStatus(); renderCombos(); renderGrid(); renderCart(); }
 refreshShop();
 pullConfig();
+renderCardChip(); fetchCard();
 setInterval(() => { renderStatus(); updateWaLink(); }, 60000);
 </script>
 </body>
