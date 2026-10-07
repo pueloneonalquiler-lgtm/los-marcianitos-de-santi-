@@ -4,6 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0B0820">
+<meta name="description" content="Helados caseros con entrega a domicilio. Pedí tus marcianitos y juntá stickers galácticos.">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Marcianitos">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<script>
+  /* En iPhone/iPad no se usa el manifiesto: así el ícono guarda la dirección con la tarjeta del cliente */
+  window.IS_IOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  if(!window.IS_IOS){ var ml = document.createElement('link'); ml.rel = 'manifest'; ml.href = 'manifest.json'; document.head.appendChild(ml); }
+</script>
 <title>Los Marcianitos de Santi</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -338,6 +350,24 @@ input[type=color]{width:100%;height:48px;padding:4px;border-radius:14px;border:1
   box-shadow:0 0 20px rgba(255,79,216,.8);transition:opacity .2s,transform .3s}
 .envelope.open .env-seal{opacity:0;transform:translate(-50%,-50%) scale(1.6)}
 .env-stage .sub{font-size:16px;color:var(--text);min-height:44px}
+/* ---------- Instalar app ---------- */
+.install{display:flex;align-items:center;gap:12px;margin:18px auto 0;max-width:460px;padding:12px 12px 12px 14px;border-radius:22px;text-align:left;
+  background:linear-gradient(135deg,rgba(34,211,238,.18),rgba(155,92,255,.22));border:1.5px solid rgba(34,211,238,.55)}
+.install img{width:48px;height:48px;border-radius:12px;flex:none}
+.install .it{flex:1;min-width:0}
+.install .it b{display:block;font-family:var(--display);font-size:16px;font-weight:600}
+.install .it span{display:block;font-size:13px;color:var(--muted)}
+.install .ib{flex:none;padding:10px 14px;border:none;border-radius:14px;background:var(--cyan);color:#06222A;font-family:var(--display);font-weight:700;font-size:15px}
+.install .ix{flex:none;width:34px;height:34px;border-radius:50%;border:none;background:none;color:var(--muted);font-size:16px}
+.ios-steps{list-style:none;padding:0;margin:10px 0 18px;counter-reset:st}
+.ios-steps li{display:flex;align-items:center;gap:14px;padding:14px;margin-bottom:10px;border-radius:18px;background:var(--deep);border:1px solid var(--line);font-size:16px}
+.ios-steps li::before{counter-increment:st;content:counter(st);flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--violet);font-family:var(--display);font-weight:700}
+.ios-ico{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:8px;background:#fff;color:#007AFF;font-size:17px;font-weight:800;vertical-align:middle;margin:0 2px}
+.app-preview{display:flex;flex-direction:column;align-items:center;gap:6px;margin:6px 0 4px}
+.app-preview img{width:72px;height:72px;border-radius:18px;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.app-preview span{font-size:13px;font-weight:700}
+.ios-arrow{text-align:center;font-size:30px;animation:bob 1.2s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(8px)}}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 @media (max-width:360px){.grid{gap:10px}.planet{width:72px;height:72px;font-size:34px}.mission{grid-template-columns:80px 1fr}.pct{font-size:52px}}
 </style>
@@ -352,6 +382,12 @@ input[type=color]{width:100%;height:48px;padding:4px;border-radius:14px;border:1
     <h1>Los Marcianitos de Santi</h1>
     <p>Helados caseros con entrega a domicilio</p>
     <div id="status" class="status on" role="status"><span class="dot"></span><span id="statusText"></span></div>
+    <div class="install hidden" id="installBanner">
+      <img src="icons/icon-192.png" alt="">
+      <div class="it"><b>Tené la nave en tu celular</b><span>Pedís y ves tus stickers con un toque</span></div>
+      <button class="ib" id="installBtn">Instalar</button>
+      <button class="ix" id="installClose" aria-label="Ahora no">✕</button>
+    </div>
   </header>
 
   <section aria-labelledby="t-combos">
@@ -392,6 +428,7 @@ input[type=color]{width:100%;height:48px;padding:4px;border-radius:14px;border:1
   <h2 id="launchTitle">Despegue en 3…</h2>
   <p id="launchText"></p>
   <a class="btn wa hidden" id="launchFallback" href="#" target="_blank" rel="noopener">Abrir WhatsApp</a>
+  <button class="btn ghost hidden" id="launchInstall" style="border-color:var(--cyan);color:var(--cyan)">📲 Guardar la app para tu próximo pedido</button>
   <button class="btn ghost hidden" id="launchBack">Hacer otro pedido</button>
 </div>
 
@@ -600,6 +637,18 @@ input[type=color]{width:100%;height:48px;padding:4px;border-radius:14px;border:1
   </div>
 </div>
 
+<!-- Instrucciones para instalar -->
+<div class="overlay hidden" id="installOverlay" role="dialog" aria-modal="true" aria-labelledby="t-install">
+  <div class="sheet">
+    <div class="sheet-head"><h2 id="t-install">Instalá la nave</h2><button class="close" data-close="installOverlay" aria-label="Cerrar">✕</button></div>
+    <div class="app-preview"><img src="icons/icon-192.png" alt=""><span>Marcianitos</span></div>
+    <p class="sub" style="text-align:center">Te queda el ícono en el celular, como una app. Tu tarjeta de stickers viaja adentro.</p>
+    <ol class="ios-steps" id="installSteps"></ol>
+    <div class="ios-arrow hidden" id="iosArrow" aria-hidden="true">⬇️</div>
+    <button class="btn primary" data-close="installOverlay">¡Entendido!</button>
+  </div>
+</div>
+
 <!-- Tarjeta galáctica del cliente -->
 <div class="overlay hidden" id="cardOverlay" role="dialog" aria-modal="true" aria-labelledby="t-card">
   <div class="sheet">
@@ -745,7 +794,7 @@ function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.remove('
    Cada pantalla y ventana abierta crea una entrada en el historial del navegador.
    Así, la flecha "atrás" cierra la ventana abierta o vuelve a la pantalla anterior
    en lugar de salir del sitio. */
-const OVERLAYS = ['cartOverlay','pinOverlay','celebrate','flavorOverlay','cardOverlay','envOverlay'];
+const OVERLAYS = ['cartOverlay','pinOverlay','celebrate','flavorOverlay','cardOverlay','envOverlay','installOverlay'];
 const HOME_NAV = {screen:'shop', view:'home', ov:null};
 let navState = {...HOME_NAV};
 let adminUnlocked = false;
@@ -994,7 +1043,7 @@ function launchShip(url){
   fillDome('launchDome', 'launchMore', shipPassengers(), null);
   const ship = $('launchShip'); ship.classList.remove('go');
   $('launchFallback').href = url;
-  $('launchFallback').classList.add('hidden'); $('launchBack').classList.add('hidden');
+  $('launchFallback').classList.add('hidden'); $('launchBack').classList.add('hidden'); $('launchInstall').classList.add('hidden');
   $('launchText').textContent = `${s.count} marcianito${s.count===1?'':'s'} a bordo, rumbo a Santi`;
   $('launch').classList.remove('hidden');
   let n = 3; $('launchTitle').textContent = 'Despegue en 3…';
@@ -1008,6 +1057,7 @@ function launchShip(url){
       $('launchTitle').textContent = '¡Pedido en camino!';
       $('launchText').textContent = 'Si WhatsApp no se abrió solo, tocá el botón.';
       $('launchFallback').classList.remove('hidden'); $('launchBack').classList.remove('hidden');
+      $('launchInstall').classList.toggle('hidden', isStandalone());
       window.location.href = url;
     }, 1300);
   }, 700);
@@ -1529,9 +1579,12 @@ try{ cardCode = localStorage.getItem(TKEY) || null; }catch(e){}
   try{
     const u = new URL(location.href), t = (u.searchParams.get('t') || '').toUpperCase();
     if(/^[A-Z0-9]{10}$/.test(t)){
-      cardCode = t; localStorage.setItem(TKEY, t); openCardOnLoad = true;
-      u.searchParams.delete('t'); history.replaceState(history.state, '', u.pathname + u.search + u.hash);
+      if(t !== cardCode) openCardOnLoad = true;      // si es la misma tarjeta (ícono instalado), no la abre cada vez
+      cardCode = t; localStorage.setItem(TKEY, t);
     }
+    if(u.searchParams.get('tarjeta') === '1') openCardOnLoad = true;   // atajo "Mi tarjeta" del ícono
+    ['t','tarjeta','source'].forEach(k => u.searchParams.delete(k));
+    history.replaceState(history.state, '', u.pathname + u.search + u.hash);
   }catch(e){}
 })();
 function newCode(){
@@ -1594,12 +1647,14 @@ function renderCardBody(){
   });
   if(card && card.redeemed) html += `<p class="note">Canjes realizados: ${card.redeemed} 🏆</p>`;
   html += `<div class="cardcode"><span>Tu código: <b>${esc(cardCode)}</b></span><button class="mini" id="copyCard">🔗 Copiar link</button></div>
-    <p class="note">Guardá el link para ver tu tarjeta desde otro celular.</p>`;
+    <p class="note">Guardá el link para ver tu tarjeta desde otro celular.</p>
+    ${isStandalone() ? '' : '<button class="btn ghost" id="cardInstall" style="margin-top:12px;border-color:var(--cyan);color:var(--cyan)">📲 Instalar la app en mi celular</button>'}`;
   $('cardBody').innerHTML = html;
 }
 $('cardChip').addEventListener('click', () => { renderCardBody(); open('cardOverlay'); fetchCard(); });
 $('cartLines').addEventListener('click', e => { const b = e.target.closest('[data-vt]'); if(b){ useVoucher = b.dataset.vt === '1'; renderCart(); } });
 $('cardBody').addEventListener('click', async e => {
+  if(e.target.closest('#cardInstall')){ startInstall(); return; }
   if(e.target.closest('#copyCard')){
     const link = cardLink(cardCode);
     try{ await navigator.clipboard.writeText(link); toast('🔗 Link copiado'); }catch(err){ prompt('Copiá el link de tu tarjeta:', link); }
@@ -1661,6 +1716,48 @@ $('envelope').addEventListener('keydown', e => { if((e.key === 'Enter' || e.key 
 $('envBtn').addEventListener('click', openEnvelope);
 document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'visible' && !$('shop').classList.contains('hidden')) fetchCard(); });
 
+/* =================== INSTALAR COMO APP =================== */
+const IKEY = 'marcianitos-instalar-oculto';
+let installEvt = null;
+const isStandalone = () => window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+const isAndroid = /android/i.test(navigator.userAgent);
+function installDismissed(){ try{ return Date.now() - Number(localStorage.getItem(IKEY) || 0) < 7*24*3600*1000; }catch(e){ return false; } }
+function renderInstallBanner(){
+  $('installBanner').classList.toggle('hidden', isStandalone() || installDismissed());
+}
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; renderInstallBanner(); });
+window.addEventListener('appinstalled', () => { installEvt = null; renderInstallBanner(); close('installOverlay'); toast('🛸 ¡Nave instalada! Buscala en tu pantalla de inicio'); });
+async function startInstall(){
+  if(installEvt){
+    installEvt.prompt();
+    try{ const r = await installEvt.userChoice; if(r.outcome === 'accepted') toast('🛸 ¡Instalando la nave!'); }catch(e){}
+    installEvt = null; renderInstallBanner(); return;
+  }
+  const steps = window.IS_IOS
+    ? [`Tocá el botón <span class="ios-ico">⬆︎</span> <b>Compartir</b> (abajo en Safari, o arriba en Chrome)`,
+       `Bajá y tocá <span class="ios-ico">＋</span> <b>Agregar a inicio</b>`,
+       `Tocá <b>Agregar</b> arriba a la derecha`]
+    : isAndroid
+    ? [`Tocá los tres puntitos <span class="ios-ico" style="color:#333">⋮</span> del navegador`,
+       `Elegí <b>Instalar app</b> o <b>Agregar a pantalla principal</b>`,
+       `Confirmá con <b>Instalar</b>`]
+    : [`Abrí el menú del navegador`, `Buscá <b>Instalar</b> o <b>Agregar a pantalla de inicio</b>`, `Confirmá y listo`];
+  $('installSteps').innerHTML = steps.map(x => `<li><span>${x}</span></li>`).join('');
+  $('iosArrow').classList.toggle('hidden', !window.IS_IOS);
+  open('installOverlay');
+  // iPhone: el ícono guarda la dirección actual, así que le sumamos la tarjeta del cliente.
+  // Solo en esta pantalla: al cerrarla, la dirección vuelve a quedar limpia.
+  if(window.IS_IOS && cardCode){ try{ history.replaceState(history.state, '', location.pathname + '?t=' + cardCode); }catch(e){} }
+}
+$('installBtn').addEventListener('click', startInstall);
+$('launchInstall').addEventListener('click', () => { $('launch').classList.add('hidden'); startInstall(); });
+$('installClose').addEventListener('click', () => { try{ localStorage.setItem(IKEY, String(Date.now())); }catch(e){} renderInstallBanner(); });
+if('serviceWorker' in navigator && location.protocol === 'https:'){
+  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+}
+// Pide al navegador que no borre la tarjeta del cliente
+if(navigator.storage && navigator.storage.persist){ try{ navigator.storage.persist(); }catch(e){} }
+
 /* =================== ACCESO =================== */
 if(sb){
   $('pinLogin').classList.add('hidden'); $('cloudLogin').classList.remove('hidden');
@@ -1703,7 +1800,7 @@ $('loginPass').addEventListener('keydown', e => { if(e.key === 'Enter') tryPin()
 function refreshShop(){ renderStatus(); renderCombos(); renderGrid(); renderCart(); }
 refreshShop();
 pullConfig();
-renderCardChip(); fetchCard();
+renderCardChip(); fetchCard(); renderInstallBanner();
 setInterval(() => { renderStatus(); updateWaLink(); }, 60000);
 </script>
 </body>
