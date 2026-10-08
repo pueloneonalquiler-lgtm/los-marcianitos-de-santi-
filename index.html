@@ -461,6 +461,40 @@ input[type=color]{width:100%;height:48px;padding:4px;border-radius:14px;border:1
 .cred-tag{display:inline-block;margin-top:10px;font-size:12px;font-weight:800;letter-spacing:2px;color:var(--muted)}
 .ws-img{display:block;width:100%;max-width:340px;margin:4px auto 14px;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.5);background:var(--deep);aspect-ratio:4/5}
 .memberno{font-family:'Black Ops One',var(--display);letter-spacing:2px;color:var(--green);font-size:15px}
+/* ---------- Club solo para socios ---------- */
+.club-lock{margin-top:30px;padding:18px 16px;border-radius:26px;text-align:center;border:1.5px dashed rgba(57,255,136,.6);
+  background:radial-gradient(circle at 50% 0%,rgba(57,255,136,.14),transparent 70%),var(--surface)}
+.club-lock .lk{font-size:40px;line-height:1}
+.club-lock h2{margin:6px 0 4px}
+.club-lock ul{list-style:none;padding:0;margin:10px 0 14px;display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.club-lock li{padding:6px 12px;border-radius:999px;background:var(--deep);border:1px solid var(--line);font-size:14px;font-weight:700}
+.invrow{display:flex;gap:8px}
+.invrow input{flex:1;min-width:0;text-transform:uppercase;letter-spacing:3px;font-family:var(--display);text-align:center}
+.invrow .btn{flex:0 0 auto;width:auto;padding:0 16px;font-size:16px}
+.sticker-note.lock{color:var(--green);background:rgba(57,255,136,.08);border-color:rgba(57,255,136,.4)}
+.inv-box{margin-top:18px;padding:16px;border-radius:20px;background:var(--deep);border:1.5px solid rgba(34,211,238,.45)}
+.inv-box h3{font-size:18px;margin:0 0 4px}
+.inv-list{list-style:none;padding:0;margin:10px 0 0}
+.inv-list li{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:14px}
+.inv-list b{font-family:var(--display);letter-spacing:2px;color:var(--cyan)}
+.badge-soc{display:inline-block;margin-left:6px;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:1px;vertical-align:middle}
+.badge-soc.si{background:rgba(57,255,136,.18);color:var(--green)}
+.badge-soc.no{background:rgba(168,162,200,.15);color:var(--muted)}
+.join-hello{text-align:center;margin:0 0 6px}
+.join-hello .big{font-size:56px;line-height:1}
+/* ---------- Competencia de Stickers ---------- */
+.comp{margin-top:30px;padding:18px 14px 14px;border-radius:28px;background:linear-gradient(180deg,rgba(255,79,216,.14),var(--surface) 55%);border:1.5px solid rgba(255,79,216,.45)}
+.comp .prize-info{border-color:rgba(255,79,216,.4)}
+.comp .pi-k{color:var(--pink)}
+.comp-list{list-style:none;padding:0;margin:10px 0 0}
+.crow{display:flex;align-items:center;gap:10px;padding:10px 6px;border-bottom:1px dashed var(--line)}
+.crow.me{background:rgba(57,255,136,.08);border-radius:12px;border-bottom-color:transparent}
+.crow .cpos{flex:0 0 34px;text-align:center;font-family:var(--display);font-weight:700;font-size:20px;color:var(--muted)}
+.crow .cname{flex:1;min-width:0;font-weight:800;font-size:15px;overflow-wrap:anywhere;display:flex;align-items:center;gap:8px}
+.crow.me .cname{color:var(--green)}
+.crow .cqty{flex:none;font-family:var(--display);font-weight:700;font-size:18px;color:var(--yellow)}
+.comp .race-me{background:rgba(255,79,216,.1);border-color:rgba(255,79,216,.45)}
+select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--line);background:var(--deep);color:var(--text);font-size:16px}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 @media (max-width:360px){.grid{gap:10px}.planet{width:72px;height:72px;font-size:34px}.mission{grid-template-columns:80px 1fr}.pct{font-size:52px}}
 </style>
@@ -484,6 +518,30 @@ input[type=color]{width:100%;height:48px;padding:4px;border-radius:14px;border:1
       <button class="ix" id="installClose" aria-label="Ahora no">✕</button>
     </div>
   </header>
+
+  <section class="club-lock hidden" id="clubLock" aria-labelledby="t-lock">
+    <div class="lk" aria-hidden="true">🔒</div>
+    <h2 id="t-lock">Club AREA 42 · Solo socios</h2>
+    <p class="sub" style="margin:0">Cualquiera puede pedir helados, pero el club es <b>solo por invitación</b>. Los socios tienen:</p>
+    <ul><li>⭐ Stickers galácticos</li><li>🎟️ Marcianitos gratis</li><li>🏁 Carrera Galáctica</li><li>🏆 Premios exclusivos</li></ul>
+    <p class="sub" style="margin:0 0 8px">¿Te invitaron? Ingresá tu código:</p>
+    <div class="invrow"><input id="invInput" type="text" maxlength="8" placeholder="CÓDIGO" aria-label="Código de invitación" autocomplete="off"><button class="btn primary" id="invGo">Entrar</button></div>
+    <div class="err" id="invErr" role="alert"></div>
+  </section>
+
+  <section class="comp hidden" id="comp" aria-labelledby="t-comp">
+    <div class="race-head"><h2 id="t-comp">⭐ Competencia de Stickers</h2></div>
+    <div class="prize-row">
+      <div class="prize-info">
+        <div class="pi-k">🎯 Participan</div><div class="pi-v" id="compWho"></div>
+        <div class="pi-k">🏆 Premio</div><div class="pi-v" id="compPrizeTxt"></div>
+      </div>
+    </div>
+    <p class="sub" id="compEndTxt" style="margin:0 0 6px"></p>
+    <ol class="comp-list" id="compList"></ol>
+    <div class="race-me" id="compMe"></div>
+    <button class="race-more hidden" id="compMore" aria-expanded="false">Ver todos ▾</button>
+  </section>
 
   <section class="race hidden" id="race" aria-labelledby="t-race">
     <div class="race-head"><h2 id="t-race">🏁 Carrera Galáctica</h2></div>
@@ -548,14 +606,14 @@ input[type=color]{width:100%;height:48px;padding:4px;border-radius:14px;border:1
     <div class="sheet-head"><h2 id="t-cart">Bodega de Carga</h2><button class="close" data-close="cartOverlay" aria-label="Cerrar">✕</button></div>
     <div id="cartLines"></div>
     <div class="total"><span>Total</span><b id="cartTotal">$0</b></div>
-    <div class="avrow"><span id="cartAv"></span><div><b>Tu avatar de tripulante</b><span class="t">Así aparecés en la Carrera Galáctica</span></div><button class="mini" id="cartAvBtn">Elegir</button></div>
+    <div class="avrow" id="cartAvRow"><span id="cartAv"></span><div><b>Tu avatar de tripulante</b><span class="t">Así aparecés en las competencias</span></div><button class="mini" id="cartAvBtn">Elegir</button></div>
     <label for="cName">Tu nombre de tripulante</label>
     <input id="cName" type="text" autocomplete="name" placeholder="Ej: Lucía">
     <label for="cAddr">Dirección de aterrizaje</label>
     <input id="cAddr" type="text" autocomplete="street-address" placeholder="Calle y número">
     <label for="cRef">Referencia (opcional)</label>
     <input id="cRef" type="text" placeholder="Ej: casa con portón verde">
-    <div class="sticker-note">⭐ Con esta compra sumás 1 sticker galáctico único. ¡Juntá 5 y canjeás un marcianito gratis!</div>
+    <div class="sticker-note" id="stickerNote">⭐ Con esta compra sumás 1 sticker galáctico único. ¡Juntá 5 y canjeás un marcianito gratis!</div>
     <a class="btn wa" id="sendWa" href="#" target="_blank" rel="noopener">Lanzar pedido por WhatsApp</a>
     <div class="err" id="cartErr" role="alert"></div>
     <p class="note" id="deliveryNote"></p>
@@ -643,8 +701,9 @@ input[type=color]{width:100%;height:48px;padding:4px;border-radius:14px;border:1
   <!-- Tripulantes -->
   <div data-view="crew" class="hidden">
     <div class="panel">
-      <h2>Tripulantes y stickers</h2>
-      <p class="sub">Cada pedido entregado suma 1 sticker. Con 5, un marcianito gratis.</p>
+      <h2>Socios del club</h2>
+      <p class="sub">El club es solo por invitación. Creá un socio con su nombre o mandale una invitación para que se anote solo.</p>
+      <button class="btn ghost" id="santiInvite" style="margin:0 0 12px;border-color:var(--cyan);color:var(--cyan)">🔗 Crear invitación para un amigo</button>
       <div class="row">
         <input id="crewName" type="text" placeholder="Nombre del cliente" aria-label="Nombre del cliente">
         <button class="btn primary" id="crewAdd" style="flex:0 0 auto;width:auto;padding:0 18px;font-size:16px">Sumar</button>
@@ -694,8 +753,27 @@ input[type=color]{width:100%;height:48px;padding:4px;border-radius:14px;border:1
       <ul class="flist" id="sFlavors"></ul>
     </div>
     <div class="panel">
+      <h2>Competencia de Stickers</h2>
+      <label class="checkrow"><input type="checkbox" id="sCompOn"> Mostrar la competencia en la tienda</label>
+      <label for="sCompFor">¿Quiénes compiten?</label>
+      <select class="inp" id="sCompFor">
+        <option value="todos">Todos (clientes y socios)</option>
+        <option value="socios">Solo socios del club</option>
+        <option value="clientes">Solo clientes</option>
+      </select>
+      <label for="sCompPrize">Premio</label>
+      <input id="sCompPrize" type="text" maxlength="80" placeholder="Ej: ¡Un Pack Cohete Apolo gratis!">
+      <label for="sCompEnd">Termina el (opcional)</label>
+      <input id="sCompEnd" type="date">
+      <p class="note" id="compStartNote"></p>
+      <button class="btn ghost" id="compReset" style="margin-top:10px">⭐ Empezar una competencia nueva</button>
+    </div>
+    <div class="panel">
       <h2>Carrera Galáctica</h2>
       <label class="checkrow"><input type="checkbox" id="sRaceOn"> Mostrar la carrera en la tienda</label>
+      <label for="sInvites">Invitaciones que tiene cada socio para sus amigos</label>
+      <input id="sInvites" type="number" inputmode="numeric" min="0" max="10">
+      <p class="note">Poné 0 si querés que solo Santi pueda sumar socios.</p>
       <label for="sRaceGoal">Meta (marcianitos para ganar)</label>
       <input id="sRaceGoal" type="number" inputmode="numeric" min="5" max="1000">
       <label for="sRacePrize">Premio</label>
@@ -778,6 +856,21 @@ input[type=color]{width:100%;height:48px;padding:4px;border-radius:14px;border:1
     <ol class="ios-steps" id="installSteps"></ol>
     <div class="ios-arrow hidden" id="iosArrow" aria-hidden="true">⬇️</div>
     <button class="btn primary" data-close="installOverlay">¡Entendido!</button>
+  </div>
+</div>
+
+<!-- Entrar al club con invitación -->
+<div class="overlay hidden" id="joinOverlay" role="dialog" aria-modal="true" aria-labelledby="t-join">
+  <div class="sheet">
+    <div class="sheet-head"><h2 id="t-join">¡Te invitaron al club!</h2><button class="close" data-close="joinOverlay" aria-label="Cerrar">✕</button></div>
+    <div class="join-hello"><div class="big" aria-hidden="true">🛸</div><p class="sub" id="joinFrom">Tenés una invitación para ser socio de AREA 42 Club.</p></div>
+    <label for="joinName">Tu nombre y apellido</label>
+    <input id="joinName" type="text" maxlength="60" autocomplete="name" placeholder="Ej: Tomás Rodríguez">
+    <p class="note">En la carrera solo se muestra tu nombre y la inicial del apellido.</p>
+    <label>Elegí tu avatar</label>
+    <div class="avgrid" id="joinAvGrid" style="margin-top:6px"></div>
+    <div class="err" id="joinErr" role="alert"></div>
+    <button class="btn primary" id="joinGo">🚀 Entrar al club</button>
   </div>
 </div>
 
@@ -879,6 +972,8 @@ const DEFAULT = {
     phone:'5492944135365', start:'17:00', end:'21:00',
     price:500, apolo:1300, galaxia:2500, familiar:4500,
     goalName:'Bicicleta', goalAmount:50000, goalEmoji:'🚲', pin:'1234',
+    invitesPerMember:2,
+    compOn:true, compFor:'todos', compPrize:'¡Un Pack Cohete Apolo gratis!', compStart:'', compEnd:'',
     raceOn:true, raceGoal:100, racePrize:'¡Un Pack Galaxia gratis! (5 + 1)', raceStart:'',
     flavors: DEFAULT_FLAVORS,
     available:{limon:true,frutilla:true,naranja:true,uva:true,choco:true,ddl:true,anana:false,durazno:false,coco:false,sandia:false,banana:false,menta:false}
@@ -919,7 +1014,7 @@ async function pullConfig(){
   if(error || !data || !data.data || !Object.keys(data.data).length) return;
   const d = data.data;
   state.config = {...state.config, ...d, available:{...state.config.available, ...(d.available||{})}};
-  syncFlavors(); saveLocal(); refreshShop(); fetchRace();
+  syncFlavors(); saveLocal(); refreshShop(); fetchRace(); fetchComp();
 }
 async function pullPrivate(){
   const {data, error} = await sb.from('santi_data').select('data').eq('id',1).single();
@@ -956,7 +1051,7 @@ function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.remove('
    Cada pantalla y ventana abierta crea una entrada en el historial del navegador.
    Así, la flecha "atrás" cierra la ventana abierta o vuelve a la pantalla anterior
    en lugar de salir del sitio. */
-const OVERLAYS = ['cartOverlay','pinOverlay','celebrate','flavorOverlay','cardOverlay','envOverlay','installOverlay','avatarOverlay','welcomeOverlay','welcomeSend'];
+const OVERLAYS = ['cartOverlay','pinOverlay','celebrate','flavorOverlay','cardOverlay','envOverlay','installOverlay','avatarOverlay','welcomeOverlay','welcomeSend','joinOverlay'];
 const HOME_NAV = {screen:'shop', view:'home', ov:null};
 let navState = {...HOME_NAV};
 let adminUnlocked = false;
@@ -1130,9 +1225,13 @@ function buildMessage(s){
   if(s.voucher) L.push(`🎟️ Vale de canje #V${s.voucher.id}: 1 marcianito gratis (−${money(s.disc)})`);
   L.push('', `📍 Destino: ${addr}`);
   if(ref) L.push(`🗺️ Referencia: ${ref}`);
-  L.push(`🕔 Entrega: ${deliveryText()}`, `💰 Total: ${money(s.total)}`, '',
-         '⭐ Con esta compra sumás 1 sticker galáctico.', '¡Juntá 5 y canjeás un marcianito gratis!');
-  if(sb){ ensureCardCode(); L.push(`🪪 Mi tarjeta galáctica: ${cardLink(cardCode)}`); }
+  L.push(`🕔 Entrega: ${deliveryText()}`, `💰 Total: ${money(s.total)}`);
+  if(sb && !isMember()){
+    ensureCardCode(); L.push('', '⭐ Con esta compra sumo 1 sticker galáctico.', `Mi tarjeta de stickers: ${cardLink(cardCode)}`);
+  }
+  if(isMember()){
+    L.push('', `🪪 Socio Nº ${card.member_no ? memberNo(card.member_no) : '—'} · AREA 42 Club`, '⭐ Con esta compra sumo 1 sticker galáctico.', `Mi tarjeta: ${cardLink(cardCode)}`);
+  }
   return L.join('\n');
 }
 function renderCart(bump){
@@ -1183,7 +1282,7 @@ async function saveOrder(s){
     combo: s.comboText.join(' + ').slice(0,200) || null,
     qty: s.count, total: Math.round(s.total),
     delivery: deliveryText().slice(0,80),
-    card_code: ensureCardCode(),
+    card_code: sb ? ensureCardCode() : null,
     avatar: myAvatar(),
     voucher_id: s.voucher ? s.voucher.id : null
   };
@@ -1372,7 +1471,7 @@ $('logSave').addEventListener('click', () => {
 let cards = [];
 async function fetchCards(){
   if(!sb || !loggedIn) return;
-  const {data, error} = await sb.from('cards').select('code,name,created_at,hide_rank,avatar,member_no,stickers(id,redeemed_at),vouchers(id,status)')
+  const {data, error} = await sb.from('cards').select('code,name,created_at,hide_rank,avatar,member_no,member,stickers(id,redeemed_at),vouchers(id,status)')
     .order('created_at', {ascending:false}).limit(500);
   if(error){ toast('⚠️ No se pudieron traer las tarjetas'); console.warn(error); return; }
   cards = data || [];
@@ -1383,7 +1482,8 @@ function renderCloudCrew(){
     const act = (c.stickers || []).filter(x => !x.redeemed_at).sort((a,b) => a.id - b.id);
     const vs = (c.vouchers || []).filter(v => v.status === 'disponible');
     const used = (c.vouchers || []).length;
-    return `<li><div class="top"><span class="name">${avHTML(c.avatar,'sm') || '👽 '}${esc(c.name)}</span>
+    const mem = c.member !== false;
+    return `<li><div class="top"><span class="name">${avHTML(c.avatar,'sm') || '👽 '}${esc(c.name)}${mem ? '<span class="badge-soc si">🪪 SOCIO</span>' : '<span class="badge-soc no">CLIENTE</span>'}</span>
         <button class="x" data-cdel="${c.code}" aria-label="Borrar tarjeta de ${esc(c.name)}" style="width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:none;color:var(--muted)">✕</button></div>
       <div class="stars">${[0,1,2,3,4].map(i => act[i] ? `<span class="f" title="#${act[i].id}">⭐</span>` : '<span></span>').join('')}${act.length > 5 ? `<b style="align-self:center">+${act.length-5}</b>` : ''}</div>
       ${vs.length ? `<p class="note" style="color:var(--green);font-weight:800">🎟️ ${vs.length} vale${vs.length===1?'':'s'} listo${vs.length===1?'':'s'} para usar</p>` : ''}
@@ -1391,7 +1491,7 @@ function renderCloudCrew(){
       <div class="row">
         <button class="mini" data-cstick="${c.code}">+1 sticker</button>
         <button class="mini" data-crace="${c.code}">🏁 + en persona</button>
-        <button class="mini" data-cwelcome="${c.code}">🎟️ Mandar bienvenida</button>
+        ${mem ? `<button class="mini" data-cwelcome="${c.code}">🎟️ Mandar bienvenida</button>` : `<button class="mini" data-cmember="${c.code}">🪪 Hacer socio</button>`}
       </div>
       ${vs.length ? `<button class="mini gift" style="width:100%;margin-top:8px" data-cvused="${vs[0].id}">✅ Ya le di el gratis en persona</button>` : ''}
       <button class="mini" style="width:100%;margin-top:8px" data-chide="${c.code}" data-h="${c.hide_rank ? 1 : 0}">${c.hide_rank ? '🙈 Oculto en la carrera · Mostrar' : '👁️ Visible en la carrera · Ocultar'}</button>
@@ -1435,6 +1535,13 @@ $('crewList').addEventListener('click', async e => {
   const t = e.target.closest('button'); if(!t) return;
   if(sb){
     if(t.dataset.cwelcome){ const c = cards.find(x => x.code === t.dataset.cwelcome); if(c) openWelcomeSend(c); return; }
+    if(t.dataset.cmember){
+      const c = cards.find(x => x.code === t.dataset.cmember);
+      if(!c || !confirm(`¿Hacer socio del club a ${c.name}? Conserva sus stickers.`)) return;
+      const {error} = await sb.from('cards').update({member:true}).eq('code', c.code);
+      if(error){ toast('⚠️ No se pudo'); return; }
+      c.member = true; toast(`🪪 ¡${c.name} ahora es socio!`); fetchCards(); fetchRace(); openWelcomeSend(c); return;
+    }
     if(t.dataset.crace){
       const q = Math.round(Number(prompt('¿Cuántos marcianitos le vendiste en persona? (suman a la carrera)', '1')));
       if(!(q >= 1 && q <= 200)) return;
@@ -1484,6 +1591,10 @@ function renderSettings(){
   $('sPrice').value = c.price; $('sApolo').value = c.apolo; $('sGalaxia').value = c.galaxia; $('sFamiliar').value = c.familiar;
   $('sGoalName').value = c.goalName; $('sGoalAmount').value = c.goalAmount;
   $('sPhone').value = c.phone; $('sPin').value = c.pin;
+  $('sInvites').value = Number.isInteger(c.invitesPerMember) ? c.invitesPerMember : 2;
+  $('sCompOn').checked = c.compOn !== false; $('sCompFor').value = c.compFor || 'todos';
+  $('sCompPrize').value = c.compPrize || ''; $('sCompEnd').value = c.compEnd || '';
+  $('compStartNote').textContent = c.compStart ? `Competencia actual desde el ${prettyDate(isoDay(c.compStart))}. Cuentan los stickers ganados desde ese día.` : 'Cuentan todos los stickers ganados.';
   $('sRaceOn').checked = c.raceOn !== false; $('sRaceGoal').value = c.raceGoal || 100; $('sRacePrize').value = c.racePrize || '';
   renderPrizeAdmin();
   $('raceStartNote').textContent = c.raceStart ? `Carrera actual desde el ${prettyDate(isoDay(c.raceStart))}. Cuentan los marcianitos entregados desde ese día.` : 'Cuentan todos los marcianitos entregados con tarjeta.';
@@ -1512,9 +1623,11 @@ $('setSave').addEventListener('click', () => {
     start, end, price:num('sPrice'), apolo:num('sApolo')||0, galaxia:num('sGalaxia')||0, familiar:num('sFamiliar')||0,
     goalName:$('sGoalName').value.trim() || 'Mi meta', goalAmount:num('sGoalAmount'), goalEmoji:pickEmoji,
     phone:$('sPhone').value.replace(/\D/g,'') || DEFAULT.config.phone, pin: sb ? state.config.pin : pin,
+    invitesPerMember: Math.max(0, Math.min(10, Math.round(num('sInvites')) || 0)),
+    compOn:$('sCompOn').checked, compFor:$('sCompFor').value, compPrize:$('sCompPrize').value.trim().slice(0,80), compEnd:$('sCompEnd').value || '',
     raceOn:$('sRaceOn').checked, raceGoal:rg, racePrize:$('sRacePrize').value.trim().slice(0,80)
   });
-  save(); pushConfig(); refreshShop(); renderRace(); toast(sb ? '✅ Guardado y publicado para los clientes' : '✅ Cambios guardados');
+  save(); pushConfig(); refreshShop(); renderRace(); setTimeout(fetchComp, 800); toast(sb ? '✅ Guardado y publicado para los clientes' : '✅ Cambios guardados');
 });
 $('newGoal').addEventListener('click', () => {
   if(!confirm('Tu cohete vuelve a la Tierra y empieza una meta nueva. Tus ventas y medallas se guardan. ¿Seguimos?')) return;
@@ -1606,7 +1719,7 @@ function orderCard(o){
   const t = today(), day = isoDay(o.created_at);
   const map = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(o.address)}`;
   return `<li class="order ${esc(o.status)}">
-    <div class="otop"><span class="oname">${avHTML(o.avatar,'sm') || '👽 '}${esc(o.customer_name)}</span><span class="otime">${day === t ? 'Hoy' : prettyDate(day)} ${hhmm(o.created_at)}</span></div>
+    <div class="otop"><span class="oname">${avHTML(o.avatar,'sm') || '👽 '}${esc(o.customer_name)}${isMemberCode(o.card_code) ? '<span class="badge-soc si">🪪 SOCIO</span>' : '<span class="badge-soc no">CLIENTE</span>'}</span><span class="otime">${day === t ? 'Hoy' : prettyDate(day)} ${hhmm(o.created_at)}</span></div>
     <div class="oaddr">📍 ${esc(o.address)}${o.reference ? `<br><span class="oref">🗺️ ${esc(o.reference)}</span>` : ''}</div>
     <div class="oitems">🍧 ${esc(orderItems(o))}${o.combo ? `<br><span class="ocombo">🎁 ${esc(o.combo)}</span>` : ''}</div>
     ${o.voucher_id ? `<div class="ocombo" style="margin-top:6px">🎟️ Usa vale de canje #V${o.voucher_id} (ya descontado)</div>` : ''}
@@ -1657,7 +1770,8 @@ async function deliverOrder(id){
   if(r.voucher_requested && !r.voucher_used) alert(`⚠️ ${nm} pidió usar un vale que ya estaba usado. Cobrale el marcianito completo (${money(state.config.price)}).`);
   toast(r.sticker_id == null ? `✅ Entregado (pedido sin tarjeta)`
       : r.active >= 5 ? `🎟️ ¡${nm} completó su tarjeta! Ya puede canjear`
-      : `⭐ ${nm} ganó el sticker #${String(r.sticker_id).padStart(4,'0')} (${r.active}/5)`);
+      : `⭐ ${nm} ganó el sticker #${String(r.sticker_id).padStart(4,'0')} (${r.active}/5)${r.member ? '' : ' · cliente'}`);
+  fetchCards(); fetchComp();
   setTimeout(checkMedals, 700);
 }
 async function cancelOrder(id){
@@ -1757,7 +1871,9 @@ const STICKER_DESIGNS = [
 ];
 const TKEY = 'marcianitos-tarjeta', SEENKEY = 'marcianitos-vistos', VPKEY = 'marcianitos-vale-pendiente';
 const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-let cardCode = null, card = null, useVoucher = true, envOpened = false, openCardOnLoad = false, welcomeOnLoad = false;
+let cardCode = null, card = null, useVoucher = true, envOpened = false, openCardOnLoad = false, welcomeOnLoad = false, pendingInvite = null;
+const isMember = () => !!(sb && card && card.member !== false);
+const hasCard = () => !!(sb && card);
 try{ cardCode = localStorage.getItem(TKEY) || null; }catch(e){}
 (function readCardLink(){
   try{
@@ -1767,7 +1883,9 @@ try{ cardCode = localStorage.getItem(TKEY) || null; }catch(e){}
       cardCode = t; localStorage.setItem(TKEY, t);
     }
     if(u.searchParams.get('tarjeta') === '1') openCardOnLoad = true;   // atajo "Mi tarjeta" del ícono
-    ['t','tarjeta','source'].forEach(k => u.searchParams.delete(k));
+    const inv = (u.searchParams.get('inv') || '').toUpperCase();
+    if(/^[A-Z0-9]{8}$/.test(inv)) pendingInvite = inv;
+    ['t','tarjeta','source','inv'].forEach(k => u.searchParams.delete(k));
     history.replaceState(history.state, '', u.pathname + u.search + u.hash);
   }catch(e){}
 })();
@@ -1792,7 +1910,8 @@ function usableVoucher(){
   return card.vouchers.find(v => v.id !== pend) || null;
 }
 async function fetchCard(){
-  if(!sb || !cardCode){ renderCardChip(); return; }
+  if(!sb){ renderCardChip(); return; }
+  if(!cardCode){ card = null; renderCardChip(); renderClubLock(); if(pendingInvite){ const c0 = pendingInvite; pendingInvite = null; openJoin(c0); } return; }
   const {data, error} = await sb.rpc('get_card', {p_code: cardCode});
   if(error){ console.warn('Tarjeta', error); renderCardChip(); return; }
   card = data || null;
@@ -1800,8 +1919,10 @@ async function fetchCard(){
     let loc = null; try{ const v = localStorage.getItem(AVKEY); loc = v === null ? null : Number(v); }catch(e){}
     if(Number.isInteger(loc)){ card.avatar = loc; sb.rpc('set_avatar', {p_code: cardCode, p_avatar: loc}).then(() => fetchRace()); }
   }
-  renderCardChip(); renderCart();
+  renderCardChip(); renderCart(); renderClubLock();
   if(!$('cardOverlay').classList.contains('hidden')) renderCardBody();
+  if(pendingInvite && !isMember()){ const c0 = pendingInvite; pendingInvite = null; openJoin(c0); return; }
+  if(pendingInvite && isMember()){ pendingInvite = null; toast('🪪 ¡Ya sos socio del club!'); }
   checkNewStickers();
 }
 function renderCardChip(){
@@ -1814,7 +1935,8 @@ function renderCardChip(){
 function renderCardBody(){
   const st = card ? card.stickers : [], n = st.length, vs = card ? card.vouchers : [];
   const slots = [0,1,2,3,4].map(i => st[i] ? stickerHTML(st[i].id) : `<div class="slot">${i+1}</div>`).join('');
-  let html = `<div class="card-me">${avHTML(myAvatar(), 'lg') || '<span class="av lg" aria-hidden="true">❔</span>'}${card && card.member_no ? `<span class="memberno">SOCIO Nº ${memberNo(card.member_no)}</span>` : ''}<button class="mini" id="cardAvBtn">${myAvatar() === null ? 'Elegir mi avatar' : 'Cambiar avatar'}</button></div>
+  let html = `<div class="card-me">${avHTML(myAvatar(), 'lg') || '<span class="av lg" aria-hidden="true">❔</span>'}${isMember() && card.member_no ? `<span class="memberno">SOCIO Nº ${memberNo(card.member_no)}</span>` : ''}<button class="mini" id="cardAvBtn">${myAvatar() === null ? 'Elegir mi avatar' : 'Cambiar avatar'}</button></div>
+    ${sb && !isMember() ? '<p class="note" style="text-align:center;color:var(--green);font-weight:800">Tarjeta de cliente · 🔒 Con una invitación te hacés socio y conservás tus stickers</p>' : ''}
     <p class="sub">${card ? `Tripulante <b>${esc(card.name)}</b>. ` : ''}Cada pedido entregado te suma 1 sticker único y numerado. Con 5 se activa tu sticker de CANJE.</p>
     <div class="album">${slots}</div>`;
   if(n >= 5){
@@ -1835,6 +1957,7 @@ function renderCardBody(){
       <div class="vsmall">${pend ? 'Ya lo usaste en un pedido que está en camino' : 'Se descuenta solo en tu próximo pedido'}</div></div>`;
   });
   if(card && card.redeemed) html += `<p class="note">Canjes realizados: ${card.redeemed} 🏆</p>`;
+  html += inviteBoxHTML();
   html += `<div class="cardcode"><span>Tu código: <b>${esc(cardCode)}</b></span><button class="mini" id="copyCard">🔗 Copiar link</button></div>
     <p class="note">Guardá el link para ver tu tarjeta desde otro celular.</p>
     ${isStandalone() ? '' : '<button class="btn ghost" id="cardInstall" style="margin-top:12px;border-color:var(--cyan);color:var(--cyan)">📲 Instalar la app en mi celular</button>'}`;
@@ -1845,6 +1968,8 @@ $('cartLines').addEventListener('click', e => { const b = e.target.closest('[dat
 $('cardBody').addEventListener('click', async e => {
   if(e.target.closest('#cardInstall')){ startInstall(); return; }
   if(e.target.closest('#cardAvBtn')){ openAvatarPicker('cardOverlay'); return; }
+  if(e.target.closest('#invNew')){ createMemberInvite(e.target.closest('#invNew')); return; }
+  const sh = e.target.closest('[data-invshare]'); if(sh){ shareInvite(sh.dataset.invshare, card ? card.name : ''); return; }
   if(e.target.closest('#copyCard')){
     const link = cardLink(cardCode);
     try{ await navigator.clipboard.writeText(link); toast('🔗 Link copiado'); }catch(err){ prompt('Copiá el link de tu tarjeta:', link); }
@@ -1877,7 +2002,7 @@ function markSeen(ids){ const s = new Set(seenIds()); ids.forEach(i => s.add(i))
 function checkNewStickers(){
   if(!card || $('shop').classList.contains('hidden')) return;
   const seen = new Set(seenIds()), fresh = card.stickers.filter(x => !seen.has(x.id));
-  if(welcomeOnLoad && navState.ov === null && !welcomeSeen()){ welcomeOnLoad = false; showWelcome(); return; }
+  if(welcomeOnLoad && isMember() && navState.ov === null && !welcomeSeen()){ welcomeOnLoad = false; showWelcome(); return; }
   if(fresh.length && navState.ov === null){ showEnvelope(fresh); return; }
   if(openCardOnLoad && navState.ov === null){ openCardOnLoad = false; renderCardBody(); open('cardOverlay'); }
 }
@@ -1905,7 +2030,49 @@ function openEnvelope(){
 $('envelope').addEventListener('click', () => { if(!envOpened) openEnvelope(); });
 $('envelope').addEventListener('keydown', e => { if((e.key === 'Enter' || e.key === ' ') && !envOpened){ e.preventDefault(); openEnvelope(); } });
 $('envBtn').addEventListener('click', openEnvelope);
-document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'visible' && !$('shop').classList.contains('hidden')){ fetchCard(); fetchRace(); } });
+document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'visible' && !$('shop').classList.contains('hidden')){ fetchCard(); fetchRace(); fetchComp(); } });
+
+/* =================== COMPETENCIA DE STICKERS =================== */
+let comp = null, compOpen = false;
+const isMemberCode = code => { const c = code && cards.find(x => x.code === code); return !!(c && c.member !== false); };
+async function fetchComp(){
+  if(!sb || state.config.compOn === false){ comp = null; renderComp(); return; }
+  const {data, error} = await sb.rpc('get_sticker_comp', {p_code: cardCode || null});
+  if(error){ console.warn('Competencia', error); return; }
+  comp = data; renderComp();
+}
+function renderComp(){
+  const c = state.config, sec = $('comp');
+  const show = !!(sb && c.compOn !== false && comp);
+  sec.classList.toggle('hidden', !show);
+  if(!show) return;
+  const who = c.compFor || 'todos';
+  $('compWho').textContent = who === 'socios' ? 'Solo socios del club 🪪' : who === 'clientes' ? 'Solo clientes' : 'Todos: clientes y socios';
+  $('compPrizeTxt').textContent = c.compPrize || 'Premio sorpresa 🎁';
+  const end = c.compEnd, ended = end && end < today();
+  $('compEndTxt').innerHTML = ended ? `🏁 La competencia terminó el ${prettyDate(end)}. ¡Felicitaciones al ganador!`
+    : `Gana quien junte <b>más stickers</b>${end ? ` hasta el <b>${prettyDate(end)}</b>` : ''}. Cada pedido entregado suma 1 ⭐`;
+  const rows = comp.rows || [], medal = ['🥇','🥈','🥉'];
+  const row = r => `<li class="crow ${r.me ? 'me' : ''}"><span class="cpos">${medal[r.pos-1] || r.pos}</span>
+    <span class="cname">${avHTML(r.avatar,'sm')}${esc(r.name)}${r.me ? ' (vos)' : ''}${r.member ? '<span class="badge-soc si">🪪</span>' : ''}</span>
+    <span class="cqty">⭐ ${r.qty}</span></li>`;
+  const vis = compOpen ? rows : rows.slice(0, 5);
+  $('compList').innerHTML = vis.length ? vis.map(row).join('') : '<li class="crow"><span class="cname" style="color:var(--muted)">Todavía nadie sumó stickers. ¡Podés ser el primero! 🚀</span></li>';
+  $('compMore').classList.toggle('hidden', rows.length <= 5);
+  $('compMore').textContent = compOpen ? 'Ocultar ▴' : `Ver todos (${comp.total}) ▾`;
+  const me = comp.me, box = $('compMe');
+  const eligible = who === 'todos' || (who === 'socios' ? isMember() : !isMember());
+  if(me) box.innerHTML = me.pos === 1 ? `🥇 ¡Vas primero con ${me.qty} stickers! No aflojes.` : `⭐ Vas en el puesto <b>#${me.pos}</b> con ${me.qty} sticker${me.qty===1?'':'s'}. ¡Cada pedido te acerca!`;
+  else if(!eligible) box.innerHTML = who === 'socios' ? '🔒 Esta competencia es solo para socios del club.' : 'Esta competencia es para clientes. ¡Los socios tienen la Carrera Galáctica! 🏁';
+  else box.innerHTML = '🍦 Hacé tu pedido y sumá tu primer sticker para entrar a la competencia.';
+}
+$('compMore').addEventListener('click', () => { compOpen = !compOpen; renderComp(); });
+$('compReset').addEventListener('click', () => {
+  if(!confirm('Empieza una competencia nueva: todos vuelven a cero. Los stickers de las tarjetas no se borran. ¿Seguimos?')) return;
+  state.config.compStart = new Date().toISOString();
+  save(); pushConfig(); renderSettings(); toast('⭐ ¡Arrancó una competencia nueva!');
+  setTimeout(fetchComp, 800);
+});
 
 /* =================== CARRERA GALÁCTICA =================== */
 let race = null, raceOpen = false;
@@ -1949,8 +2116,8 @@ function renderRace(){
   if(me && me.qty >= goal) meBox.innerHTML = `🏆 ¡Llegaste a la Luna con ${me.qty} marcianitos! Avisale a Santi para tu premio.`;
   else if(me && me.pos <= 3) meBox.innerHTML = `🔥 ¡Estás en el podio! Puesto #${me.pos}. Te faltan ${goal - me.qty} para la meta.`;
   else if(me) meBox.innerHTML = `🚀 Tu nave va en el puesto <b>#${me.pos}</b> con ${me.qty} marcianitos. ¡Te faltan ${goal - me.qty}!`;
-  else if(cardCode) meBox.innerHTML = '🛸 Tu nave entra a la carrera con tu primer pedido entregado.';
-  else meBox.innerHTML = '🛸 Hacé tu primer pedido y sumá tu nave a la carrera.';
+  else if(isMember()) meBox.innerHTML = '🛸 Tu nave entra a la carrera con tu primer pedido entregado.';
+  else meBox.innerHTML = '🔒 La carrera es solo para socios del club AREA 42.';
   meBox.classList.remove('hidden');
   const rest = rows.slice(3);
   $('raceMore').classList.toggle('hidden', !rest.length);
@@ -2034,6 +2201,12 @@ function myAvatar(){
   try{ const v = localStorage.getItem(AVKEY); return v === null ? null : Number(v); }catch(e){ return null; }
 }
 function renderCartAvatar(){
+  const mem = isMember();
+  $('cartAvRow').classList.toggle('hidden', !sb);
+  const note = $('stickerNote');
+  note.classList.toggle('lock', false);
+  note.textContent = mem ? '⭐ Con esta compra sumás 1 sticker galáctico único. ¡Juntá 5 y canjeás un marcianito gratis!'
+    : (sb ? '⭐ Con esta compra sumás 1 sticker. ¡Juntá 5 y canjeás un marcianito gratis! 🔒 Los socios además corren la Carrera Galáctica.' : '⭐ ¡Gracias por tu compra!');
   const a = myAvatar();
   $('cartAv').innerHTML = avHTML(a, 'md') || '<span class="av md" aria-hidden="true">❔</span>';
   $('cartAvBtn').textContent = a === null ? 'Elegir' : 'Cambiar';
@@ -2067,6 +2240,91 @@ $('raceReset').addEventListener('click', () => {
   state.config.raceStart = new Date().toISOString();
   save(); pushConfig(); renderSettings(); toast('🏁 ¡Arrancó una carrera nueva!');
   setTimeout(fetchRace, 800);
+});
+
+/* =================== CLUB SOLO PARA SOCIOS =================== */
+const INV_RE = /^[A-Z0-9]{8}$/;
+let joinCode = null, joinAvatar = null;
+const inviteLink = code => location.origin + location.pathname + '?inv=' + code;
+function renderClubLock(){
+  $('clubLock').classList.toggle('hidden', !sb || isMember());
+}
+async function openJoin(code){
+  if(isMember()){ toast('🪪 ¡Ya sos socio del club!'); return; }
+  joinCode = code; joinAvatar = null;
+  $('joinErr').textContent = ''; $('joinFrom').textContent = 'Revisando tu invitación…';
+  $('joinName').value = ($('cName').value || '').trim();
+  $('joinAvGrid').innerHTML = AVATARS.map((a, i) => `<button data-jav="${i}" aria-label="Avatar ${a.e}">${avHTML(i, 'md')}</button>`).join('');
+  open('joinOverlay');
+  const {data, error} = await sb.rpc('check_invite', {p_invite: code});
+  if(error || !data || !data.valid){
+    $('joinFrom').textContent = 'Esta invitación no existe o ya fue usada. Pedile una nueva a quien te invitó.';
+    $('joinGo').disabled = true; return;
+  }
+  $('joinGo').disabled = false;
+  $('joinFrom').innerHTML = data.from ? `<b>${esc(data.from)}</b> te invitó a ser socio de AREA 42 Club. 👽` : 'Santi te invitó a ser socio de AREA 42 Club. 👽';
+}
+$('joinAvGrid').addEventListener('click', e => {
+  const b = e.target.closest('[data-jav]'); if(!b) return;
+  joinAvatar = Number(b.dataset.jav);
+  document.querySelectorAll('#joinAvGrid button').forEach(x => x.classList.toggle('on', x === b));
+});
+$('joinGo').addEventListener('click', async () => {
+  const name = $('joinName').value.trim().replace(/\s+/g, ' ');
+  if(name.length < 2){ $('joinErr').textContent = 'Escribí tu nombre.'; return; }
+  if(joinAvatar === null){ $('joinErr').textContent = 'Elegí un avatar.'; return; }
+  $('joinGo').disabled = true; $('joinErr').textContent = '';
+  const {data, error} = await sb.rpc('join_with_invite', {p_invite: joinCode, p_name: name.slice(0,60), p_avatar: joinAvatar, p_code: cardCode});
+  if(error || !data){ $('joinGo').disabled = false; $('joinErr').textContent = 'No se pudo usar la invitación. Puede que ya la hayan usado.'; return; }
+  card = data; cardCode = data.code;
+  try{ localStorage.setItem(TKEY, cardCode); localStorage.setItem(AVKEY, String(joinAvatar)); }catch(e){}
+  markSeen((card.stickers || []).map(x => x.id));
+  renderCardChip(); renderCart(); renderClubLock(); fetchRace();
+  renderWelcome(); open('welcomeOverlay'); setTimeout(confetti, 400);   // reemplaza el formulario por la bienvenida
+});
+$('invGo').addEventListener('click', () => {
+  const c = $('invInput').value.trim().toUpperCase();
+  if(!INV_RE.test(c)){ $('invErr').textContent = 'El código tiene 8 letras y números.'; return; }
+  $('invErr').textContent = ''; openJoin(c);
+});
+$('invInput').addEventListener('keydown', e => { if(e.key === 'Enter') $('invGo').click(); });
+
+/* --- Invitaciones de socios a amigos --- */
+function inviteBoxHTML(){
+  if(!isMember()) return '';
+  const list = card.invites || [], left = Number.isInteger(card.invites_left) ? card.invites_left : 0;
+  if(!list.length && left <= 0) return '';
+  return `<div class="inv-box"><h3>🎟️ Invitá a un amigo al club</h3>
+    <p class="sub" style="margin:0">${left > 0 ? `Te ${left===1?'queda':'quedan'} <b>${left}</b> invitaci${left===1?'ón':'ones'}.` : 'Ya usaste todas tus invitaciones.'} Elegí bien: el club es para pocos.</p>
+    ${left > 0 ? '<button class="btn ghost" id="invNew" style="margin-top:10px;border-color:var(--cyan);color:var(--cyan)">➕ Crear invitación</button>' : ''}
+    ${list.length ? `<ul class="inv-list">${list.map(v => `<li><span><b>${esc(v.code)}</b><br>${v.used ? `✅ Entró ${esc(v.used_by || '')}` : '⏳ Sin usar'}</span>${v.used ? '' : `<button class="mini" data-invshare="${esc(v.code)}">📤 Mandar</button>`}</li>`).join('')}</ul>` : ''}
+  </div>`;
+}
+async function createMemberInvite(btn){
+  btn.disabled = true;
+  const {data, error} = await sb.rpc('create_invite', {p_code: cardCode});
+  if(error || !data){ btn.disabled = false; toast('⚠️ No se pudo crear la invitación'); return; }
+  await fetchCard(); renderCardBody();
+  toast('🎟️ ¡Invitación creada! Mandásela a tu amigo');
+}
+function inviteText(code, from){
+  return `👽 ¡Te invito al Club AREA 42!\n\nEs el club de los helados de Santi: los socios juntan stickers galácticos, corren la Carrera Galáctica y participan por premios exclusivos. 🏆\n\n` +
+    `Entrá con este link: ${inviteLink(code)}\n(o poné el código ${code} en la web)` + (from ? `\n\nTe invita: ${from}` : '');
+}
+async function shareInvite(code, from){
+  const text = inviteText(code, from);
+  if(navigator.share){ try{ await navigator.share({text}); return; }catch(e){ if(e && e.name === 'AbortError') return; } }
+  window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank', 'noopener');
+}
+/* --- Santi crea invitaciones --- */
+$('santiInvite').addEventListener('click', async () => {
+  if(!sb || !loggedIn){ toast('⚠️ Necesitás Supabase conectado'); return; }
+  const a = new Uint32Array(8); crypto.getRandomValues(a);
+  const code = Array.from(a, n => CODE_CHARS[n % CODE_CHARS.length]).join('');
+  const {error} = await sb.from('invites').insert({code});
+  if(error){ toast('⚠️ No se pudo crear la invitación'); console.warn(error); return; }
+  toast(`🎟️ Invitación ${code} creada`);
+  shareInvite(code, 'Santi');
 });
 
 /* =================== BIENVENIDA AL CLUB =================== */
@@ -2268,7 +2526,7 @@ $('loginPass').addEventListener('keydown', e => { if(e.key === 'Enter') tryPin()
 function refreshShop(){ renderStatus(); renderCombos(); renderGrid(); renderCart(); }
 refreshShop();
 pullConfig();
-renderCardChip(); fetchCard(); renderInstallBanner(); fetchRace();
+renderCardChip(); renderClubLock(); fetchCard(); renderInstallBanner(); fetchRace(); fetchComp();
 setInterval(() => { renderStatus(); updateWaLink(); }, 60000);
 </script>
 </body>
