@@ -5,6 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0B0820">
 <meta name="description" content="AREA 42 Club, los helados de Santi en la Comarca Andina del Paralelo 42. Pedí tus marcianitos y juntá stickers galácticos.">
+<!-- Vista previa al compartir el link (WhatsApp, Instagram, etc.). Si cambiás el dominio, cambialo también acá. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="AREA 42 Club">
+<meta property="og:title" content="AREA 42 Club · Los helados de Santi">
+<meta property="og:description" content="Club de socios: pedí marcianitos, juntá stickers galácticos y participá por premios exclusivos para socios.">
+<meta property="og:image" content="https://los-marcianitos-de-santi.vercel.app/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://los-marcianitos-de-santi.vercel.app/">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -19,7 +29,7 @@
 <title>AREA 42 Club · Los helados de Santi</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#0B0820; --surface:#1A1440; --surface2:#241C55; --deep:#07051A;
@@ -436,6 +446,21 @@ input[type=color]{width:100%;height:48px;padding:4px;border-radius:14px;border:1
 .card-me{display:flex;flex-direction:column;align-items:center;gap:10px;margin:4px 0 14px}
 .rname .av{margin-right:8px;vertical-align:middle}
 .oname .av,.name .av{margin-right:6px;vertical-align:middle}
+/* ---------- Bienvenida al club ---------- */
+.cred{position:relative;width:100%;max-width:360px;margin:0 auto 20px;padding:22px 20px 20px;border-radius:26px;text-align:center;overflow:hidden;
+  background:radial-gradient(circle at 50% 0%,rgba(155,92,255,.45),transparent 60%),#0B0820;border:3px solid var(--green);
+  box-shadow:0 0 0 6px rgba(57,255,136,.15),0 20px 50px rgba(0,0,0,.6);animation:credin .9s cubic-bezier(.2,1.3,.4,1)}
+@keyframes credin{from{transform:perspective(800px) rotateY(-80deg) scale(.6);opacity:0}}
+.cred::after{content:"";position:absolute;top:0;bottom:0;width:70px;left:-90px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);transform:skewX(-20deg);animation:sweep 3s ease-in-out 1s infinite}
+.cred-logo{font-family:'Black Ops One',var(--display);font-size:44px;line-height:1;letter-spacing:2px;color:#fff}
+.cred-club{font-size:12px;font-weight:800;letter-spacing:3px;color:var(--green);margin-top:4px}
+.cred-hello{font-family:var(--display);font-size:24px;font-weight:700;color:var(--yellow);margin:16px 0 14px;line-height:1.15}
+.cred-name{font-family:var(--display);font-size:30px;font-weight:600;margin-top:12px;overflow-wrap:anywhere}
+.cred-no{font-family:'Black Ops One',var(--display);font-size:24px;letter-spacing:2px;color:var(--green);margin-top:2px}
+.cred p{margin:14px 0 0;font-size:15px;line-height:1.45;color:var(--text)}
+.cred-tag{display:inline-block;margin-top:10px;font-size:12px;font-weight:800;letter-spacing:2px;color:var(--muted)}
+.ws-img{display:block;width:100%;max-width:340px;margin:4px auto 14px;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.5);background:var(--deep);aspect-ratio:4/5}
+.memberno{font-family:'Black Ops One',var(--display);letter-spacing:2px;color:var(--green);font-size:15px}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 @media (max-width:360px){.grid{gap:10px}.planet{width:72px;height:72px;font-size:34px}.mission{grid-template-columns:80px 1fr}.pct{font-size:52px}}
 </style>
@@ -756,6 +781,26 @@ input[type=color]{width:100%;height:48px;padding:4px;border-radius:14px;border:1
   </div>
 </div>
 
+<!-- Bienvenida al club (cliente) -->
+<div class="overlay center hidden" id="welcomeOverlay" role="dialog" aria-modal="true" aria-labelledby="t-welcome">
+  <div class="env-stage">
+    <h2 id="t-welcome" class="hidden">Bienvenida al club</h2>
+    <div id="credBox"></div>
+    <button class="btn primary" id="welcomeGo">Ver mi tarjeta de socio ⭐</button>
+  </div>
+</div>
+
+<!-- Enviar credencial de bienvenida (Santi) -->
+<div class="overlay hidden" id="welcomeSend" role="dialog" aria-modal="true" aria-labelledby="t-ws">
+  <div class="sheet">
+    <div class="sheet-head"><h2 id="t-ws">Credencial de bienvenida</h2><button class="close" data-close="welcomeSend" aria-label="Cerrar">✕</button></div>
+    <img class="ws-img" id="wsImg" alt="Credencial de socio de AREA 42 Club">
+    <p class="sub" id="wsNote">Preparando la credencial…</p>
+    <button class="btn wa" id="wsShare" disabled>📤 Enviar por WhatsApp</button>
+    <button class="btn ghost" id="wsCopy">📋 Copiar el mensaje</button>
+  </div>
+</div>
+
 <!-- Elegir avatar -->
 <div class="overlay hidden" id="avatarOverlay" role="dialog" aria-modal="true" aria-labelledby="t-avatar">
   <div class="sheet">
@@ -911,7 +956,7 @@ function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.remove('
    Cada pantalla y ventana abierta crea una entrada en el historial del navegador.
    Así, la flecha "atrás" cierra la ventana abierta o vuelve a la pantalla anterior
    en lugar de salir del sitio. */
-const OVERLAYS = ['cartOverlay','pinOverlay','celebrate','flavorOverlay','cardOverlay','envOverlay','installOverlay','avatarOverlay'];
+const OVERLAYS = ['cartOverlay','pinOverlay','celebrate','flavorOverlay','cardOverlay','envOverlay','installOverlay','avatarOverlay','welcomeOverlay','welcomeSend'];
 const HOME_NAV = {screen:'shop', view:'home', ov:null};
 let navState = {...HOME_NAV};
 let adminUnlocked = false;
@@ -1327,7 +1372,7 @@ $('logSave').addEventListener('click', () => {
 let cards = [];
 async function fetchCards(){
   if(!sb || !loggedIn) return;
-  const {data, error} = await sb.from('cards').select('code,name,created_at,hide_rank,avatar,stickers(id,redeemed_at),vouchers(id,status)')
+  const {data, error} = await sb.from('cards').select('code,name,created_at,hide_rank,avatar,member_no,stickers(id,redeemed_at),vouchers(id,status)')
     .order('created_at', {ascending:false}).limit(500);
   if(error){ toast('⚠️ No se pudieron traer las tarjetas'); console.warn(error); return; }
   cards = data || [];
@@ -1338,7 +1383,6 @@ function renderCloudCrew(){
     const act = (c.stickers || []).filter(x => !x.redeemed_at).sort((a,b) => a.id - b.id);
     const vs = (c.vouchers || []).filter(v => v.status === 'disponible');
     const used = (c.vouchers || []).length;
-    const msg = `¡Hola ${c.name}! 👽 Esta es tu Tarjeta Galáctica de AREA 42 Club: ${cardLink(c.code)} Juntá 5 stickers y canjeás un marcianito gratis 🎁`;
     return `<li><div class="top"><span class="name">${avHTML(c.avatar,'sm') || '👽 '}${esc(c.name)}</span>
         <button class="x" data-cdel="${c.code}" aria-label="Borrar tarjeta de ${esc(c.name)}" style="width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:none;color:var(--muted)">✕</button></div>
       <div class="stars">${[0,1,2,3,4].map(i => act[i] ? `<span class="f" title="#${act[i].id}">⭐</span>` : '<span></span>').join('')}${act.length > 5 ? `<b style="align-self:center">+${act.length-5}</b>` : ''}</div>
@@ -1347,11 +1391,11 @@ function renderCloudCrew(){
       <div class="row">
         <button class="mini" data-cstick="${c.code}">+1 sticker</button>
         <button class="mini" data-crace="${c.code}">🏁 + en persona</button>
-        <a class="mini" style="text-align:center;text-decoration:none;color:var(--text)" href="https://wa.me/?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener">📤 Mandar tarjeta</a>
+        <button class="mini" data-cwelcome="${c.code}">🎟️ Mandar bienvenida</button>
       </div>
       ${vs.length ? `<button class="mini gift" style="width:100%;margin-top:8px" data-cvused="${vs[0].id}">✅ Ya le di el gratis en persona</button>` : ''}
       <button class="mini" style="width:100%;margin-top:8px" data-chide="${c.code}" data-h="${c.hide_rank ? 1 : 0}">${c.hide_rank ? '🙈 Oculto en la carrera · Mostrar' : '👁️ Visible en la carrera · Ocultar'}</button>
-      <p class="note">Código ${esc(c.code)}${used ? ` · ${used} canje${used===1?'':'s'}` : ''}</p>
+      <p class="note">${c.member_no ? `<span class="memberno">SOCIO Nº ${memberNo(c.member_no)}</span> · ` : ''}Código ${esc(c.code)}${used ? ` · ${used} canje${used===1?'':'s'}` : ''}</p>
     </li>`;
   }).join('') : '<li class="empty" style="border:none;background:none">Las tarjetas se crean solas cuando entregás un pedido de la web. También podés crear una para un cliente en persona.</li>';
 }
@@ -1375,9 +1419,11 @@ function renderCrew(){
 async function addCrew(){
   const n = $('crewName').value.trim(); if(!n) return;
   if(sb){
-    const {error} = await sb.from('cards').insert({code:newCode(), name:n.slice(0,60)});
+    const {data:nc, error} = await sb.from('cards').insert({code:newCode(), name:n.slice(0,60)}).select('code,name,avatar,member_no').single();
     if(error){ toast('⚠️ No se pudo crear la tarjeta'); return; }
-    $('crewName').value = ''; toast(`🪪 Tarjeta creada para ${n}`); fetchCards(); setTimeout(checkMedals, 800); return;
+    $('crewName').value = ''; toast(`🪪 ¡${n} es socio del club!`); fetchCards(); setTimeout(checkMedals, 800);
+    openWelcomeSend(nc);
+    return;
   }
   state.crew.push({id:Date.now(), name:n.slice(0,40), stickers:1, redeemed:0});
   $('crewName').value = ''; save(); renderCrew(); toast(`⭐ ${n} sumó su primer sticker`);
@@ -1388,6 +1434,7 @@ $('crewName').addEventListener('keydown', e => { if(e.key === 'Enter') addCrew()
 $('crewList').addEventListener('click', async e => {
   const t = e.target.closest('button'); if(!t) return;
   if(sb){
+    if(t.dataset.cwelcome){ const c = cards.find(x => x.code === t.dataset.cwelcome); if(c) openWelcomeSend(c); return; }
     if(t.dataset.crace){
       const q = Math.round(Number(prompt('¿Cuántos marcianitos le vendiste en persona? (suman a la carrera)', '1')));
       if(!(q >= 1 && q <= 200)) return;
@@ -1710,13 +1757,13 @@ const STICKER_DESIGNS = [
 ];
 const TKEY = 'marcianitos-tarjeta', SEENKEY = 'marcianitos-vistos', VPKEY = 'marcianitos-vale-pendiente';
 const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-let cardCode = null, card = null, useVoucher = true, envOpened = false, openCardOnLoad = false;
+let cardCode = null, card = null, useVoucher = true, envOpened = false, openCardOnLoad = false, welcomeOnLoad = false;
 try{ cardCode = localStorage.getItem(TKEY) || null; }catch(e){}
 (function readCardLink(){
   try{
     const u = new URL(location.href), t = (u.searchParams.get('t') || '').toUpperCase();
     if(/^[A-Z0-9]{10}$/.test(t)){
-      if(t !== cardCode) openCardOnLoad = true;      // si es la misma tarjeta (ícono instalado), no la abre cada vez
+      if(t !== cardCode){ openCardOnLoad = true; welcomeOnLoad = true; }   // si es la misma tarjeta (ícono instalado), no la abre cada vez
       cardCode = t; localStorage.setItem(TKEY, t);
     }
     if(u.searchParams.get('tarjeta') === '1') openCardOnLoad = true;   // atajo "Mi tarjeta" del ícono
@@ -1767,7 +1814,7 @@ function renderCardChip(){
 function renderCardBody(){
   const st = card ? card.stickers : [], n = st.length, vs = card ? card.vouchers : [];
   const slots = [0,1,2,3,4].map(i => st[i] ? stickerHTML(st[i].id) : `<div class="slot">${i+1}</div>`).join('');
-  let html = `<div class="card-me">${avHTML(myAvatar(), 'lg') || '<span class="av lg" aria-hidden="true">❔</span>'}<button class="mini" id="cardAvBtn">${myAvatar() === null ? 'Elegir mi avatar' : 'Cambiar avatar'}</button></div>
+  let html = `<div class="card-me">${avHTML(myAvatar(), 'lg') || '<span class="av lg" aria-hidden="true">❔</span>'}${card && card.member_no ? `<span class="memberno">SOCIO Nº ${memberNo(card.member_no)}</span>` : ''}<button class="mini" id="cardAvBtn">${myAvatar() === null ? 'Elegir mi avatar' : 'Cambiar avatar'}</button></div>
     <p class="sub">${card ? `Tripulante <b>${esc(card.name)}</b>. ` : ''}Cada pedido entregado te suma 1 sticker único y numerado. Con 5 se activa tu sticker de CANJE.</p>
     <div class="album">${slots}</div>`;
   if(n >= 5){
@@ -1830,6 +1877,7 @@ function markSeen(ids){ const s = new Set(seenIds()); ids.forEach(i => s.add(i))
 function checkNewStickers(){
   if(!card || $('shop').classList.contains('hidden')) return;
   const seen = new Set(seenIds()), fresh = card.stickers.filter(x => !seen.has(x.id));
+  if(welcomeOnLoad && navState.ov === null && !welcomeSeen()){ welcomeOnLoad = false; showWelcome(); return; }
   if(fresh.length && navState.ov === null){ showEnvelope(fresh); return; }
   if(openCardOnLoad && navState.ov === null){ openCardOnLoad = false; renderCardBody(); open('cardOverlay'); }
 }
@@ -2010,6 +2058,7 @@ $('avGrid').addEventListener('click', async e => {
   toast(`${AVATARS[i].e} ¡Avatar elegido!`);
   if(avatarReturn === 'cardOverlay'){ renderCardBody(); open('cardOverlay'); }
   else if(avatarReturn === 'cartOverlay'){ renderCart(); open('cartOverlay'); }
+  else if(avatarReturn === 'welcomeOverlay'){ renderWelcome(); open('welcomeOverlay'); }
   else close('avatarOverlay');
 });
 $('cartAvBtn').addEventListener('click', () => openAvatarPicker('cartOverlay'));
@@ -2018,6 +2067,121 @@ $('raceReset').addEventListener('click', () => {
   state.config.raceStart = new Date().toISOString();
   save(); pushConfig(); renderSettings(); toast('🏁 ¡Arrancó una carrera nueva!');
   setTimeout(fetchRace, 800);
+});
+
+/* =================== BIENVENIDA AL CLUB =================== */
+const memberNo = n => String(n).padStart(4, '0');
+const WKEY = 'marcianitos-bienvenida';
+function welcomeSeen(){ try{ return localStorage.getItem(WKEY) === cardCode; }catch(e){ return false; } }
+function markWelcome(){ try{ localStorage.setItem(WKEY, cardCode); }catch(e){} }
+function welcomeText(c){
+  return `¡Te damos la bienvenida al Club AREA 42, ${c.name}! 👽🛸\n\n` +
+    `Ya sos parte de este club especial de socios, donde vas a juntar stickers galácticos y participar por premios exclusivos para socios. 🏆\n\n` +
+    `🪪 Tu tarjeta de socio${c.member_no ? ` (Nº ${memberNo(c.member_no)})` : ''}: ${cardLink(c.code)}\n\n` +
+    `Guardá este link: ahí ves tus stickers, elegís tu avatar y seguís tu nave en la Carrera Galáctica. 🚀\n` +
+    `— AREA 42 Club · Los helados de Santi`;
+}
+/* --- Cliente: pantalla de bienvenida --- */
+function renderWelcome(){
+  const a = myAvatar(), name = card ? card.name : '';
+  $('credBox').innerHTML = `<div class="cred">
+    <div class="cred-logo">AREA 42</div>
+    <div class="cred-club">CLUB · LOS HELADOS DE SANTI</div>
+    <div class="cred-hello">¡Te damos la bienvenida al club!</div>
+    ${avHTML(a, 'lg') || '<span class="av lg" aria-hidden="true">❔</span>'}
+    ${a === null ? '<div><button class="mini" id="welcomeAv" style="margin-top:10px">Elegí tu avatar</button></div>' : ''}
+    <div class="cred-name">${esc(name)}</div>
+    ${card && card.member_no ? `<div class="cred-no">SOCIO Nº ${memberNo(card.member_no)}</div>` : ''}
+    <p>Ya sos parte de este club especial donde vas a juntar stickers galácticos y participar por <b>premios exclusivos para socios</b>.</p>
+    <span class="cred-tag">COMARCA ANDINA · PARALELO 42 SUR</span>
+  </div>`;
+}
+function showWelcome(){ renderWelcome(); open('welcomeOverlay'); setTimeout(confetti, 500); }
+$('credBox').addEventListener('click', e => { if(e.target.closest('#welcomeAv')) openAvatarPicker('welcomeOverlay'); });
+$('welcomeGo').addEventListener('click', () => {
+  markWelcome(); openCardOnLoad = false;
+  const seen = new Set(seenIds()), fresh = card ? card.stickers.filter(x => !seen.has(x.id)) : [];
+  if(fresh.length) showEnvelope(fresh);          // reemplaza la bienvenida por el sobre
+  else { renderCardBody(); open('cardOverlay'); }
+});
+
+/* --- Santi: credencial como imagen para mandar por WhatsApp --- */
+let wsFile = null, wsText = '', wsUrl = null;
+function wrapLines(x, text, maxW){
+  const words = text.split(' '), lines = []; let cur = '';
+  words.forEach(w => { const t = cur ? cur + ' ' + w : w; if(x.measureText(t).width > maxW && cur){ lines.push(cur); cur = w; } else cur = t; });
+  if(cur) lines.push(cur); return lines;
+}
+function rrect(x, X, Y, W, H, r){ x.beginPath(); x.moveTo(X+r, Y); x.arcTo(X+W, Y, X+W, Y+H, r); x.arcTo(X+W, Y+H, X, Y+H, r); x.arcTo(X, Y+H, X, Y, r); x.arcTo(X, Y, X+W, Y, r); x.closePath(); }
+async function makeCarnet(c){
+  try{ await Promise.all([document.fonts.load('80px "Black Ops One"'), document.fonts.load('600 60px Fredoka'), document.fonts.load('800 30px Nunito')]); }catch(e){}
+  const W = 1080, H = 1350, cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+  const x = cv.getContext('2d'), sp = v => { if('letterSpacing' in x) x.letterSpacing = v; };
+  const bg = x.createRadialGradient(W/2, 300, 40, W/2, 500, 950);
+  bg.addColorStop(0, '#3B1E8F'); bg.addColorStop(.5, '#1A1440'); bg.addColorStop(1, '#07051A');
+  x.fillStyle = bg; x.fillRect(0, 0, W, H);
+  for(let i = 0; i < 80; i++){ x.globalAlpha = .25 + (i % 7) / 10; x.fillStyle = '#fff'; x.beginPath(); x.arc((i*137.5) % W, (i*97.3) % H, 1 + i % 3, 0, 7); x.fill(); }
+  x.globalAlpha = 1; x.textAlign = 'center';
+  // Encabezado
+  x.shadowColor = 'rgba(57,255,136,.6)'; x.shadowBlur = 30;
+  x.fillStyle = '#FFFFFF'; x.font = '150px "Black Ops One", Fredoka, sans-serif'; sp('6px'); x.fillText('AREA 42', W/2, 190);
+  x.shadowBlur = 0;
+  x.fillStyle = '#39FF88'; x.font = '800 34px Nunito, sans-serif'; sp('8px'); x.fillText('CLUB · LOS HELADOS DE SANTI', W/2, 250);
+  // Credencial
+  rrect(x, 80, 300, 920, 900, 48); x.fillStyle = 'rgba(11,8,32,.92)'; x.fill();
+  x.lineWidth = 8; x.strokeStyle = '#39FF88'; x.stroke();
+  x.fillStyle = '#FFD23F'; x.font = '700 60px Fredoka, sans-serif'; sp('0px'); x.fillText('¡Bienvenido/a al club!', W/2, 395);
+  x.fillStyle = '#A8A2C8'; x.font = '800 26px Nunito, sans-serif'; sp('8px'); x.fillText('CREDENCIAL DE SOCIO', W/2, 445);
+  // Avatar
+  const av = AVATARS[c.avatar];
+  x.beginPath(); x.arc(W/2, 600, 125, 0, 7); x.fillStyle = av ? av.c : '#3A3360'; x.fill();
+  x.lineWidth = 10; x.strokeStyle = '#FFFFFF'; x.stroke();
+  x.font = '150px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif'; sp('0px'); x.textBaseline = 'middle';
+  x.fillText(av ? av.e : '👽', W/2, 612); x.textBaseline = 'alphabetic';
+  // Nombre y número
+  let fs = 84; x.font = `600 ${fs}px Fredoka, sans-serif`;
+  while(x.measureText(c.name).width > 820 && fs > 40){ fs -= 4; x.font = `600 ${fs}px Fredoka, sans-serif`; }
+  x.fillStyle = '#FFFFFF'; x.fillText(c.name, W/2, 820);
+  if(c.member_no){ x.fillStyle = '#39FF88'; x.font = '64px "Black Ops One", sans-serif'; sp('4px'); x.fillText(`SOCIO Nº ${memberNo(c.member_no)}`, W/2, 905); }
+  // Separador
+  x.setLineDash([16, 14]); x.lineWidth = 3; x.strokeStyle = 'rgba(168,162,200,.5)';
+  x.beginPath(); x.moveTo(150, 950); x.lineTo(930, 950); x.stroke(); x.setLineDash([]);
+  // Mensaje
+  x.fillStyle = '#F4F1FF'; x.font = '600 38px Nunito, sans-serif'; sp('0px');
+  wrapLines(x, 'Ya sos parte de este club especial donde vas a participar por premios exclusivos para socios.', 800)
+    .forEach((l, i) => x.fillText(l, W/2, 1015 + i * 52));
+  x.fillStyle = '#A8A2C8'; x.font = '800 26px Nunito, sans-serif'; sp('4px'); x.fillText(`CÓDIGO ${c.code}`, W/2, 1165);
+  // Pie
+  x.fillStyle = '#FFD23F'; x.font = '800 30px Nunito, sans-serif'; sp('6px'); x.fillText('COMARCA ANDINA · PARALELO 42 SUR', W/2, 1280);
+  return await new Promise(res => cv.toBlob(res, 'image/png'));
+}
+async function openWelcomeSend(c){
+  wsFile = null; wsText = welcomeText(c);
+  if(wsUrl){ URL.revokeObjectURL(wsUrl); wsUrl = null; }
+  $('wsImg').removeAttribute('src'); $('wsShare').disabled = true;
+  $('wsNote').textContent = 'Preparando la credencial…';
+  open('welcomeSend');
+  try{
+    const blob = await makeCarnet(c);
+    const slug = c.name.normalize('NFD').replace(/[^\w]+/g, '-').replace(/^-|-$/g, '').toLowerCase() || 'socio';
+    wsFile = new File([blob], `bienvenida-area42-${slug}.png`, {type:'image/png'});
+    wsUrl = URL.createObjectURL(blob); $('wsImg').src = wsUrl;
+    $('wsNote').textContent = `Mandásela a ${c.name}: le llega su credencial con el mensaje de bienvenida y el link de su tarjeta.`;
+    $('wsShare').disabled = false;
+  }catch(e){ console.warn(e); $('wsNote').textContent = 'No se pudo armar la imagen, pero podés mandar el mensaje.'; $('wsShare').disabled = false; }
+}
+$('wsShare').addEventListener('click', async () => {
+  if(wsFile && navigator.canShare && navigator.canShare({files:[wsFile]})){
+    try{ await navigator.share({files:[wsFile], text:wsText}); return; }
+    catch(e){ if(e && e.name === 'AbortError') return; }
+  }
+  // Compu o navegador sin "compartir": se descarga la imagen y se abre WhatsApp con el texto
+  if(wsFile){ const a = document.createElement('a'); a.href = wsUrl; a.download = wsFile.name; document.body.appendChild(a); a.click(); a.remove(); }
+  window.open('https://wa.me/?text=' + encodeURIComponent(wsText), '_blank', 'noopener');
+  toast(wsFile ? '📥 Se descargó la credencial: adjuntala en el chat' : '💬 Abriendo WhatsApp');
+});
+$('wsCopy').addEventListener('click', async () => {
+  try{ await navigator.clipboard.writeText(wsText); toast('📋 Mensaje copiado'); }catch(e){ prompt('Copiá el mensaje:', wsText); }
 });
 
 /* =================== INSTALAR COMO APP =================== */
