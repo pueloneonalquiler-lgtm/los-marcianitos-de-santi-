@@ -76,7 +76,7 @@ section{margin-top:34px}
 .hero{text-align:center;padding-top:12px}
 .ufo{font-size:76px;display:inline-block;filter:drop-shadow(0 0 22px rgba(57,255,136,.55));animation:hover 4s ease-in-out infinite}
 @keyframes hover{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-10px) rotate(4deg)}}
-.hero h1{font-size:clamp(44px,13vw,62px);font-weight:700;letter-spacing:1px;white-space:nowrap;margin-top:6px;
+.hero h1{font-size:clamp(40px,12vw,62px);font-weight:700;letter-spacing:1px;overflow-wrap:anywhere;margin-top:6px;
   background:linear-gradient(180deg,#fff 10%,#CBB5FF 60%,var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent;
   text-shadow:0 0 30px rgba(155,92,255,.35)}
 .hero p{color:var(--muted);margin:8px 0 18px}
@@ -495,6 +495,16 @@ input[type=color]{width:100%;height:48px;padding:4px;border-radius:14px;border:1
 .crow .cqty{flex:none;font-family:var(--display);font-weight:700;font-size:18px;color:var(--yellow)}
 .comp .race-me{background:rgba(255,79,216,.1);border-color:rgba(255,79,216,.45)}
 select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--line);background:var(--deep);color:var(--text);font-size:16px}
+/* ---------- Portada editable y redes ---------- */
+.hero-logo{display:block;max-width:min(78vw,320px);max-height:220px;margin:0 auto 4px;object-fit:contain;filter:drop-shadow(0 0 24px rgba(57,255,136,.35))}
+.hero .deliv{color:var(--text);font-weight:700;margin-top:-10px}
+.socials{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:14px}
+.soc{display:inline-flex;align-items:center;gap:6px;padding:9px 14px;border-radius:999px;background:var(--deep);border:1.5px solid var(--line);color:var(--text);text-decoration:none;font-weight:800;font-size:14px}
+.soc:active{transform:scale(.96)}
+.foot .socials{margin:0 0 14px}
+.zone-club{margin-top:44px;padding-top:6px;border-top:2px dashed var(--line)}
+.zone-club > h2.zt{text-align:center;font-size:22px;margin:18px 0 0;color:var(--green)}
+.logo-admin .pa-prev{background-size:contain}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 @media (max-width:360px){.grid{gap:10px}.planet{width:72px;height:72px;font-size:34px}.mission{grid-template-columns:80px 1fr}.pct{font-size:52px}}
 </style>
@@ -505,29 +515,16 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
 <main id="shop" class="wrap">
   <button class="cardchip hidden" id="cardChip" aria-label="Ver mi tarjeta galáctica">⭐ <span id="cardChipText">Mi tarjeta</span></button>
   <header class="hero">
-    <div class="ufo" aria-hidden="true">🛸</div>
-    <h1>AREA 42</h1>
-    <div class="club">Club</div>
-    <p class="tagline">Los helados de Santi</p>
-    <p>Comarca Andina del Paralelo 42 · Envíos a domicilio</p>
+    <img class="hero-logo hidden" id="heroLogo" alt="">
+    <div class="ufo" id="heroUfo" aria-hidden="true">🛸</div>
+    <h1 id="heroName">AREA 42</h1>
+    <div class="club" id="heroPill">CLUB</div>
+    <p class="tagline" id="heroTagline">Los helados de Santi</p>
+    <p id="heroLine">Comarca Andina del Paralelo 42</p>
+    <p class="deliv" id="heroDeliv">🛵 Envíos a domicilio</p>
     <div id="status" class="status on" role="status"><span class="dot"></span><span id="statusText"></span></div>
-    <div class="install hidden" id="installBanner">
-      <img src="icons/icon-192.png" alt="">
-      <div class="it"><b>Tené la nave en tu celular</b><span>Pedís y ves tus stickers con un toque</span></div>
-      <button class="ib" id="installBtn">Instalar</button>
-      <button class="ix" id="installClose" aria-label="Ahora no">✕</button>
-    </div>
+    <div class="socials hidden" id="heroSocials"></div>
   </header>
-
-  <section class="club-lock hidden" id="clubLock" aria-labelledby="t-lock">
-    <div class="lk" aria-hidden="true">🔒</div>
-    <h2 id="t-lock">Club AREA 42 · Solo socios</h2>
-    <p class="sub" style="margin:0">Cualquiera puede pedir helados, pero el club es <b>solo por invitación</b>. Los socios tienen:</p>
-    <ul><li>⭐ Stickers galácticos</li><li>🎟️ Marcianitos gratis</li><li>🏁 Carrera Galáctica</li><li>🏆 Premios exclusivos</li></ul>
-    <p class="sub" style="margin:0 0 8px">¿Te invitaron? Ingresá tu código:</p>
-    <div class="invrow"><input id="invInput" type="text" maxlength="8" placeholder="CÓDIGO" aria-label="Código de invitación" autocomplete="off"><button class="btn primary" id="invGo">Entrar</button></div>
-    <div class="err" id="invErr" role="alert"></div>
-  </section>
 
   <section class="comp hidden" id="comp" aria-labelledby="t-comp">
     <div class="race-head"><h2 id="t-comp">⭐ Competencia de Stickers</h2></div>
@@ -536,6 +533,7 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
         <div class="pi-k">🎯 Participan</div><div class="pi-v" id="compWho"></div>
         <div class="pi-k">🏆 Premio</div><div class="pi-v" id="compPrizeTxt"></div>
       </div>
+      <img class="prize-img hidden" id="compImg" alt="Foto del premio de la competencia" title="Tocá para agrandar">
     </div>
     <p class="sub" id="compEndTxt" style="margin:0 0 6px"></p>
     <ol class="comp-list" id="compList"></ol>
@@ -543,6 +541,20 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
     <button class="race-more hidden" id="compMore" aria-expanded="false">Ver todos ▾</button>
   </section>
 
+  <section aria-labelledby="t-combos">
+    <h2 id="t-combos">Combos espaciales</h2>
+    <p class="sub">Elegí los sabores que quieras: el mejor combo se aplica solo.</p>
+    <div class="combos" id="combos"></div>
+  </section>
+
+  <section aria-labelledby="t-sabores">
+    <h2 id="t-sabores">Sabores galácticos</h2>
+    <p class="sub">Tocá + para sumar a tu Bodega de Carga.</p>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <div class="zone-club">
+    <h2 class="zt" id="zoneTitle">🛸 Club AREA 42</h2>
   <section class="race hidden" id="race" aria-labelledby="t-race">
     <div class="race-head"><h2 id="t-race">🏁 Carrera Galáctica</h2></div>
     <div class="prize-row">
@@ -559,19 +571,26 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
     <ol class="race-list hidden" id="raceList"></ol>
   </section>
 
-  <section aria-labelledby="t-combos">
-    <h2 id="t-combos">Combos espaciales</h2>
-    <p class="sub">Elegí los sabores que quieras: el mejor combo se aplica solo.</p>
-    <div class="combos" id="combos"></div>
+  <section class="club-lock hidden" id="clubLock" aria-labelledby="t-lock">
+    <div class="lk" aria-hidden="true">🔒</div>
+    <h2 id="t-lock">Club · Solo socios</h2>
+    <p class="sub" style="margin:0">Cualquiera puede pedir helados, pero el club es <b>solo por invitación</b>. Los socios tienen:</p>
+    <ul><li>⭐ Stickers galácticos</li><li>🎟️ Marcianitos gratis</li><li>🏁 Carrera Galáctica</li><li>🏆 Premios exclusivos</li></ul>
+    <p class="sub" style="margin:0 0 8px">¿Te invitaron? Ingresá tu código:</p>
+    <div class="invrow"><input id="invInput" type="text" maxlength="30" placeholder="NAVE-LUNA-42" aria-label="Código de invitación" autocomplete="off"><button class="btn primary" id="invGo">Entrar</button></div>
+    <div class="err" id="invErr" role="alert"></div>
   </section>
+  </div>
 
-  <section aria-labelledby="t-sabores">
-    <h2 id="t-sabores">Sabores galácticos</h2>
-    <p class="sub">Tocá + para sumar a tu Bodega de Carga.</p>
-    <div class="grid" id="grid"></div>
-  </section>
+  <div class="install hidden" id="installBanner" style="margin-top:34px">
+      <img src="icons/icon-192.png" alt="">
+      <div class="it"><b>Tené la nave en tu celular</b><span>Pedís y ves tus stickers con un toque</span></div>
+      <button class="ib" id="installBtn">Instalar</button>
+      <button class="ix" id="installClose" aria-label="Ahora no">✕</button>
+  </div>
 
   <div class="foot">
+    <div class="socials hidden" id="footSocials"></div>
     <p>Hecho con 🚀 por Santi</p>
     <button class="linkbtn" id="openAdmin">Centro de Control</button>
   </div>
@@ -705,9 +724,10 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
       <p class="sub">El club es solo por invitación. Creá un socio con su nombre o mandale una invitación para que se anote solo.</p>
       <button class="btn ghost" id="santiInvite" style="margin:0 0 12px;border-color:var(--cyan);color:var(--cyan)">🔗 Crear invitación para un amigo</button>
       <div class="row">
-        <input id="crewName" type="text" placeholder="Nombre del cliente" aria-label="Nombre del cliente">
+        <input id="crewName" type="text" placeholder="Nombre del cliente" aria-label="Nombre">
         <button class="btn primary" id="crewAdd" style="flex:0 0 auto;width:auto;padding:0 18px;font-size:16px">Sumar</button>
       </div>
+      <button class="btn ghost hidden" id="crewAddClient" style="margin-top:8px">⭐ Crear tarjeta de cliente (sin club)</button>
       <ul class="crew" id="crewList"></ul>
     </div>
   </div>
@@ -721,6 +741,30 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
 
   <!-- Ajustes -->
   <div data-view="settings" class="hidden">
+    <div class="panel">
+      <h2>Portada de la tienda</h2>
+      <label>Logo (opcional)</label>
+      <div class="prize-admin logo-admin">
+        <div class="pa-prev" id="lgPrev">🛸</div>
+        <div class="pa-btns">
+          <label class="mini filebtn" for="sLogoFile">🖼️ Subir logo</label>
+          <input type="file" id="sLogoFile" accept="image/*" hidden>
+          <button class="mini" id="sLogoDel">🗑️ Quitar logo</button>
+        </div>
+      </div>
+      <p class="note" id="lgNote"></p>
+      <label class="checkrow"><input type="checkbox" id="sLogoOnly"> El logo ya tiene el nombre (ocultar el nombre escrito)</label>
+      <div class="two">
+        <div><label for="sStoreName">Nombre</label><input id="sStoreName" type="text" maxlength="30" placeholder="AREA 42"></div>
+        <div><label for="sStorePill">Cartelito</label><input id="sStorePill" type="text" maxlength="16" placeholder="CLUB"></div>
+      </div>
+      <label for="sStoreTagline">Frase</label>
+      <input id="sStoreTagline" type="text" maxlength="50" placeholder="Los helados de Santi">
+      <label for="sStoreLine">Lugar</label>
+      <input id="sStoreLine" type="text" maxlength="60" placeholder="Comarca Andina del Paralelo 42">
+      <label for="sDeliveryArea">Envíos a domicilio en…</label>
+      <input id="sDeliveryArea" type="text" maxlength="60" placeholder="Ej: El Bolsón y Lago Puelo">
+    </div>
     <div class="panel">
       <h2>Horario de reparto</h2>
       <div class="two">
@@ -763,6 +807,16 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
       </select>
       <label for="sCompPrize">Premio</label>
       <input id="sCompPrize" type="text" maxlength="80" placeholder="Ej: ¡Un Pack Cohete Apolo gratis!">
+      <label>Foto del premio (opcional)</label>
+      <div class="prize-admin">
+        <div class="pa-prev" id="cpPrev">⭐</div>
+        <div class="pa-btns">
+          <label class="mini filebtn" for="sCompFile">📷 Subir imagen</label>
+          <input type="file" id="sCompFile" accept="image/*" hidden>
+          <button class="mini" id="sCompDel">🗑️ Quitar imagen</button>
+        </div>
+      </div>
+      <p class="note" id="cpNote"></p>
       <label for="sCompEnd">Termina el (opcional)</label>
       <input id="sCompEnd" type="date">
       <p class="note" id="compStartNote"></p>
@@ -771,6 +825,12 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
     <div class="panel">
       <h2>Carrera Galáctica</h2>
       <label class="checkrow"><input type="checkbox" id="sRaceOn"> Mostrar la carrera en la tienda</label>
+      <label for="sRaceFor">¿Quiénes corren la carrera?</label>
+      <select class="inp" id="sRaceFor">
+        <option value="socios">Solo socios del club</option>
+        <option value="todos">Todos (clientes y socios)</option>
+        <option value="clientes">Solo clientes</option>
+      </select>
       <label for="sInvites">Invitaciones que tiene cada socio para sus amigos</label>
       <input id="sInvites" type="number" inputmode="numeric" min="0" max="10">
       <p class="note">Poné 0 si querés que solo Santi pueda sumar socios.</p>
@@ -796,6 +856,13 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
       <div class="two">
         <div><label for="sPhone">WhatsApp (sin +)</label><input id="sPhone" type="tel"></div>
         <div id="pinField"><label for="sPin">PIN</label><input id="sPin" type="text" inputmode="numeric" maxlength="6"></div>
+      </div>
+      <label>Redes sociales (se muestran en la tienda si las completás)</label>
+      <div class="two">
+        <div><label for="sIg">📸 Instagram</label><input id="sIg" type="text" maxlength="100" placeholder="@area42club"></div>
+        <div><label for="sFb">👍 Facebook</label><input id="sFb" type="text" maxlength="100" placeholder="usuario o link"></div>
+        <div><label for="sTt">🎵 TikTok</label><input id="sTt" type="text" maxlength="100" placeholder="@usuario"></div>
+        <div><label for="sWeb">🔗 Otro link</label><input id="sWeb" type="text" maxlength="200" placeholder="YouTube, web…"></div>
       </div>
       <p class="note" id="storageNote">Los datos se guardan en este celular. Usá siempre el mismo dispositivo y navegador.</p>
     </div>
@@ -973,6 +1040,9 @@ const DEFAULT = {
     price:500, apolo:1300, galaxia:2500, familiar:4500,
     goalName:'Bicicleta', goalAmount:50000, goalEmoji:'🚲', pin:'1234',
     invitesPerMember:2,
+    storeName:'AREA 42', storePill:'CLUB', storeTagline:'Los helados de Santi', storeLine:'Comarca Andina del Paralelo 42',
+    deliveryArea:'', logoImg:'', logoOnly:false, compPrizeImg:'', raceFor:'socios',
+    social:{ig:'', fb:'', tt:'', web:''},
     compOn:true, compFor:'todos', compPrize:'¡Un Pack Cohete Apolo gratis!', compStart:'', compEnd:'',
     raceOn:true, raceGoal:100, racePrize:'¡Un Pack Galaxia gratis! (5 + 1)', raceStart:'',
     flavors: DEFAULT_FLAVORS,
@@ -1219,7 +1289,7 @@ function deliveryText(){
 }
 function buildMessage(s){
   const name = $('cName').value.trim(), addr = $('cAddr').value.trim(), ref = $('cRef').value.trim();
-  const L = ['🛸 NUEVO PEDIDO - AREA 42 Club · Los helados de Santi', `👽 Tripulante: ${name}`, '', '🍧 Carga:'];
+  const L = [`🛸 NUEVO PEDIDO - ${brandLine()}`, `👽 Tripulante: ${name}`, '', '🍧 Carga:'];
   s.items.forEach(i => L.push(`• ${i.q}x ${i.f.name}`));
   if(s.comboText.length) L.push(`🎁 Combo: ${s.comboText.join(' + ')}`);
   if(s.voucher) L.push(`🎟️ Vale de canje #V${s.voucher.id}: 1 marcianito gratis (−${money(s.disc)})`);
@@ -1230,7 +1300,7 @@ function buildMessage(s){
     ensureCardCode(); L.push('', '⭐ Con esta compra sumo 1 sticker galáctico.', `Mi tarjeta de stickers: ${cardLink(cardCode)}`);
   }
   if(isMember()){
-    L.push('', `🪪 Socio Nº ${card.member_no ? memberNo(card.member_no) : '—'} · AREA 42 Club`, '⭐ Con esta compra sumo 1 sticker galáctico.', `Mi tarjeta: ${cardLink(cardCode)}`);
+    L.push('', `🪪 Socio Nº ${card.member_no ? memberNo(card.member_no) : '—'} · ${brand()}`, '⭐ Con esta compra sumo 1 sticker galáctico.', `Mi tarjeta: ${cardLink(cardCode)}`);
   }
   return L.join('\n');
 }
@@ -1491,7 +1561,10 @@ function renderCloudCrew(){
       <div class="row">
         <button class="mini" data-cstick="${c.code}">+1 sticker</button>
         <button class="mini" data-crace="${c.code}">🏁 + en persona</button>
-        ${mem ? `<button class="mini" data-cwelcome="${c.code}">🎟️ Mandar bienvenida</button>` : `<button class="mini" data-cmember="${c.code}">🪪 Hacer socio</button>`}
+        ${mem ? `<button class="mini" data-cwelcome="${c.code}">🎟️ Mandar bienvenida</button>` : `<button class="mini" data-cwelcome="${c.code}">📤 Mandar tarjeta</button>`}
+      </div>
+      ${mem ? '' : `<button class="mini" style="width:100%;margin-top:8px" data-cmember="${c.code}">🪪 Hacerlo socio del club</button>`}
+      <div class="row" style="display:none">
       </div>
       ${vs.length ? `<button class="mini gift" style="width:100%;margin-top:8px" data-cvused="${vs[0].id}">✅ Ya le di el gratis en persona</button>` : ''}
       <button class="mini" style="width:100%;margin-top:8px" data-chide="${c.code}" data-h="${c.hide_rank ? 1 : 0}">${c.hide_rank ? '🙈 Oculto en la carrera · Mostrar' : '👁️ Visible en la carrera · Ocultar'}</button>
@@ -1500,8 +1573,9 @@ function renderCloudCrew(){
   }).join('') : '<li class="empty" style="border:none;background:none">Las tarjetas se crean solas cuando entregás un pedido de la web. También podés crear una para un cliente en persona.</li>';
 }
 function renderCrew(){
-  $('crewName').placeholder = sb ? 'Nombre (cliente en persona)' : 'Nombre del cliente';
-  $('crewAdd').textContent = sb ? 'Crear tarjeta' : 'Sumar';
+  $('crewName').placeholder = sb ? 'Nombre y apellido' : 'Nombre del cliente';
+  $('crewAdd').textContent = sb ? '🪪 Crear socio' : 'Sumar';
+  $('crewAddClient').classList.toggle('hidden', !sb);
   if(sb){ renderCloudCrew(); return; }
   const list = [...state.crew].sort((a,b) => b.stickers - a.stickers || a.name.localeCompare(b.name));
   $('crewList').innerHTML = list.length ? list.map(c => `
@@ -1516,21 +1590,23 @@ function renderCrew(){
       ${c.redeemed ? `<p class="note">Canjeó ${c.redeemed} ${c.redeemed===1?'premio':'premios'}</p>` : ''}
     </li>`).join('') : '<li class="empty" style="border:none;background:none">Sumá a tu primer cliente para empezar a darle stickers.</li>';
 }
-async function addCrew(){
-  const n = $('crewName').value.trim(); if(!n) return;
+async function addCrew(kind){
+  const n = $('crewName').value.trim(); if(!n){ $('crewName').focus(); return; }
   if(sb){
-    const {data:nc, error} = await sb.from('cards').insert({code:newCode(), name:n.slice(0,60)}).select('code,name,avatar,member_no').single();
+    const client = kind === 'cliente';
+    const {data:nc, error} = await sb.from('cards').insert({code:newCode(), name:n.slice(0,60), member:!client}).select('code,name,avatar,member_no,member').single();
     if(error){ toast('⚠️ No se pudo crear la tarjeta'); return; }
-    $('crewName').value = ''; toast(`🪪 ¡${n} es socio del club!`); fetchCards(); setTimeout(checkMedals, 800);
-    openWelcomeSend(nc);
+    $('crewName').value = ''; toast(client ? `⭐ Tarjeta de cliente creada para ${n}` : `🪪 ¡${n} es socio del club!`); fetchCards(); setTimeout(checkMedals, 800);
+    openWelcomeSend({...nc, member: !client});
     return;
   }
   state.crew.push({id:Date.now(), name:n.slice(0,40), stickers:1, redeemed:0});
   $('crewName').value = ''; save(); renderCrew(); toast(`⭐ ${n} sumó su primer sticker`);
   setTimeout(checkMedals, 400);
 }
-$('crewAdd').addEventListener('click', addCrew);
-$('crewName').addEventListener('keydown', e => { if(e.key === 'Enter') addCrew(); });
+$('crewAdd').addEventListener('click', () => addCrew('socio'));
+$('crewAddClient').addEventListener('click', () => addCrew('cliente'));
+$('crewName').addEventListener('keydown', e => { if(e.key === 'Enter') addCrew('socio'); });
 $('crewList').addEventListener('click', async e => {
   const t = e.target.closest('button'); if(!t) return;
   if(sb){
@@ -1540,7 +1616,7 @@ $('crewList').addEventListener('click', async e => {
       if(!c || !confirm(`¿Hacer socio del club a ${c.name}? Conserva sus stickers.`)) return;
       const {error} = await sb.from('cards').update({member:true}).eq('code', c.code);
       if(error){ toast('⚠️ No se pudo'); return; }
-      c.member = true; toast(`🪪 ¡${c.name} ahora es socio!`); fetchCards(); fetchRace(); openWelcomeSend(c); return;
+      c.member = true; toast(`🪪 ¡${c.name} ahora es socio!`); fetchCards(); fetchRace(); openWelcomeSend({...c, member:true}); return;
     }
     if(t.dataset.crace){
       const q = Math.round(Number(prompt('¿Cuántos marcianitos le vendiste en persona? (suman a la carrera)', '1')));
@@ -1595,6 +1671,10 @@ function renderSettings(){
   $('sCompOn').checked = c.compOn !== false; $('sCompFor').value = c.compFor || 'todos';
   $('sCompPrize').value = c.compPrize || ''; $('sCompEnd').value = c.compEnd || '';
   $('compStartNote').textContent = c.compStart ? `Competencia actual desde el ${prettyDate(isoDay(c.compStart))}. Cuentan los stickers ganados desde ese día.` : 'Cuentan todos los stickers ganados.';
+  $('sRaceFor').value = c.raceFor || 'socios';
+  $('sLogoOnly').checked = !!c.logoOnly; $('sStoreName').value = c.storeName || ''; $('sStorePill').value = c.storePill || '';
+  $('sStoreTagline').value = c.storeTagline || ''; $('sStoreLine').value = c.storeLine || ''; $('sDeliveryArea').value = c.deliveryArea || '';
+  const so = c.social || {}; $('sIg').value = so.ig || ''; $('sFb').value = so.fb || ''; $('sTt').value = so.tt || ''; $('sWeb').value = so.web || '';
   $('sRaceOn').checked = c.raceOn !== false; $('sRaceGoal').value = c.raceGoal || 100; $('sRacePrize').value = c.racePrize || '';
   renderPrizeAdmin();
   $('raceStartNote').textContent = c.raceStart ? `Carrera actual desde el ${prettyDate(isoDay(c.raceStart))}. Cuentan los marcianitos entregados desde ese día.` : 'Cuentan todos los marcianitos entregados con tarjeta.';
@@ -1625,6 +1705,10 @@ $('setSave').addEventListener('click', () => {
     phone:$('sPhone').value.replace(/\D/g,'') || DEFAULT.config.phone, pin: sb ? state.config.pin : pin,
     invitesPerMember: Math.max(0, Math.min(10, Math.round(num('sInvites')) || 0)),
     compOn:$('sCompOn').checked, compFor:$('sCompFor').value, compPrize:$('sCompPrize').value.trim().slice(0,80), compEnd:$('sCompEnd').value || '',
+    raceFor:$('sRaceFor').value,
+    logoOnly:$('sLogoOnly').checked, storeName:$('sStoreName').value.trim().slice(0,30) || 'AREA 42', storePill:$('sStorePill').value.trim().slice(0,16),
+    storeTagline:$('sStoreTagline').value.trim().slice(0,50), storeLine:$('sStoreLine').value.trim().slice(0,60), deliveryArea:$('sDeliveryArea').value.trim().slice(0,60),
+    social:{ig:$('sIg').value.trim().slice(0,100), fb:$('sFb').value.trim().slice(0,100), tt:$('sTt').value.trim().slice(0,100), web:$('sWeb').value.trim().slice(0,200)},
     raceOn:$('sRaceOn').checked, raceGoal:rg, racePrize:$('sRacePrize').value.trim().slice(0,80)
   });
   save(); pushConfig(); refreshShop(); renderRace(); setTimeout(fetchComp, 800); toast(sb ? '✅ Guardado y publicado para los clientes' : '✅ Cambios guardados');
@@ -1884,7 +1968,8 @@ try{ cardCode = localStorage.getItem(TKEY) || null; }catch(e){}
     }
     if(u.searchParams.get('tarjeta') === '1') openCardOnLoad = true;   // atajo "Mi tarjeta" del ícono
     const inv = (u.searchParams.get('inv') || '').toUpperCase();
-    if(/^[A-Z0-9]{8}$/.test(inv)) pendingInvite = inv;
+    const invN = inv.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^A-Z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    if(/^[A-Z0-9-]{6,30}$/.test(invN)) pendingInvite = invN;
     ['t','tarjeta','source','inv'].forEach(k => u.searchParams.delete(k));
     history.replaceState(history.state, '', u.pathname + u.search + u.hash);
   }catch(e){}
@@ -2049,6 +2134,9 @@ function renderComp(){
   const who = c.compFor || 'todos';
   $('compWho').textContent = who === 'socios' ? 'Solo socios del club 🪪' : who === 'clientes' ? 'Solo clientes' : 'Todos: clientes y socios';
   $('compPrizeTxt').textContent = c.compPrize || 'Premio sorpresa 🎁';
+  const cimg = $('compImg');
+  if(c.compPrizeImg){ if(cimg.getAttribute('src') !== c.compPrizeImg) cimg.src = c.compPrizeImg; cimg.classList.remove('hidden'); }
+  else { cimg.classList.add('hidden'); cimg.removeAttribute('src'); }
   const end = c.compEnd, ended = end && end < today();
   $('compEndTxt').innerHTML = ended ? `🏁 La competencia terminó el ${prettyDate(end)}. ¡Felicitaciones al ganador!`
     : `Gana quien junte <b>más stickers</b>${end ? ` hasta el <b>${prettyDate(end)}</b>` : ''}. Cada pedido entregado suma 1 ⭐`;
@@ -2075,6 +2163,7 @@ $('compReset').addEventListener('click', () => {
 });
 
 /* =================== CARRERA GALÁCTICA =================== */
+function raceEligible(){ const rf = state.config.raceFor || 'socios'; return rf === 'todos' || (rf === 'socios' ? isMember() : !isMember()); }
 let race = null, raceOpen = false;
 const LANE_COLORS = ['#FFD23F','#C9D3E8','#FF9A5A'];
 async function fetchRace(){
@@ -2116,8 +2205,9 @@ function renderRace(){
   if(me && me.qty >= goal) meBox.innerHTML = `🏆 ¡Llegaste a la Luna con ${me.qty} marcianitos! Avisale a Santi para tu premio.`;
   else if(me && me.pos <= 3) meBox.innerHTML = `🔥 ¡Estás en el podio! Puesto #${me.pos}. Te faltan ${goal - me.qty} para la meta.`;
   else if(me) meBox.innerHTML = `🚀 Tu nave va en el puesto <b>#${me.pos}</b> con ${me.qty} marcianitos. ¡Te faltan ${goal - me.qty}!`;
-  else if(isMember()) meBox.innerHTML = '🛸 Tu nave entra a la carrera con tu primer pedido entregado.';
-  else meBox.innerHTML = '🔒 La carrera es solo para socios del club AREA 42.';
+  else if(isMember() && raceEligible()) meBox.innerHTML = '🛸 Tu nave entra a la carrera con tu primer pedido entregado.';
+  else if(raceEligible()) meBox.innerHTML = '🍦 Hacé tu pedido y tu nave entra a la carrera.';
+  else meBox.innerHTML = (state.config.raceFor || 'socios') === 'clientes' ? 'Esta carrera es para clientes. ¡Los socios tienen sus propios premios! 🏆' : `🔒 La carrera es solo para socios de ${brand()}.`;
   meBox.classList.remove('hidden');
   const rest = rows.slice(3);
   $('raceMore').classList.toggle('hidden', !rest.length);
@@ -2133,55 +2223,105 @@ function renderRace(){
 }
 $('raceMore').addEventListener('click', () => { raceOpen = !raceOpen; renderRace(); });
 $('prizeImg').addEventListener('click', () => $('prizeImg').classList.toggle('big'));
+$('compImg').addEventListener('click', () => $('compImg').classList.toggle('big'));
 
 /* ---- Imagen del premio (Ajustes) ---- */
+const IMG_SLOTS = {
+  racePrizeImg:{file:'sPrizeFile', del:'sPrizeDel', prev:'paPrev', note:'paNote', prefix:'premio', ph:'🏆',
+    on:'Se muestra al lado del premio de la carrera.', off:'Si subís una foto del premio, aparece al lado de la meta y el premio.'},
+  compPrizeImg:{file:'sCompFile', del:'sCompDel', prev:'cpPrev', note:'cpNote', prefix:'premio-stickers', ph:'⭐',
+    on:'Se muestra al lado del premio de la competencia.', off:'Si subís una foto del premio, aparece en la competencia.'},
+  logoImg:{file:'sLogoFile', del:'sLogoDel', prev:'lgPrev', note:'lgNote', prefix:'logo', ph:'🛸', png:true,
+    on:'El logo reemplaza al platito volador de la portada.', off:'Si subís un logo (mejor PNG con fondo transparente), aparece arriba de todo.'},
+};
 function renderPrizeAdmin(){
-  const url = state.config.racePrizeImg || '', prev = $('paPrev');
-  prev.style.backgroundImage = url ? `url("${url.replace(/"/g,'')}")` : '';
-  prev.textContent = url ? '' : '🏆';
-  $('sPrizeDel').classList.toggle('hidden', !url);
-  $('paNote').textContent = sb ? (url ? 'Se muestra al lado del premio en la tienda.' : 'Si subís una foto del premio, aparece al lado de la meta y el premio.')
-                               : 'Para subir imágenes hace falta tener Supabase conectado.';
+  Object.entries(IMG_SLOTS).forEach(([key, sl]) => {
+    const url = state.config[key] || '', prev = $(sl.prev);
+    prev.style.backgroundImage = url ? `url("${url.replace(/"/g,'')}")` : '';
+    prev.textContent = url ? '' : sl.ph;
+    $(sl.del).classList.toggle('hidden', !url);
+    $(sl.note).textContent = sb ? (url ? sl.on : sl.off) : 'Para subir imágenes hace falta tener Supabase conectado.';
+  });
 }
-async function shrinkImage(file, max = 900){
+async function shrinkImage(file, max = 900, type = 'image/jpeg'){
   const url = URL.createObjectURL(file);
   try{
     const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = url; });
-    const k = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+    const w0 = img.naturalWidth || 800, h0 = img.naturalHeight || 800;
+    const k = Math.min(1, max / Math.max(w0, h0));
     const cv = document.createElement('canvas');
-    cv.width = Math.round(img.naturalWidth * k); cv.height = Math.round(img.naturalHeight * k);
+    cv.width = Math.round(w0 * k); cv.height = Math.round(h0 * k);
     cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
-    return await new Promise(res => cv.toBlob(res, 'image/jpeg', 0.85));
+    return await new Promise(res => cv.toBlob(res, type, 0.88));
   } finally { URL.revokeObjectURL(url); }
 }
 function prizePath(url){ const m = (url || '').match(/\/premios\/([^?]+)/); return m ? decodeURIComponent(m[1]) : null; }
-$('sPrizeFile').addEventListener('change', async () => {
-  const f = $('sPrizeFile').files[0]; $('sPrizeFile').value = '';
-  if(!f) return;
-  if(!sb || !loggedIn){ toast('⚠️ Necesitás Supabase conectado'); return; }
-  if(!/^image\//.test(f.type)){ toast('⚠️ Elegí una imagen'); return; }
-  $('paNote').textContent = 'Subiendo imagen…';
-  try{
-    const blob = await shrinkImage(f);
-    if(!blob) throw new Error('No se pudo leer la imagen');
-    const path = `premio-${Date.now()}.jpg`;
-    const {error} = await sb.storage.from('premios').upload(path, blob, {contentType:'image/jpeg', cacheControl:'31536000'});
-    if(error) throw error;
-    const old = prizePath(state.config.racePrizeImg);
-    state.config.racePrizeImg = sb.storage.from('premios').getPublicUrl(path).data.publicUrl;
-    save(); await pushConfig(); renderPrizeAdmin(); renderRace();
-    if(old) sb.storage.from('premios').remove([old]).catch(() => {});
-    toast('🏆 Imagen del premio publicada');
-  }catch(e){ console.warn(e); renderPrizeAdmin(); toast('⚠️ No se pudo subir la imagen'); }
+function afterImageChange(){ renderPrizeAdmin(); renderRace(); renderComp(); renderHero(); }
+Object.entries(IMG_SLOTS).forEach(([key, sl]) => {
+  $(sl.file).addEventListener('change', async () => {
+    const f = $(sl.file).files[0]; $(sl.file).value = '';
+    if(!f) return;
+    if(!sb || !loggedIn){ toast('⚠️ Necesitás Supabase conectado'); return; }
+    if(!/^image\//.test(f.type)){ toast('⚠️ Elegí una imagen'); return; }
+    $(sl.note).textContent = 'Subiendo imagen…';
+    try{
+      const type = sl.png ? 'image/png' : 'image/jpeg', ext = sl.png ? 'png' : 'jpg';
+      const blob = await shrinkImage(f, sl.png ? 800 : 900, type);
+      if(!blob) throw new Error('No se pudo leer la imagen');
+      const path = `${sl.prefix}-${Date.now()}.${ext}`;
+      const {error} = await sb.storage.from('premios').upload(path, blob, {contentType:type, cacheControl:'31536000'});
+      if(error) throw error;
+      const old = prizePath(state.config[key]);
+      state.config[key] = sb.storage.from('premios').getPublicUrl(path).data.publicUrl;
+      save(); await pushConfig(); afterImageChange();
+      if(old) sb.storage.from('premios').remove([old]).catch(() => {});
+      toast(sl.png ? '🖼️ Logo publicado' : '🏆 Imagen publicada');
+    }catch(e){ console.warn(e); renderPrizeAdmin(); toast('⚠️ No se pudo subir la imagen'); }
+  });
+  $(sl.del).addEventListener('click', async () => {
+    if(!confirm('¿Quitar esta imagen?')) return;
+    const old = prizePath(state.config[key]);
+    state.config[key] = '';
+    save(); await pushConfig(); afterImageChange();
+    if(old && sb) sb.storage.from('premios').remove([old]).catch(() => {});
+    toast('Imagen quitada');
+  });
 });
-$('sPrizeDel').addEventListener('click', async () => {
-  if(!confirm('¿Quitar la imagen del premio?')) return;
-  const old = prizePath(state.config.racePrizeImg);
-  state.config.racePrizeImg = '';
-  save(); await pushConfig(); renderPrizeAdmin(); renderRace();
-  if(old && sb) sb.storage.from('premios').remove([old]).catch(() => {});
-  toast('Imagen quitada');
-});
+
+/* =================== PORTADA Y REDES =================== */
+function brandName(){ return (state.config.storeName || 'AREA 42').trim(); }
+function brand(){ const p = (state.config.storePill || '').trim(); return brandName() + (p ? ' ' + p.charAt(0).toUpperCase() + p.slice(1).toLowerCase() : ''); }
+function brandLine(){ const t = (state.config.storeTagline || '').trim(); return brand() + (t ? ' · ' + t : ''); }
+function brandSub(){ return [state.config.storePill, state.config.storeTagline].map(x => (x || '').trim()).filter(Boolean).join(' · ').toUpperCase(); }
+function socialLinks(){
+  const so = state.config.social || {}, out = [];
+  const clean = v => v.trim().replace(/^@/, '').replace(/\s+/g, '');
+  const mk = (v, base) => /^https?:\/\//i.test(v.trim()) ? v.trim() : base + encodeURIComponent(clean(v));
+  if(so.ig) out.push({t:'📸 Instagram', u:mk(so.ig, 'https://instagram.com/')});
+  if(so.fb) out.push({t:'👍 Facebook', u:mk(so.fb, 'https://facebook.com/')});
+  if(so.tt) out.push({t:'🎵 TikTok', u:mk(so.tt, 'https://www.tiktok.com/@')});
+  if(so.web) out.push({t:'🔗 Más', u:/^https?:\/\//i.test(so.web.trim()) ? so.web.trim() : 'https://' + so.web.trim()});
+  return out.filter(x => /^https?:\/\/[^\s"<>]+$/i.test(x.u));
+}
+function renderHero(){
+  const c = state.config, logo = c.logoImg || '', img = $('heroLogo');
+  img.classList.toggle('hidden', !logo);
+  if(logo && img.getAttribute('src') !== logo) img.src = logo;
+  img.alt = brand();
+  $('heroUfo').classList.toggle('hidden', !!logo);
+  const hideName = !!(logo && c.logoOnly);
+  $('heroName').textContent = brandName(); $('heroName').classList.toggle('hidden', hideName);
+  $('heroPill').textContent = c.storePill || ''; $('heroPill').classList.toggle('hidden', hideName || !(c.storePill || '').trim());
+  $('heroTagline').textContent = c.storeTagline || ''; $('heroTagline').classList.toggle('hidden', !(c.storeTagline || '').trim());
+  $('heroLine').textContent = c.storeLine || ''; $('heroLine').classList.toggle('hidden', !(c.storeLine || '').trim());
+  $('heroDeliv').textContent = (c.deliveryArea || '').trim() ? `🛵 Envíos a domicilio en ${c.deliveryArea.trim()}` : '🛵 Envíos a domicilio';
+  $('zoneTitle').textContent = `🛸 ${brand()}`;
+  $('t-lock').textContent = `${brand()} · Solo socios`;
+  document.title = brandLine();
+  const links = socialLinks();
+  const html = links.map(x => `<a class="soc" href="${esc(x.u)}" target="_blank" rel="noopener">${esc(x.t)}</a>`).join('');
+  ['heroSocials','footSocials'].forEach(id => { $(id).innerHTML = html; $(id).classList.toggle('hidden', !links.length); });
+}
 
 /* =================== AVATARES =================== */
 const AVATARS = [
@@ -2243,7 +2383,16 @@ $('raceReset').addEventListener('click', () => {
 });
 
 /* =================== CLUB SOLO PARA SOCIOS =================== */
-const INV_RE = /^[A-Z0-9]{8}$/;
+const INV_WORDS = ['NAVE','LUNA','COHETE','ALIEN','PLANETA','ESTRELLA','COMETA','OVNI','MARTE','SATURNO','GALAXIA','NEBULOSA',
+  'ORBITA','ASTRO','METEORO','CRATER','PLUTON','VENUS','JUPITER','ANDES','NIEVE','HELADO','MARCIANO','PALETA','LIMON','FRUTILLA',
+  'CHOCO','RAYO','LASER','ROBOT','RADAR','PORTAL','ANTENA','CAPSULA','SATELITE','ECLIPSE'];
+function themedCode(){
+  const a = new Uint32Array(3); crypto.getRandomValues(a);
+  const n = INV_WORDS.length, w1 = INV_WORDS[a[0] % n]; let w2 = INV_WORDS[a[1] % n]; if(w2 === w1) w2 = INV_WORDS[(a[1] + 1) % n];
+  return `${w1}-${w2}-${10 + a[2] % 90}`;
+}
+const normInv = v => (v || '').toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^A-Z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+const validInv = c => /^[A-Z0-9-]{6,30}$/.test(c) && c.replace(/-/g, '').length >= 6;
 let joinCode = null, joinAvatar = null;
 const inviteLink = code => location.origin + location.pathname + '?inv=' + code;
 function renderClubLock(){
@@ -2262,7 +2411,7 @@ async function openJoin(code){
     $('joinGo').disabled = true; return;
   }
   $('joinGo').disabled = false;
-  $('joinFrom').innerHTML = data.from ? `<b>${esc(data.from)}</b> te invitó a ser socio de AREA 42 Club. 👽` : 'Santi te invitó a ser socio de AREA 42 Club. 👽';
+  $('joinFrom').innerHTML = data.from ? `<b>${esc(data.from)}</b> te invitó a ser socio de ${esc(brand())}. 👽` : `Santi te invitó a ser socio de ${esc(brand())}. 👽`;
 }
 $('joinAvGrid').addEventListener('click', e => {
   const b = e.target.closest('[data-jav]'); if(!b) return;
@@ -2283,8 +2432,8 @@ $('joinGo').addEventListener('click', async () => {
   renderWelcome(); open('welcomeOverlay'); setTimeout(confetti, 400);   // reemplaza el formulario por la bienvenida
 });
 $('invGo').addEventListener('click', () => {
-  const c = $('invInput').value.trim().toUpperCase();
-  if(!INV_RE.test(c)){ $('invErr').textContent = 'El código tiene 8 letras y números.'; return; }
+  const c = normInv($('invInput').value);
+  if(!validInv(c)){ $('invErr').textContent = 'Revisá el código (ej: NAVE-LUNA-42).'; return; }
   $('invErr').textContent = ''; openJoin(c);
 });
 $('invInput').addEventListener('keydown', e => { if(e.key === 'Enter') $('invGo').click(); });
@@ -2308,7 +2457,7 @@ async function createMemberInvite(btn){
   toast('🎟️ ¡Invitación creada! Mandásela a tu amigo');
 }
 function inviteText(code, from){
-  return `👽 ¡Te invito al Club AREA 42!\n\nEs el club de los helados de Santi: los socios juntan stickers galácticos, corren la Carrera Galáctica y participan por premios exclusivos. 🏆\n\n` +
+  return `👽 ¡Te invito a ${brand()}!\n\nEs un club solo por invitación: los socios juntan stickers galácticos, corren la Carrera Galáctica y participan por premios exclusivos. 🏆\n\n` +
     `Entrá con este link: ${inviteLink(code)}\n(o poné el código ${code} en la web)` + (from ? `\n\nTe invita: ${from}` : '');
 }
 async function shareInvite(code, from){
@@ -2319,9 +2468,8 @@ async function shareInvite(code, from){
 /* --- Santi crea invitaciones --- */
 $('santiInvite').addEventListener('click', async () => {
   if(!sb || !loggedIn){ toast('⚠️ Necesitás Supabase conectado'); return; }
-  const a = new Uint32Array(8); crypto.getRandomValues(a);
-  const code = Array.from(a, n => CODE_CHARS[n % CODE_CHARS.length]).join('');
-  const {error} = await sb.from('invites').insert({code});
+  let code = themedCode(), {error} = await sb.from('invites').insert({code});
+  if(error){ code = themedCode(); ({error} = await sb.from('invites').insert({code})); }
   if(error){ toast('⚠️ No se pudo crear la invitación'); console.warn(error); return; }
   toast(`🎟️ Invitación ${code} creada`);
   shareInvite(code, 'Santi');
@@ -2333,25 +2481,32 @@ const WKEY = 'marcianitos-bienvenida';
 function welcomeSeen(){ try{ return localStorage.getItem(WKEY) === cardCode; }catch(e){ return false; } }
 function markWelcome(){ try{ localStorage.setItem(WKEY, cardCode); }catch(e){} }
 function welcomeText(c){
-  return `¡Te damos la bienvenida al Club AREA 42, ${c.name}! 👽🛸\n\n` +
+  if(c.member === false){
+    const rf = state.config.raceFor || 'socios';
+    return `¡Hola ${c.name}! 👽 Esta es tu Tarjeta de Stickers de ${brand()} 🍦\n\n` +
+      `Cada pedido entregado te suma 1 sticker galáctico ⭐. Con 5 stickers canjeás un marcianito gratis, y además participás en la Competencia de Stickers${rf !== 'socios' ? ' y en la Carrera Galáctica' : ''} por premios. 🏆\n\n` +
+      `⭐ Tu tarjeta: ${cardLink(c.code)}\n\n` +
+      `Guardá este link: ahí ves tus stickers y elegís tu avatar. 🚀\n— ${brandLine()}`;
+  }
+  return `¡Te damos la bienvenida a ${brand()}, ${c.name}! 👽🛸\n\n` +
     `Ya sos parte de este club especial de socios, donde vas a juntar stickers galácticos y participar por premios exclusivos para socios. 🏆\n\n` +
     `🪪 Tu tarjeta de socio${c.member_no ? ` (Nº ${memberNo(c.member_no)})` : ''}: ${cardLink(c.code)}\n\n` +
     `Guardá este link: ahí ves tus stickers, elegís tu avatar y seguís tu nave en la Carrera Galáctica. 🚀\n` +
-    `— AREA 42 Club · Los helados de Santi`;
+    `— ${brandLine()}`;
 }
 /* --- Cliente: pantalla de bienvenida --- */
 function renderWelcome(){
   const a = myAvatar(), name = card ? card.name : '';
   $('credBox').innerHTML = `<div class="cred">
-    <div class="cred-logo">AREA 42</div>
-    <div class="cred-club">CLUB · LOS HELADOS DE SANTI</div>
+    <div class="cred-logo">${esc(brandName())}</div>
+    <div class="cred-club">${esc(brandSub())}</div>
     <div class="cred-hello">¡Te damos la bienvenida al club!</div>
     ${avHTML(a, 'lg') || '<span class="av lg" aria-hidden="true">❔</span>'}
     ${a === null ? '<div><button class="mini" id="welcomeAv" style="margin-top:10px">Elegí tu avatar</button></div>' : ''}
     <div class="cred-name">${esc(name)}</div>
     ${card && card.member_no ? `<div class="cred-no">SOCIO Nº ${memberNo(card.member_no)}</div>` : ''}
     <p>Ya sos parte de este club especial donde vas a juntar stickers galácticos y participar por <b>premios exclusivos para socios</b>.</p>
-    <span class="cred-tag">COMARCA ANDINA · PARALELO 42 SUR</span>
+    <span class="cred-tag">${esc((state.config.storeLine || '').toUpperCase())}</span>
   </div>`;
 }
 function showWelcome(){ renderWelcome(); open('welcomeOverlay'); setTimeout(confetti, 500); }
@@ -2374,6 +2529,7 @@ function rrect(x, X, Y, W, H, r){ x.beginPath(); x.moveTo(X+r, Y); x.arcTo(X+W, 
 async function makeCarnet(c){
   try{ await Promise.all([document.fonts.load('80px "Black Ops One"'), document.fonts.load('600 60px Fredoka'), document.fonts.load('800 30px Nunito')]); }catch(e){}
   const W = 1080, H = 1350, cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+  const client = c.member === false;
   const x = cv.getContext('2d'), sp = v => { if('letterSpacing' in x) x.letterSpacing = v; };
   const bg = x.createRadialGradient(W/2, 300, 40, W/2, 500, 950);
   bg.addColorStop(0, '#3B1E8F'); bg.addColorStop(.5, '#1A1440'); bg.addColorStop(1, '#07051A');
@@ -2382,14 +2538,16 @@ async function makeCarnet(c){
   x.globalAlpha = 1; x.textAlign = 'center';
   // Encabezado
   x.shadowColor = 'rgba(57,255,136,.6)'; x.shadowBlur = 30;
-  x.fillStyle = '#FFFFFF'; x.font = '150px "Black Ops One", Fredoka, sans-serif'; sp('6px'); x.fillText('AREA 42', W/2, 190);
+  x.fillStyle = '#FFFFFF'; x.font = '150px "Black Ops One", Fredoka, sans-serif'; sp('6px'); let bf = 150; x.font = `${bf}px "Black Ops One", Fredoka, sans-serif`;
+  while(x.measureText(brandName()).width > 980 && bf > 60){ bf -= 6; x.font = `${bf}px "Black Ops One", Fredoka, sans-serif`; }
+  x.fillText(brandName(), W/2, 190);
   x.shadowBlur = 0;
-  x.fillStyle = '#39FF88'; x.font = '800 34px Nunito, sans-serif'; sp('8px'); x.fillText('CLUB · LOS HELADOS DE SANTI', W/2, 250);
+  x.fillStyle = '#39FF88'; x.font = '800 34px Nunito, sans-serif'; sp('8px'); x.fillText(brandSub(), W/2, 250);
   // Credencial
   rrect(x, 80, 300, 920, 900, 48); x.fillStyle = 'rgba(11,8,32,.92)'; x.fill();
   x.lineWidth = 8; x.strokeStyle = '#39FF88'; x.stroke();
-  x.fillStyle = '#FFD23F'; x.font = '700 60px Fredoka, sans-serif'; sp('0px'); x.fillText('¡Bienvenido/a al club!', W/2, 395);
-  x.fillStyle = '#A8A2C8'; x.font = '800 26px Nunito, sans-serif'; sp('8px'); x.fillText('CREDENCIAL DE SOCIO', W/2, 445);
+  x.fillStyle = '#FFD23F'; x.font = '700 60px Fredoka, sans-serif'; sp('0px'); x.fillText(client ? '¡Tu tarjeta de stickers!' : '¡Bienvenido/a al club!', W/2, 395);
+  x.fillStyle = '#A8A2C8'; x.font = '800 26px Nunito, sans-serif'; sp('8px'); x.fillText(client ? 'TARJETA DE CLIENTE' : 'CREDENCIAL DE SOCIO', W/2, 445);
   // Avatar
   const av = AVATARS[c.avatar];
   x.beginPath(); x.arc(W/2, 600, 125, 0, 7); x.fillStyle = av ? av.c : '#3A3360'; x.fill();
@@ -2400,31 +2558,32 @@ async function makeCarnet(c){
   let fs = 84; x.font = `600 ${fs}px Fredoka, sans-serif`;
   while(x.measureText(c.name).width > 820 && fs > 40){ fs -= 4; x.font = `600 ${fs}px Fredoka, sans-serif`; }
   x.fillStyle = '#FFFFFF'; x.fillText(c.name, W/2, 820);
-  if(c.member_no){ x.fillStyle = '#39FF88'; x.font = '64px "Black Ops One", sans-serif'; sp('4px'); x.fillText(`SOCIO Nº ${memberNo(c.member_no)}`, W/2, 905); }
+  if(c.member_no && !client){ x.fillStyle = '#39FF88'; x.font = '64px "Black Ops One", sans-serif'; sp('4px'); x.fillText(`SOCIO Nº ${memberNo(c.member_no)}`, W/2, 905); }
   // Separador
   x.setLineDash([16, 14]); x.lineWidth = 3; x.strokeStyle = 'rgba(168,162,200,.5)';
   x.beginPath(); x.moveTo(150, 950); x.lineTo(930, 950); x.stroke(); x.setLineDash([]);
   // Mensaje
   x.fillStyle = '#F4F1FF'; x.font = '600 38px Nunito, sans-serif'; sp('0px');
-  wrapLines(x, 'Ya sos parte de este club especial donde vas a participar por premios exclusivos para socios.', 800)
+  wrapLines(x, client ? 'Cada pedido te suma 1 sticker. Con 5 canjeás un marcianito gratis ¡y competís por premios!' : 'Ya sos parte de este club especial donde vas a participar por premios exclusivos para socios.', 800)
     .forEach((l, i) => x.fillText(l, W/2, 1015 + i * 52));
   x.fillStyle = '#A8A2C8'; x.font = '800 26px Nunito, sans-serif'; sp('4px'); x.fillText(`CÓDIGO ${c.code}`, W/2, 1165);
   // Pie
-  x.fillStyle = '#FFD23F'; x.font = '800 30px Nunito, sans-serif'; sp('6px'); x.fillText('COMARCA ANDINA · PARALELO 42 SUR', W/2, 1280);
+  x.fillStyle = '#FFD23F'; x.font = '800 30px Nunito, sans-serif'; sp('6px'); x.fillText((state.config.storeLine || '').toUpperCase(), W/2, 1280);
   return await new Promise(res => cv.toBlob(res, 'image/png'));
 }
 async function openWelcomeSend(c){
   wsFile = null; wsText = welcomeText(c);
   if(wsUrl){ URL.revokeObjectURL(wsUrl); wsUrl = null; }
   $('wsImg').removeAttribute('src'); $('wsShare').disabled = true;
-  $('wsNote').textContent = 'Preparando la credencial…';
+  $('wsNote').textContent = 'Preparando la tarjeta…';
+  $('t-ws').textContent = c.member === false ? 'Tarjeta de stickers' : 'Credencial de bienvenida';
   open('welcomeSend');
   try{
     const blob = await makeCarnet(c);
     const slug = c.name.normalize('NFD').replace(/[^\w]+/g, '-').replace(/^-|-$/g, '').toLowerCase() || 'socio';
     wsFile = new File([blob], `bienvenida-area42-${slug}.png`, {type:'image/png'});
     wsUrl = URL.createObjectURL(blob); $('wsImg').src = wsUrl;
-    $('wsNote').textContent = `Mandásela a ${c.name}: le llega su credencial con el mensaje de bienvenida y el link de su tarjeta.`;
+    $('wsNote').textContent = c.member === false ? `Mandásela a ${c.name}: le llega su tarjeta de stickers con el link para ver sus stickers.` : `Mandásela a ${c.name}: le llega su credencial con el mensaje de bienvenida y el link de su tarjeta.`;
     $('wsShare').disabled = false;
   }catch(e){ console.warn(e); $('wsNote').textContent = 'No se pudo armar la imagen, pero podés mandar el mensaje.'; $('wsShare').disabled = false; }
 }
@@ -2523,7 +2682,7 @@ $('pinInput').addEventListener('keydown', e => { if(e.key === 'Enter') tryPin();
 $('loginPass').addEventListener('keydown', e => { if(e.key === 'Enter') tryPin(); });
 
 /* =================== INICIO =================== */
-function refreshShop(){ renderStatus(); renderCombos(); renderGrid(); renderCart(); }
+function refreshShop(){ renderHero(); renderStatus(); renderCombos(); renderGrid(); renderCart(); }
 refreshShop();
 pullConfig();
 renderCardChip(); renderClubLock(); fetchCard(); renderInstallBanner(); fetchRace(); fetchComp();
