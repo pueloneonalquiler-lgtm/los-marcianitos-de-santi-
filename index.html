@@ -505,6 +505,114 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
 .zone-club{margin-top:44px;padding-top:6px;border-top:2px dashed var(--line)}
 .zone-club > h2.zt{text-align:center;font-size:22px;margin:18px 0 0;color:var(--green)}
 .logo-admin .pa-prev{background-size:contain}
+/* ---------- Álbum Galáctico ---------- */
+.albsec{margin-top:34px;padding:18px 14px 16px;border-radius:28px;background:linear-gradient(180deg,rgba(34,211,238,.14),var(--surface) 55%);border:1.5px solid rgba(34,211,238,.5)}
+.albsec .prize-info{border-color:rgba(34,211,238,.4)}
+.albsec .pi-k{color:var(--cyan)}
+.alb-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:14px 0 10px}
+.alb-tabs button{padding:8px 2px;border-radius:14px;border:1.5px solid var(--line);background:var(--deep);color:var(--text);font-weight:800;font-size:12px;line-height:1.2}
+.alb-tabs button span{display:block;font-size:22px}
+.alb-tabs button.on{border-color:var(--cyan);background:rgba(34,211,238,.15)}
+.alb-tabs button.done{border-color:var(--green)}
+.alb-ptitle{text-align:center;font-family:var(--display);font-size:18px;margin:4px 0 10px}
+.alb-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.fig{position:relative;aspect-ratio:3/4;border-radius:14px;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:16px 6px 8px;text-align:center;
+  background:linear-gradient(160deg,var(--f1),var(--f2));border:3px solid #fff;box-shadow:0 6px 14px rgba(0,0,0,.4)}
+.fig .fe{font-size:38px;line-height:1;filter:drop-shadow(0 3px 4px rgba(0,0,0,.35))}
+.fig .fn{font-size:11.5px;font-weight:800;line-height:1.1;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.6)}
+.fig .fno{position:absolute;top:4px;left:6px;font-size:10px;font-weight:800;color:rgba(255,255,255,.85)}
+.fig .fx{position:absolute;top:4px;right:4px;background:var(--pink);color:#fff;font-size:11px;font-weight:800;border-radius:999px;padding:1px 6px}
+.fig .frar{position:absolute;bottom:4px;right:6px;font-size:13px}
+.fig.r-b::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 20%,rgba(255,255,255,.55) 40%,rgba(34,211,238,.35) 50%,rgba(255,79,216,.35) 60%,transparent 80%);
+  background-size:250% 100%;animation:holo 2.6s linear infinite;mix-blend-mode:screen;pointer-events:none}
+@keyframes holo{from{background-position:120% 0}to{background-position:-120% 0}}
+.fig.r-l{border-color:#FFD23F;box-shadow:0 0 0 2px #B8930A,0 0 22px rgba(255,210,63,.6)}
+.fig.r-l::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 40%,rgba(255,232,120,.45),transparent 60%);animation:throb 1.6s ease-in-out infinite;pointer-events:none}
+.fig.empty{background:var(--deep);border:2px dashed var(--line);box-shadow:none}
+.fig.empty .fe{font-family:var(--display);font-size:30px;color:var(--muted);filter:none}
+.fig.empty .fn{color:var(--muted);text-shadow:none;font-weight:700}
+.alb-done{margin:0 0 12px;padding:12px;border-radius:16px;text-align:center;font-weight:800;background:rgba(57,255,136,.12);border:1.5px solid rgba(57,255,136,.5);color:var(--green)}
+.alb-dups{margin-top:14px;text-align:center;font-size:14px;color:var(--muted)}
+.alb-dups .btn{margin-top:8px}
+.pack-btn{margin-top:12px;animation:throb 1.3s ease-in-out infinite}
+.pack-btn.gold{background:linear-gradient(135deg,#FFE066,#FF9A3D);color:#3B0A2A}
+.pack{position:relative;width:200px;height:270px;margin:20px auto 10px;cursor:pointer;animation:wiggle 1.8s ease-in-out infinite}
+.pack-body{position:absolute;inset:0;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:18px;
+  background:linear-gradient(135deg,#22D3EE,#9B5CFF 55%,#FF4FD8);border:3px solid #fff;box-shadow:0 14px 34px rgba(0,0,0,.55);overflow:hidden;color:#fff}
+.pack-body::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 25%,rgba(255,255,255,.5) 45%,transparent 65%);background-size:250% 100%;animation:holo 2.2s linear infinite}
+.pack.gold .pack-body{background:linear-gradient(135deg,#FFF3A8,#FFD23F 45%,#FF9A3D);color:#3B0A2A}
+.pack-body .pk1{font-family:'Black Ops One',var(--display);font-size:30px;line-height:1}
+.pack-body .pk2{font-size:12px;font-weight:800;letter-spacing:2px}
+.pack-body .pk3{font-size:56px;line-height:1}
+.pack-top{position:absolute;left:0;right:0;top:0;height:46px;z-index:2;border-radius:18px 18px 0 0;background:rgba(255,255,255,.25);border-bottom:3px dashed #fff;transition:transform .5s ease,opacity .5s}
+.pack.torn{animation:none}
+.pack.torn .pack-top{transform:translate(70px,-90px) rotate(35deg);opacity:0}
+.pack.torn .pack-body{transform:translateY(40px) scale(.9);opacity:0;transition:all .5s .3s}
+.pack-cards{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:6px 0 10px}
+.pack-cards .fig{width:104px;animation:flipin .6s cubic-bezier(.2,1.3,.4,1) both}
+@keyframes flipin{from{transform:perspective(600px) rotateY(180deg) scale(.4);opacity:0}}
+.pack-cards .tag{position:absolute;bottom:-2px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:800;padding:2px 8px;border-radius:999px;white-space:nowrap;z-index:2}
+.pack-cards .tag.new{background:var(--green);color:var(--bg)}
+.pack-cards .tag.rep{background:rgba(11,8,32,.85);color:#fff}
+.pack-cards .fwrap{position:relative;padding-bottom:10px}
+.pack-cards .fwrap .fig{animation-delay:inherit}
+/* ---------- Arcade Galáctico ---------- */
+.arcade{margin-top:34px;padding:18px 14px 16px;border-radius:28px;background:linear-gradient(180deg,rgba(57,255,136,.13),var(--surface) 55%);border:1.5px solid rgba(57,255,136,.5)}
+.arc-game{display:flex;align-items:center;gap:14px;margin:12px 0;padding:14px;border-radius:20px;background:var(--deep);border:1px solid var(--line)}
+.arc-game .ge{font-size:46px;line-height:1}
+.arc-game b{display:block;font-family:var(--display);font-size:19px}
+.arc-game span{display:block;font-size:13px;color:var(--muted)}
+.arcade .race-me{margin:10px 0 12px}
+.game-sheet{max-height:96%}
+.game-hud{display:flex;justify-content:space-between;gap:10px;font-family:var(--display);font-weight:600;font-size:18px;margin:-4px 0 10px}
+#gBoard{display:flex;justify-content:center;touch-action:none;user-select:none;-webkit-user-select:none}
+#gBoard canvas{border-radius:16px;background:#07051A;box-shadow:0 0 0 2px var(--line),0 0 24px rgba(34,211,238,.2);touch-action:none}
+.dpad{display:grid;grid-template-columns:repeat(3,64px);grid-template-rows:repeat(2,56px);gap:8px;justify-content:center;margin:14px 0 4px}
+.dpad button{border-radius:16px;border:2px solid var(--violet);background:var(--deep);font-size:26px;color:var(--text)}
+.dpad button:active{background:var(--violet)}
+.dpad .up{grid-column:2;grid-row:1}.dpad .left{grid-column:1;grid-row:2}.dpad .down{grid-column:2;grid-row:2}.dpad .right{grid-column:3;grid-row:2}
+.memo{display:grid;gap:8px;width:100%;max-width:360px}
+.mcard{aspect-ratio:3/4;border-radius:12px;border:none;padding:0;position:relative;perspective:600px;background:none}
+.mcard .in{position:absolute;inset:0;transition:transform .35s;transform-style:preserve-3d}
+.mcard.up .in,.mcard.ok .in{transform:rotateY(180deg)}
+.mcard .fa,.mcard .fb{position:absolute;inset:0;border-radius:12px;display:grid;place-items:center;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.mcard .fa{background:linear-gradient(135deg,#22D3EE,#9B5CFF 60%,#FF4FD8);border:2px solid #fff;font-family:'Black Ops One',var(--display);color:#fff;font-size:14px}
+.mcard .fb{background:#F4F1FF;border:2px solid #fff;transform:rotateY(180deg);font-size:34px}
+.mcard.ok .fb{background:#C9FFE0;box-shadow:0 0 14px rgba(57,255,136,.7)}
+.g-win{text-align:center;font-family:var(--display);font-size:22px;color:var(--green);margin:10px 0 4px}
+/* ---------- Gran Premio en Vivo ---------- */
+.live-banner{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;margin-top:22px;padding:16px;border-radius:22px;border:2px solid #FF3B5C;
+  background:linear-gradient(135deg,rgba(255,59,92,.25),rgba(255,79,216,.2));color:#fff;font-family:var(--display);font-size:19px;font-weight:700;animation:throb 1.2s ease-in-out infinite}
+.live-dot{width:12px;height:12px;border-radius:50%;background:#FF3B5C;box-shadow:0 0 12px #FF3B5C;animation:blink 1s infinite}
+.live-sheet{max-height:96%}
+.live-top{text-align:center;font-weight:800;color:var(--muted);margin:-6px 0 10px;font-size:14px;letter-spacing:1px}
+.lanes{display:flex;flex-direction:column;gap:8px}
+.lane2{padding:6px 10px 8px;border-radius:14px;background:var(--deep);border:1.5px solid var(--line)}
+.lane2.me{border-color:var(--green)}
+.lane2.win{border-color:var(--yellow);box-shadow:0 0 16px rgba(255,210,63,.4)}
+.lane2.out{opacity:.45}
+.ln{display:flex;align-items:center;gap:8px;font-weight:800;font-size:14px}
+.ln .sc{margin-left:auto;color:var(--yellow);font-family:var(--display)}
+.ln .rx{color:var(--cyan);font-size:12px}
+.lt{position:relative;height:30px;margin-top:4px;border-radius:999px;background:repeating-linear-gradient(90deg,rgba(255,255,255,.08) 0 10px,transparent 10px 20px)}
+.lt .ship{position:absolute;top:50%;font-size:24px;transform:translate(-50%,-50%) rotate(45deg);transition:left .15s linear;filter:drop-shadow(0 0 8px var(--pink))}
+.lt .flag{position:absolute;right:4px;top:50%;transform:translateY(-50%);font-size:18px}
+.live-center{min-height:84px;display:grid;place-items:center;text-align:center;margin:12px 0}
+.big-count{font-family:'Black Ops One',var(--display);font-size:84px;line-height:1;color:var(--yellow);animation:pop .5s}
+.light{width:120px;height:120px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:24px;color:#fff;border:4px solid #fff}
+.light.red{background:#C8102E;box-shadow:0 0 30px rgba(200,16,46,.7)}
+.light.green{background:#16B866;box-shadow:0 0 40px rgba(57,255,136,.9);animation:pop .3s}
+.live-msg{font-family:var(--display);font-size:20px;font-weight:600}
+.tapbtn{display:block;width:100%;height:110px;border:none;border-radius:28px;background:linear-gradient(135deg,var(--pink),var(--violet));color:#fff;font-family:var(--display);font-size:34px;font-weight:700;
+  box-shadow:0 8px 0 #5A1E9E,0 10px 30px rgba(255,79,216,.45);touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.tapbtn:active{transform:translateY(5px);box-shadow:0 3px 0 #5A1E9E}
+.emos{display:flex;justify-content:center;gap:10px;margin-top:12px}
+.emos button{width:52px;height:52px;border-radius:50%;border:1.5px solid var(--line);background:var(--deep);font-size:24px}
+.emo-fly{position:fixed;z-index:95;font-size:34px;pointer-events:none;animation:emofly 1.6s ease-out forwards}
+@keyframes emofly{to{transform:translateY(-220px) scale(1.4);opacity:0}}
+.lv-host{margin-top:12px;padding:14px;border-radius:18px;border:1.5px dashed var(--pink);background:rgba(255,79,216,.08)}
+.lv-pod{display:flex;justify-content:center;align-items:flex-end;gap:10px;margin:8px 0}
+.lv-pod div{display:flex;flex-direction:column;align-items:center;gap:4px;font-weight:800;font-size:13px}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 @media (max-width:360px){.grid{gap:10px}.planet{width:72px;height:72px;font-size:34px}.mission{grid-template-columns:80px 1fr}.pct{font-size:52px}}
 </style>
@@ -525,6 +633,7 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
     <div id="status" class="status on" role="status"><span class="dot"></span><span id="statusText"></span></div>
     <div class="socials hidden" id="heroSocials"></div>
   </header>
+  <button class="live-banner hidden" id="liveBanner"><span class="live-dot"></span>¡Carrera en vivo! Entrá ya 🏁</button>
 
   <section class="comp hidden" id="comp" aria-labelledby="t-comp">
     <div class="race-head"><h2 id="t-comp">⭐ Competencia de Stickers</h2></div>
@@ -581,6 +690,30 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
     <div class="err" id="invErr" role="alert"></div>
   </section>
   </div>
+
+  <section class="albsec hidden" id="album" aria-labelledby="t-album">
+    <div class="race-head"><h2 id="t-album">📒 Álbum Galáctico</h2><span class="race-goal" id="albumCount">0/24</span></div>
+    <p class="sub" id="albumSub" style="margin:6px 0 0"></p>
+    <div class="prize-row">
+      <div class="prize-info">
+        <div class="pi-k">📄 Página completa</div><div class="pi-v" id="albPagePrize"></div>
+        <div class="pi-k">🏆 Álbum completo</div><div class="pi-v" id="albPrize"></div>
+      </div>
+    </div>
+    <button class="btn primary pack-btn hidden" id="albOpen">🎁 Abrir sobre</button>
+    <div class="alb-tabs" id="albTabs"></div>
+    <div id="albDone"></div>
+    <div class="alb-ptitle" id="albPTitle"></div>
+    <div class="alb-grid" id="albGrid"></div>
+    <div class="alb-dups" id="albDups"></div>
+  </section>
+
+  <section class="arcade hidden" id="arcade" aria-labelledby="t-arcade">
+    <div class="race-head"><h2 id="t-arcade">🕹️ Arcade Galáctico</h2><span class="race-goal" id="arcChip">Esta semana</span></div>
+    <div class="arc-game"><span class="ge" id="arcEmoji" aria-hidden="true">🌀</span><div><b id="arcName">Laberinto Galáctico</b><span id="arcHow"></span></div></div>
+    <div class="race-me" id="arcStatus"></div>
+    <button class="btn primary" id="arcPlay">▶️ Jugar</button>
+  </section>
 
   <div class="install hidden" id="installBanner" style="margin-top:34px">
       <img src="icons/icon-192.png" alt="">
@@ -684,6 +817,7 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
       </div>
     </div>
     <button class="alert-orders hidden" id="ordersAlert" data-go="orders"></button>
+    <button class="btn ghost" id="liveHostBtn" style="margin-top:14px;border-color:var(--pink);color:var(--pink)">🔴 Abrir Gran Premio en Vivo</button>
     <div class="stats" id="stats"></div>
     <button class="btn primary" style="margin-top:18px" data-go="log">📝 Registrar una venta en persona</button>
   </div>
@@ -823,6 +957,43 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
       <button class="btn ghost" id="compReset" style="margin-top:10px">⭐ Empezar una competencia nueva</button>
     </div>
     <div class="panel">
+      <h2>Arcade Galáctico</h2>
+      <label class="checkrow"><input type="checkbox" id="sArcOn"> Mostrar el arcade en la tienda</label>
+      <label for="sArcGame">Juego</label>
+      <select class="inp" id="sArcGame">
+        <option value="auto">Alternar solo: un juego distinto cada semana</option>
+        <option value="laberinto">🌀 Laberinto Galáctico</option>
+        <option value="memotest">🧠 Memotest Galáctico</option>
+      </select>
+      <label for="sArcLevel">Dificultad</label>
+      <select class="inp" id="sArcLevel">
+        <option value="facil">Fácil</option><option value="medio">Medio</option><option value="dificil">Difícil</option>
+      </select>
+      <div class="two">
+        <div><label for="sArcReward">Premio al ganar</label>
+          <select class="inp" id="sArcReward"><option value="sticker">⭐ 1 sticker</option><option value="sobre">🎁 1 sobre de figuritas</option></select></div>
+        <div><label for="sArcPeriod">Un premio por</label>
+          <select class="inp" id="sArcPeriod"><option value="semana">Semana</option><option value="mes">Mes</option></select></div>
+      </div>
+      <label for="sArcFor">¿Quiénes ganan premio?</label>
+      <select class="inp" id="sArcFor"><option value="todos">Todos los que tienen tarjeta</option><option value="socios">Solo socios del club</option></select>
+      <p class="note">Cualquiera puede jugar. El premio es solo para quien tiene tarjeta, una vez por semana o por mes.</p>
+    </div>
+    <div class="panel">
+      <h2>Álbum Galáctico</h2>
+      <label class="checkrow"><input type="checkbox" id="sAlbumOn"> Mostrar el álbum en la tienda</label>
+      <label for="sAlbumFor">¿Quiénes juntan figuritas?</label>
+      <select class="inp" id="sAlbumFor">
+        <option value="todos">Todos (clientes y socios)</option>
+        <option value="socios">Solo socios del club</option>
+      </select>
+      <label for="sAlbPagePrize">Premio por página completa</label>
+      <input id="sAlbPagePrize" type="text" maxlength="80" placeholder="Ej: ¡Un marcianito gratis!">
+      <label for="sAlbPrize">Premio por álbum completo</label>
+      <input id="sAlbPrize" type="text" maxlength="80" placeholder="Ej: ¡Un Pack Galaxia + sorpresa!">
+      <p class="note">Cada pedido entregado da 1 sobre con 1 figurita. Al canjear 5 stickers llega un sobre dorado con 3. Con 3 repetidas se cambia por un sobre nuevo.</p>
+    </div>
+    <div class="panel">
       <h2>Carrera Galáctica</h2>
       <label class="checkrow"><input type="checkbox" id="sRaceOn"> Mostrar la carrera en la tienda</label>
       <label for="sRaceFor">¿Quiénes corren la carrera?</label>
@@ -923,6 +1094,59 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
     <ol class="ios-steps" id="installSteps"></ol>
     <div class="ios-arrow hidden" id="iosArrow" aria-hidden="true">⬇️</div>
     <button class="btn primary" data-close="installOverlay">¡Entendido!</button>
+  </div>
+</div>
+
+<!-- Gran Premio en Vivo -->
+<div class="overlay hidden" id="liveOverlay" role="dialog" aria-modal="true" aria-labelledby="t-live">
+  <div class="sheet live-sheet">
+    <div class="sheet-head"><h2 id="t-live">🏁 Gran Premio en Vivo</h2><button class="close" id="liveClose" aria-label="Salir de la carrera">✕</button></div>
+    <div class="live-top" id="liveTop"></div>
+    <div class="lanes" id="lanes"></div>
+    <div class="live-center" id="liveCenter"></div>
+    <button class="tapbtn hidden" id="tapBtn">¡TOCÁ!</button>
+    <div class="emos" id="emos"><button data-emo="🔥" aria-label="Fuego">🔥</button><button data-emo="👏" aria-label="Aplausos">👏</button><button data-emo="🚀" aria-label="Cohete">🚀</button><button data-emo="😂" aria-label="Risa">😂</button></div>
+    <div class="lv-host hidden" id="lvHost">
+      <div class="two">
+        <div><label for="lvRounds">Carreras</label><select class="inp" id="lvRounds"><option value="5">5</option><option value="10" selected>10</option><option value="15">15</option></select></div>
+        <div><label for="lvPrize">Premio</label><select class="inp" id="lvPrize"><option value="sobre">🎁 1 sobre</option><option value="sticker">⭐ 1 sticker</option><option value="nada">Sin premio</option></select></div>
+      </div>
+      <label class="checkrow"><input type="checkbox" id="lvPlay"> Santi también corre</label>
+      <button class="btn primary" id="lvStart">🚦 Largar</button>
+      <button class="btn danger" id="lvCloseRoom">🔒 Cerrar la sala</button>
+    </div>
+  </div>
+</div>
+
+<!-- Minijuego -->
+<div class="overlay hidden" id="gameOverlay" role="dialog" aria-modal="true" aria-labelledby="t-game">
+  <div class="sheet game-sheet">
+    <div class="sheet-head"><h2 id="t-game">Laberinto Galáctico</h2><button class="close" data-close="gameOverlay" aria-label="Salir del juego">✕</button></div>
+    <div class="game-hud"><span id="gTime">⏱️ 0:00</span><span id="gMoves">👣 0</span></div>
+    <div id="gBoard"></div>
+    <div class="dpad hidden" id="dpad">
+      <button class="up" data-dir="0" aria-label="Arriba">▲</button>
+      <button class="left" data-dir="3" aria-label="Izquierda">◀</button>
+      <button class="down" data-dir="2" aria-label="Abajo">▼</button>
+      <button class="right" data-dir="1" aria-label="Derecha">▶</button>
+    </div>
+    <div id="gWin"></div>
+    <p class="sub" id="gMsg" style="text-align:center"></p>
+    <button class="btn primary hidden" id="gAgain">🔁 Jugar de nuevo</button>
+  </div>
+</div>
+
+<!-- Abrir sobre de figuritas -->
+<div class="overlay center hidden" id="packOverlay" role="dialog" aria-modal="true" aria-labelledby="t-pack">
+  <div class="env-stage">
+    <h2 id="t-pack">¡Sobre de figuritas!</h2>
+    <div class="pack" id="pack" role="button" tabindex="0" aria-label="Abrir sobre">
+      <div class="pack-top"></div>
+      <div class="pack-body"><div class="pk3" aria-hidden="true">🛸</div><div class="pk1" id="packBrand">AREA 42</div><div class="pk2" id="packKind">FIGURITAS GALÁCTICAS</div></div>
+    </div>
+    <div class="pack-cards hidden" id="packCards"></div>
+    <p class="sub" id="packText">Tocá el sobre para abrirlo</p>
+    <button class="btn primary" id="packBtn">Abrir sobre</button>
   </div>
 </div>
 
@@ -1040,6 +1264,9 @@ const DEFAULT = {
     price:500, apolo:1300, galaxia:2500, familiar:4500,
     goalName:'Bicicleta', goalAmount:50000, goalEmoji:'🚲', pin:'1234',
     invitesPerMember:2,
+    liveOpen:false, liveRoom:'',
+    arcadeOn:true, arcadeGame:'auto', arcadeLevel:'medio', arcadeReward:'sticker', arcadePeriod:'semana', arcadeFor:'todos',
+    albumOn:true, albumFor:'todos', albumPagePrize:'¡Un marcianito gratis!', albumPrize:'¡Un Pack Galaxia + sorpresa!',
     storeName:'AREA 42', storePill:'CLUB', storeTagline:'Los helados de Santi', storeLine:'Comarca Andina del Paralelo 42',
     deliveryArea:'', logoImg:'', logoOnly:false, compPrizeImg:'', raceFor:'socios',
     social:{ig:'', fb:'', tt:'', web:''},
@@ -1084,7 +1311,7 @@ async function pullConfig(){
   if(error || !data || !data.data || !Object.keys(data.data).length) return;
   const d = data.data;
   state.config = {...state.config, ...d, available:{...state.config.available, ...(d.available||{})}};
-  syncFlavors(); saveLocal(); refreshShop(); fetchRace(); fetchComp();
+  syncFlavors(); saveLocal(); refreshShop(); fetchRace(); fetchComp(); renderLiveBanner();
 }
 async function pullPrivate(){
   const {data, error} = await sb.from('santi_data').select('data').eq('id',1).single();
@@ -1121,7 +1348,7 @@ function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.remove('
    Cada pantalla y ventana abierta crea una entrada en el historial del navegador.
    Así, la flecha "atrás" cierra la ventana abierta o vuelve a la pantalla anterior
    en lugar de salir del sitio. */
-const OVERLAYS = ['cartOverlay','pinOverlay','celebrate','flavorOverlay','cardOverlay','envOverlay','installOverlay','avatarOverlay','welcomeOverlay','welcomeSend','joinOverlay'];
+const OVERLAYS = ['cartOverlay','pinOverlay','celebrate','flavorOverlay','cardOverlay','envOverlay','installOverlay','avatarOverlay','welcomeOverlay','welcomeSend','joinOverlay','packOverlay','gameOverlay','liveOverlay'];
 const HOME_NAV = {screen:'shop', view:'home', ov:null};
 let navState = {...HOME_NAV};
 let adminUnlocked = false;
@@ -1541,7 +1768,7 @@ $('logSave').addEventListener('click', () => {
 let cards = [];
 async function fetchCards(){
   if(!sb || !loggedIn) return;
-  const {data, error} = await sb.from('cards').select('code,name,created_at,hide_rank,avatar,member_no,member,stickers(id,redeemed_at),vouchers(id,status)')
+  const {data, error} = await sb.from('cards').select('code,name,created_at,hide_rank,avatar,member_no,member,stickers(id,redeemed_at),vouchers(id,status),album_items(fig,traded_at)')
     .order('created_at', {ascending:false}).limit(500);
   if(error){ toast('⚠️ No se pudieron traer las tarjetas'); console.warn(error); return; }
   cards = data || [];
@@ -1561,6 +1788,7 @@ function renderCloudCrew(){
       <div class="row">
         <button class="mini" data-cstick="${c.code}">+1 sticker</button>
         <button class="mini" data-crace="${c.code}">🏁 + en persona</button>
+        <button class="mini" data-cgift="${c.code}">🎁 +1 sobre</button>
         ${mem ? `<button class="mini" data-cwelcome="${c.code}">🎟️ Mandar bienvenida</button>` : `<button class="mini" data-cwelcome="${c.code}">📤 Mandar tarjeta</button>`}
       </div>
       ${mem ? '' : `<button class="mini" style="width:100%;margin-top:8px" data-cmember="${c.code}">🪪 Hacerlo socio del club</button>`}
@@ -1568,6 +1796,7 @@ function renderCloudCrew(){
       </div>
       ${vs.length ? `<button class="mini gift" style="width:100%;margin-top:8px" data-cvused="${vs[0].id}">✅ Ya le di el gratis en persona</button>` : ''}
       <button class="mini" style="width:100%;margin-top:8px" data-chide="${c.code}" data-h="${c.hide_rank ? 1 : 0}">${c.hide_rank ? '🙈 Oculto en la carrera · Mostrar' : '👁️ Visible en la carrera · Ocultar'}</button>
+      <p class="note">📒 Álbum: ${new Set((c.album_items || []).filter(x => !x.traded_at).map(x => x.fig)).size}/24 figuritas</p>
       <p class="note">${c.member_no ? `<span class="memberno">SOCIO Nº ${memberNo(c.member_no)}</span> · ` : ''}Código ${esc(c.code)}${used ? ` · ${used} canje${used===1?'':'s'}` : ''}</p>
     </li>`;
   }).join('') : '<li class="empty" style="border:none;background:none">Las tarjetas se crean solas cuando entregás un pedido de la web. También podés crear una para un cliente en persona.</li>';
@@ -1617,6 +1846,11 @@ $('crewList').addEventListener('click', async e => {
       const {error} = await sb.from('cards').update({member:true}).eq('code', c.code);
       if(error){ toast('⚠️ No se pudo'); return; }
       c.member = true; toast(`🪪 ¡${c.name} ahora es socio!`); fetchCards(); fetchRace(); openWelcomeSend({...c, member:true}); return;
+    }
+    if(t.dataset.cgift){
+      const {error} = await sb.rpc('gift_pack', {p_card: t.dataset.cgift});
+      toast(error ? '⚠️ No se pudo regalar el sobre' : '🎁 Sobre regalado: le aparece al abrir la web');
+      fetchCards(); return;
     }
     if(t.dataset.crace){
       const q = Math.round(Number(prompt('¿Cuántos marcianitos le vendiste en persona? (suman a la carrera)', '1')));
@@ -1672,6 +1906,10 @@ function renderSettings(){
   $('sCompPrize').value = c.compPrize || ''; $('sCompEnd').value = c.compEnd || '';
   $('compStartNote').textContent = c.compStart ? `Competencia actual desde el ${prettyDate(isoDay(c.compStart))}. Cuentan los stickers ganados desde ese día.` : 'Cuentan todos los stickers ganados.';
   $('sRaceFor').value = c.raceFor || 'socios';
+  $('sArcOn').checked = c.arcadeOn !== false; $('sArcGame').value = c.arcadeGame || 'auto'; $('sArcLevel').value = c.arcadeLevel || 'medio';
+  $('sArcReward').value = c.arcadeReward || 'sticker'; $('sArcPeriod').value = c.arcadePeriod || 'semana'; $('sArcFor').value = c.arcadeFor || 'todos';
+  $('sAlbumOn').checked = c.albumOn !== false; $('sAlbumFor').value = c.albumFor || 'todos';
+  $('sAlbPagePrize').value = c.albumPagePrize || ''; $('sAlbPrize').value = c.albumPrize || '';
   $('sLogoOnly').checked = !!c.logoOnly; $('sStoreName').value = c.storeName || ''; $('sStorePill').value = c.storePill || '';
   $('sStoreTagline').value = c.storeTagline || ''; $('sStoreLine').value = c.storeLine || ''; $('sDeliveryArea').value = c.deliveryArea || '';
   const so = c.social || {}; $('sIg').value = so.ig || ''; $('sFb').value = so.fb || ''; $('sTt').value = so.tt || ''; $('sWeb').value = so.web || '';
@@ -1706,12 +1944,15 @@ $('setSave').addEventListener('click', () => {
     invitesPerMember: Math.max(0, Math.min(10, Math.round(num('sInvites')) || 0)),
     compOn:$('sCompOn').checked, compFor:$('sCompFor').value, compPrize:$('sCompPrize').value.trim().slice(0,80), compEnd:$('sCompEnd').value || '',
     raceFor:$('sRaceFor').value,
+    arcadeOn:$('sArcOn').checked, arcadeGame:$('sArcGame').value, arcadeLevel:$('sArcLevel').value,
+    arcadeReward:$('sArcReward').value, arcadePeriod:$('sArcPeriod').value, arcadeFor:$('sArcFor').value,
+    albumOn:$('sAlbumOn').checked, albumFor:$('sAlbumFor').value, albumPagePrize:$('sAlbPagePrize').value.trim().slice(0,80), albumPrize:$('sAlbPrize').value.trim().slice(0,80),
     logoOnly:$('sLogoOnly').checked, storeName:$('sStoreName').value.trim().slice(0,30) || 'AREA 42', storePill:$('sStorePill').value.trim().slice(0,16),
     storeTagline:$('sStoreTagline').value.trim().slice(0,50), storeLine:$('sStoreLine').value.trim().slice(0,60), deliveryArea:$('sDeliveryArea').value.trim().slice(0,60),
     social:{ig:$('sIg').value.trim().slice(0,100), fb:$('sFb').value.trim().slice(0,100), tt:$('sTt').value.trim().slice(0,100), web:$('sWeb').value.trim().slice(0,200)},
     raceOn:$('sRaceOn').checked, raceGoal:rg, racePrize:$('sRacePrize').value.trim().slice(0,80)
   });
-  save(); pushConfig(); refreshShop(); renderRace(); setTimeout(fetchComp, 800); toast(sb ? '✅ Guardado y publicado para los clientes' : '✅ Cambios guardados');
+  save(); pushConfig(); refreshShop(); renderRace(); renderAlbum(); renderArcade(); setTimeout(fetchComp, 800); toast(sb ? '✅ Guardado y publicado para los clientes' : '✅ Cambios guardados');
 });
 $('newGoal').addEventListener('click', () => {
   if(!confirm('Tu cohete vuelve a la Tierra y empieza una meta nueva. Tus ventas y medallas se guardan. ¿Seguimos?')) return;
@@ -1725,10 +1966,12 @@ $('wipe').addEventListener('click', () => {
   state = clone(DEFAULT); syncFlavors(); save(); pushConfig(); refreshShop(); renderSettings(); toast('Datos borrados');
 });
 function showShopUI(){
+  setTimeout(renderLiveBanner, 0);
   $('admin').classList.add('hidden'); $('nav').classList.add('hidden'); $('shop').classList.remove('hidden');
   refreshShop();
 }
 function showAdminUI(){
+  $('liveBanner').classList.add('hidden');
   $('shop').classList.add('hidden'); $('fab').classList.add('hidden');
   $('admin').classList.remove('hidden'); $('nav').classList.remove('hidden');
 }
@@ -1747,6 +1990,7 @@ window.addEventListener('popstate', e => {
   const prevScreen = navState.screen, prevView = navState.view;
   navState = st;
   OVERLAYS.forEach(o => $(o).classList.toggle('hidden', st.ov !== o));
+  if(live && st.ov !== 'liveOverlay') leaveLive(live.host);
   if(st.screen === 'admin'){
     showAdminUI();
     if(prevScreen !== 'admin' || prevView !== st.view) setView(st.view);
@@ -1995,11 +2239,12 @@ function usableVoucher(){
   return card.vouchers.find(v => v.id !== pend) || null;
 }
 async function fetchCard(){
-  if(!sb){ renderCardChip(); return; }
-  if(!cardCode){ card = null; renderCardChip(); renderClubLock(); if(pendingInvite){ const c0 = pendingInvite; pendingInvite = null; openJoin(c0); } return; }
+  if(!sb){ renderCardChip(); renderAlbum(); renderArcade(); return; }
+  if(!cardCode){ card = null; album = null; gameStat = null; renderCardChip(); renderClubLock(); renderAlbum(); renderArcade(); if(pendingInvite){ const c0 = pendingInvite; pendingInvite = null; openJoin(c0); } return; }
   const {data, error} = await sb.rpc('get_card', {p_code: cardCode});
   if(error){ console.warn('Tarjeta', error); renderCardChip(); return; }
   card = data || null;
+  fetchAlbum(); fetchGameStatus();
   if(card && !Number.isInteger(card.avatar)){
     let loc = null; try{ const v = localStorage.getItem(AVKEY); loc = v === null ? null : Number(v); }catch(e){}
     if(Number.isInteger(loc)){ card.avatar = loc; sb.rpc('set_avatar', {p_code: cardCode, p_avatar: loc}).then(() => fetchRace()); }
@@ -2116,6 +2361,523 @@ $('envelope').addEventListener('click', () => { if(!envOpened) openEnvelope(); }
 $('envelope').addEventListener('keydown', e => { if((e.key === 'Enter' || e.key === ' ') && !envOpened){ e.preventDefault(); openEnvelope(); } });
 $('envBtn').addEventListener('click', openEnvelope);
 document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'visible' && !$('shop').classList.contains('hidden')){ fetchCard(); fetchRace(); fetchComp(); } });
+
+/* =================== GRAN PREMIO EN VIVO =================== */
+const LIVE_MAX = 8, TAP_GOAL = 30;
+let live = null;
+const aliasName = n => { const w = (n || '').trim().split(/\s+/); if(!w[0]) return 'Tripulante'; return w[0][0].toUpperCase() + w[0].slice(1).toLowerCase() + (w[1] ? ' ' + w[1][0].toUpperCase() + '.' : ''); };
+function renderLiveBanner(){
+  const on = !!(sb && state.config.liveOpen && state.config.liveRoom && !$('shop').classList.contains('hidden'));
+  $('liveBanner').classList.toggle('hidden', !on);
+}
+async function pollLive(){
+  if(!sb || document.visibilityState !== 'visible' || $('shop').classList.contains('hidden')) return;
+  const {data} = await sb.from('config').select('data').eq('id', 1).single();
+  if(data && data.data){ state.config.liveOpen = !!data.data.liveOpen; state.config.liveRoom = data.data.liveRoom || ''; renderLiveBanner(); }
+}
+setInterval(pollLive, 20000);
+document.addEventListener('visibilitychange', pollLive);
+$('liveBanner').addEventListener('click', () => joinLive(false, state.config.liveRoom));
+$('liveHostBtn').addEventListener('click', hostOpenRoom);
+
+function liveSend(p){ if(live && live.ch) live.ch.send({type:'broadcast', event:'g', payload:p}); }
+const lvRacers = () => Object.values(live.players).filter(p => p.plays).sort((a, b) => a.joined - b.joined).slice(0, LIVE_MAX);
+const lvName = pid => (live.players[pid] && live.players[pid].name) || (pid === 'HOST' ? 'Comandante Santi' : 'Tripulante');
+const lvCan = pid => !live.onlyPids || live.onlyPids.includes(pid);
+
+async function joinLive(asHost, room){
+  if(!sb || !room) return;
+  if(!asHost && !(card && cardCode)){ toast('🍦 Para correr necesitás tu tarjeta: llega con tu primer pedido'); return; }
+  if(live) leaveLive(false);
+  const pid = asHost ? 'HOST' : cardCode;
+  const me = asHost ? {pid, name:'Comandante Santi', avatar:6, plays:false, host:true, joined:Date.now()}
+                    : {pid, name:aliasName(card.name), avatar:myAvatar(), plays:true, host:false, joined:Date.now()};
+  live = {room, pid, me, host:asHost, players:{}, prog:{}, scores:{}, taps:{}, phase:'lobby', round:0, rounds:10, prize:'sobre', kind:null,
+          onlyPids:null, extra:0, timers:[], lastSend:0, myTaps:0, sentFin:false, goAt:0, tapped:false, winner:null, rx:{}};
+  const ch = sb.channel('area42-gp-' + room, {config:{broadcast:{self:true}, presence:{key:pid}}});
+  live.ch = ch;
+  ch.on('presence', {event:'sync'}, () => {
+    if(!live) return;
+    const pl = {}; Object.values(ch.presenceState()).forEach(arr => arr.forEach(m => { pl[m.pid] = m; }));
+    live.players = pl;
+    if(!live.host && live.me.plays && !lvRacers().some(r => r.pid === live.pid)){ toast('🚫 La sala está llena (máximo 8 naves)'); leaveLive(false); close('liveOverlay'); return; }
+    renderLive();
+  });
+  ch.on('broadcast', {event:'g'}, ({payload}) => onLive(payload));
+  ch.subscribe(async status => {
+    if(status === 'SUBSCRIBED' && live){ await ch.track(live.me); if(!live.host) liveSend({t:'hello', pid}); }
+    if(status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') toast('⚠️ No se pudo conectar a la carrera');
+  });
+  $('lvHost').classList.toggle('hidden', !asHost);
+  open('liveOverlay'); renderLive();
+}
+function leaveLive(closeRoom){
+  if(!live) return;
+  const l = live; live = null;
+  l.timers.forEach(clearTimeout); clearInterval(l.countIv);
+  if(closeRoom && l.host){ try{ l.ch.send({type:'broadcast', event:'g', payload:{t:'closed'}}); }catch(e){} hostSetRoom(false); }
+  setTimeout(() => { try{ sb.removeChannel(l.ch); }catch(e){} }, 300);
+}
+$('liveClose').addEventListener('click', () => {
+  if(live && live.host && !confirm('¿Cerrar la sala? Se termina la carrera para todos.')) return;
+  close('liveOverlay');
+});
+function lvTimer(fn, ms){ live.timers.push(setTimeout(() => { if(live) fn(); }, ms)); }
+
+/* --- Mensajes --- */
+function onLive(p){
+  if(!live) return;
+  switch(p.t){
+    case 'hello': if(live.host) liveSend({t:'sync', phase:live.phase === 'lobby' ? 'lobby' : 'watch', round:live.round, rounds:live.rounds, scores:live.scores, prize:live.prize}); return;
+    case 'sync': if(!live.host){ Object.assign(live, {round:p.round, rounds:p.rounds, scores:p.scores || {}, prize:p.prize}); if(live.phase === 'lobby') live.phase = p.phase; } break;
+    case 'count':
+      Object.assign(live, {phase:'count', round:p.round, rounds:p.rounds, kind:p.kind, onlyPids:p.onlyPids || null, prog:{}, rx:{}, winner:null, prize:p.prize || live.prize});
+      live.countEnd = Date.now() + 3000; clearInterval(live.countIv);
+      live.countIv = setInterval(() => { if(!live) return; renderLiveCenter(); if(Date.now() > live.countEnd) clearInterval(live.countIv); }, 200);
+      break;
+    case 'race': Object.assign(live, {phase:p.kind === 'tap' ? 'tap' : 'wait', kind:p.kind, prog:{}, myTaps:0, sentFin:false, tapped:false, goAt:0}); live.taps = {}; live.decided = false; break;
+    case 'go': if(live.phase === 'wait' || live.phase === 'false'){ live.goAt = performance.now(); if(live.phase === 'wait') live.phase = 'go'; } break;
+    case 'prog': live.prog[p.pid] = p.p; renderLanes(); return;
+    case 'fin': if(live.host && live.kind === 'tap' && !live.decided && lvCan(p.pid)) hostDecide(p.pid); return;
+    case 'tap': live.rx[p.pid] = p.ms; if(live.host && live.taps[p.pid] === undefined) live.taps[p.pid] = p.ms; renderLanes(); return;
+    case 'false': live.rx[p.pid] = -1; if(live.host) live.taps[p.pid] = Infinity; renderLanes(); return;
+    case 'result': Object.assign(live, {phase:'result', winner:p.winner, scores:p.scores}); break;
+    case 'tie': Object.assign(live, {phase:'tie', onlyPids:p.pids}); break;
+    case 'final':
+      Object.assign(live, {phase:'final', winner:p.winner, scores:p.scores, prize:p.prize});
+      if(p.winner && p.winner === live.pid){ confetti(); setTimeout(() => { fetchCard(); fetchAlbum(); }, 1500); }
+      break;
+    case 'emo': flyEmo(p.e); return;
+    case 'closed': if(!live.host){ toast('🔒 Santi cerró la sala. ¡Gracias por correr!'); close('liveOverlay'); } return;
+  }
+  renderLive();
+}
+
+/* --- Acciones del jugador --- */
+function liveTap(){
+  if(!live || !live.me.plays) return;
+  if(live.phase === 'tap'){
+    if(live.sentFin) return;
+    live.myTaps++; live.prog[live.pid] = live.myTaps;
+    if(live.myTaps >= TAP_GOAL){ live.sentFin = true; liveSend({t:'prog', pid:live.pid, p:live.myTaps}); liveSend({t:'fin', pid:live.pid}); }
+    else if(Date.now() - live.lastSend > 120){ live.lastSend = Date.now(); liveSend({t:'prog', pid:live.pid, p:live.myTaps}); }
+    renderLanes();
+  } else if(live.phase === 'wait'){
+    live.phase = 'false'; liveSend({t:'false', pid:live.pid}); renderLiveCenter();
+  } else if(live.phase === 'go' && !live.tapped){
+    live.tapped = true; liveSend({t:'tap', pid:live.pid, ms:Math.round(performance.now() - live.goAt)}); renderLiveCenter();
+  }
+}
+$('tapBtn').addEventListener('pointerdown', e => { e.preventDefault(); liveTap(); });
+$('emos').addEventListener('click', e => { const b = e.target.closest('[data-emo]'); if(b && live){ if(Date.now() - (live.lastEmo || 0) < 1500) return; live.lastEmo = Date.now(); liveSend({t:'emo', e:b.dataset.emo}); } });
+function flyEmo(e){
+  if(!['🔥','👏','🚀','😂'].includes(e)) return;
+  const el = document.createElement('div'); el.className = 'emo-fly'; el.textContent = e;
+  el.style.left = (15 + Math.random() * 70) + 'vw'; el.style.bottom = '120px';
+  document.body.appendChild(el); setTimeout(() => el.remove(), 1700);
+}
+
+/* --- Santi (anfitrión) --- */
+async function hostSetRoom(on, room){
+  state.config.liveOpen = on; state.config.liveRoom = on ? room : '';
+  save(); await pushConfig();
+}
+async function hostOpenRoom(){
+  if(!sb || !loggedIn){ toast('⚠️ Necesitás Supabase conectado'); return; }
+  const room = 'GP' + Date.now().toString(36).toUpperCase();
+  await hostSetRoom(true, room);
+  toast('🔴 ¡Sala abierta! Avisales a tus clientes que entren a la web');
+  joinLive(true, room);
+}
+$('lvCloseRoom').addEventListener('click', () => { if(confirm('¿Cerrar la sala?')) close('liveOverlay'); });
+$('lvStart').addEventListener('click', () => {
+  if(!live || !live.host) return;
+  live.rounds = Number($('lvRounds').value); live.prize = $('lvPrize').value;
+  live.me.plays = $('lvPlay').checked; live.ch.track(live.me);
+  live.scores = {}; live.round = 0; live.onlyPids = null; live.extra = 0;
+  $('lvStart').disabled = true;
+  setTimeout(hostNext, 600);
+});
+function hostNext(){
+  live.round++;
+  const kind = live.round % 2 ? 'tap' : 'reflex';
+  liveSend({t:'count', round:live.round, rounds:live.rounds, kind, onlyPids:live.onlyPids, prize:live.prize});
+  lvTimer(() => hostRace(kind), 3200);
+}
+function hostRace(kind){
+  live.decided = false; live.taps = {};
+  liveSend({t:'race', kind, round:live.round});
+  if(kind === 'tap'){
+    lvTimer(() => { if(live.decided) return;
+      const best = lvRacers().map(r => r.pid).filter(lvCan).sort((a, b) => (live.prog[b] || 0) - (live.prog[a] || 0))[0];
+      hostDecide(best && (live.prog[best] || 0) > 0 ? best : null); }, 25000);
+  } else {
+    lvTimer(() => {
+      liveSend({t:'go'});
+      lvTimer(() => {
+        const arr = Object.entries(live.taps).filter(([pid, ms]) => lvCan(pid) && Number.isFinite(ms) && ms >= 80).sort((a, b) => a[1] - b[1]);
+        hostDecide(arr[0] ? arr[0][0] : null);
+      }, 2600);
+    }, 1500 + Math.random() * 2500);
+  }
+}
+function hostDecide(pid){
+  if(live.decided) return; live.decided = true;
+  if(pid) live.scores[pid] = (live.scores[pid] || 0) + 1;
+  liveSend({t:'result', round:live.round, winner:pid, scores:live.scores});
+  lvTimer(() => { if(live.round < live.rounds) hostNext(); else hostFinish(); }, 3800);
+}
+async function hostFinish(){
+  const cand = Object.entries(live.scores).filter(([pid]) => pid !== 'HOST').sort((a, b) => b[1] - a[1]);
+  if(!cand.length){ liveSend({t:'final', winner:null, scores:live.scores, prize:live.prize}); $('lvStart').disabled = false; return; }
+  const top = cand[0][1], tied = cand.filter(x => x[1] === top).map(x => x[0]);
+  if(tied.length > 1 && live.extra < 3){
+    live.extra++; live.onlyPids = tied; live.rounds++;
+    liveSend({t:'tie', pids:tied}); lvTimer(hostNext, 3500); return;
+  }
+  const w = tied[0];
+  if(live.prize === 'sobre'){ const {error} = await sb.rpc('gift_pack', {p_card:w}); if(error) toast('⚠️ No se pudo entregar el sobre'); }
+  else if(live.prize === 'sticker'){ const {error} = await sb.from('stickers').insert({card_code:w}); if(error) toast('⚠️ No se pudo entregar el sticker'); }
+  liveSend({t:'final', winner:w, scores:live.scores, prize:live.prize});
+  $('lvStart').disabled = false; $('lvStart').textContent = '🚦 Otra vuelta';
+}
+
+/* --- Pantalla --- */
+function renderLanes(){
+  if(!live) return;
+  const racers = lvRacers();
+  $('lanes').innerHTML = racers.length ? racers.map(r => {
+    const pr = live.kind === 'tap' ? Math.min(100, (live.prog[r.pid] || 0) / TAP_GOAL * 100) : 0;
+    const rx = live.kind === 'reflex' && live.rx[r.pid] !== undefined ? (live.rx[r.pid] < 0 ? '❌ antes de tiempo' : `⚡ ${live.rx[r.pid]} ms`) : '';
+    const cls = [r.pid === live.pid ? 'me' : '', live.winner === r.pid && (live.phase === 'result' || live.phase === 'final') ? 'win' : '', live.onlyPids && !live.onlyPids.includes(r.pid) ? 'out' : ''].join(' ');
+    return `<div class="lane2 ${cls}"><div class="ln">${avHTML(r.avatar, 'sm')}<span>${esc(r.name)}${r.pid === live.pid ? ' (vos)' : ''}</span>${rx ? `<span class="rx">${rx}</span>` : ''}<span class="sc">${live.scores[r.pid] ? '🏆 ' + live.scores[r.pid] : ''}</span></div>
+      <div class="lt"><span class="ship" style="left:${4 + pr * .86}%">🚀</span><span class="flag">🏁</span></div></div>`;
+  }).join('') : '<p class="sub" style="text-align:center">Esperando naves…</p>';
+}
+function renderLiveCenter(){
+  if(!live) return;
+  const c = $('liveCenter'), ph = live.phase, mePlays = live.me.plays && (!live.onlyPids || live.onlyPids.includes(live.pid));
+  let h = '';
+  if(ph === 'lobby' || ph === 'watch') h = live.host ? `<div class="live-msg">${lvRacers().length} nave${lvRacers().length === 1 ? '' : 's'} en la sala</div><p class="sub">Cuando estén todos, tocá Largar.</p>` : `<div class="live-msg">🛸 Esperando que Santi largue…</div>`;
+  else if(ph === 'count'){ const n = Math.max(1, Math.ceil((live.countEnd - Date.now()) / 1000)); h = `<div><p class="sub" style="margin:0">${live.kind === 'tap' ? '👆 Tocá lo más rápido que puedas' : '⚡ Tocá apenas se ponga verde'}</p><div class="big-count">${n}</div></div>`; }
+  else if(ph === 'tap') h = `<div class="live-msg">👆 ¡Tocá, tocá, tocá!</div>`;
+  else if(ph === 'wait') h = `<div class="light red">Esperá…</div>`;
+  else if(ph === 'false') h = `<div class="live-msg">😅 ¡Muy pronto! Esta no cuenta</div>`;
+  else if(ph === 'go') h = live.tapped ? `<div class="live-msg">✅ ¡Tocaste!</div>` : `<div class="light green">¡YA!</div>`;
+  else if(ph === 'result') h = `<div class="live-msg">${live.winner ? `🥇 ${esc(lvName(live.winner))} ganó la carrera ${live.round}` : 'Nadie ganó esta carrera'}</div>`;
+  else if(ph === 'tie') h = `<div class="live-msg">⚔️ ¡Empate! Desempate entre ${live.onlyPids.map(x => esc(lvName(x))).join(' y ')}</div>`;
+  else if(ph === 'final'){
+    const pod = Object.entries(live.scores).filter(([pid]) => pid !== 'HOST').sort((a, b) => b[1] - a[1]).slice(0, 3);
+    const prize = live.prize === 'sobre' ? 'un sobre de figuritas 🎁' : live.prize === 'sticker' ? 'un sticker ⭐' : '';
+    h = `<div><div class="live-msg">${live.winner ? `🏆 ¡Ganó ${esc(lvName(live.winner))}!` : 'Terminó el Gran Premio'}</div>
+      <div class="lv-pod">${pod.map(([pid, n], i) => `<div><span style="font-size:26px">${['🥇','🥈','🥉'][i]}</span>${avHTML((live.players[pid] || {}).avatar, 'sm')}${esc(lvName(pid))}<span>${n} 🏁</span></div>`).join('')}</div>
+      ${live.winner && prize ? `<p class="sub" style="margin:0">${live.winner === live.pid ? `¡Te llevás ${prize}! Te llega en un sobre.` : `Se lleva ${prize}.`}</p>` : ''}</div>`;
+  }
+  c.innerHTML = h;
+  const showTap = mePlays && ['tap','wait','go','false'].includes(ph);
+  $('tapBtn').classList.toggle('hidden', !showTap);
+  $('tapBtn').textContent = ph === 'tap' ? '¡TOCÁ!' : '⚡ TOCAR';
+  $('liveTop').textContent = live.round ? `CARRERA ${live.round} DE ${live.rounds} · ${live.kind === 'reflex' ? 'REFLEJOS' : 'VELOCIDAD'}` : 'SALA DE ESPERA';
+}
+function renderLive(){ if(!live) return; renderLanes(); renderLiveCenter(); }
+
+/* =================== ARCADE GALÁCTICO =================== */
+const GAMES = {
+  laberinto:{n:'Laberinto Galáctico', e:'🌀', how:'Llevá la nave 🛸 hasta el marcianito 🍦. ¡Todos juegan el mismo laberinto esta semana!'},
+  memotest:{n:'Memotest Galáctico', e:'🧠', how:'Encontrá los pares de personajes galácticos con la menor cantidad de intentos.'},
+};
+let gameStat = null, gameState = null;
+function isoWeek(d = new Date()){
+  const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())); const day = t.getUTCDay() || 7;
+  t.setUTCDate(t.getUTCDate() + 4 - day); const y0 = new Date(Date.UTC(t.getUTCFullYear(), 0, 1));
+  return {y:t.getUTCFullYear(), w:Math.ceil(((t - y0) / 86400000 + 1) / 7)};
+}
+function currentGame(){
+  const g = state.config.arcadeGame || 'auto';
+  if(g !== 'auto' && GAMES[g]) return g;
+  const keys = Object.keys(GAMES); return keys[isoWeek().w % keys.length];
+}
+const periodWord = () => (state.config.arcadePeriod || 'semana') === 'mes' ? 'este mes' : 'esta semana';
+async function fetchGameStatus(){
+  if(!sb || !cardCode || state.config.arcadeOn === false){ gameStat = null; renderArcade(); return; }
+  const {data, error} = await sb.rpc('game_status', {p_code: cardCode});
+  if(error){ console.warn('Arcade', error); renderArcade(); return; }
+  gameStat = data; renderArcade();
+}
+function renderArcade(){
+  const c = state.config, show = !!(sb && c.arcadeOn !== false);
+  $('arcade').classList.toggle('hidden', !show);
+  if(!show) return;
+  const g = GAMES[currentGame()];
+  $('arcEmoji').textContent = g.e; $('arcName').textContent = g.n; $('arcHow').textContent = g.how;
+  $('arcChip').textContent = (c.arcadePeriod || 'semana') === 'mes' ? 'Juego del mes' : 'Juego de la semana';
+  const prize = (c.arcadeReward || 'sticker') === 'sobre' ? '1 sobre de figuritas 🎁' : '1 sticker ⭐';
+  const best = bestTime();
+  let st;
+  if(gameStat && gameStat.claimed) st = `✅ Ya ganaste tu premio de ${periodWord()}. ¡Seguí jugando para mejorar tu marca!`;
+  else if(gameStat && gameStat.card){
+    st = (c.arcadeFor || 'todos') === 'socios' && !isMember() ? `🔒 El premio es solo para socios, pero podés jugar igual.` : `🏆 Ganalo y te llevás <b>${prize}</b> (1 por ${(c.arcadePeriod || 'semana') === 'mes' ? 'mes' : 'semana'}).`;
+  } else st = `🍦 Jugá gratis. Para ganar <b>${prize}</b> necesitás tu tarjeta: llega con tu primer pedido.`;
+  $('arcStatus').innerHTML = st + (best ? `<br><span style="color:var(--muted);font-weight:600">Tu mejor marca: ${best}</span>` : '');
+}
+function bestKey(){ return `area42-best-${currentGame()}-${state.config.arcadeLevel || 'medio'}`; }
+function bestTime(){ try{ return localStorage.getItem(bestKey()); }catch(e){ return null; } }
+const fmtT = ms => { const s = Math.floor(ms / 1000); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
+
+/* --- Marco común --- */
+function startGame(){
+  const key = currentGame(), g = GAMES[key];
+  clearInterval(gameState && gameState.tick);
+  gameState = {key, t0:Date.now(), moves:0, done:false, tick:null};
+  $('t-game').textContent = `${g.e} ${g.n}`;
+  $('gWin').innerHTML = ''; $('gMsg').textContent = ''; $('gAgain').classList.add('hidden');
+  $('gTime').textContent = '⏱️ 0:00'; $('gMoves').textContent = key === 'memotest' ? '🔁 0 intentos' : '👣 0';
+  gameState.tick = setInterval(() => { if(!gameState.done) $('gTime').textContent = '⏱️ ' + fmtT(Date.now() - gameState.t0); }, 500);
+  if($('gameOverlay').classList.contains('hidden')) open('gameOverlay');   // primero se abre, así el tablero sabe cuánto mide
+  if(key === 'laberinto') mazeStart(); else memoStart();
+}
+function addMove(){ gameState.moves++; $('gMoves').textContent = gameState.key === 'memotest' ? `🔁 ${gameState.moves} intentos` : `👣 ${gameState.moves}`; }
+async function gameWon(){
+  if(gameState.done) return;
+  gameState.done = true; clearInterval(gameState.tick);
+  const ms = Date.now() - gameState.t0, t = fmtT(ms);
+  const prev = bestTime(); const prevMs = prev ? prev.split(':').reduce((a, x) => a * 60 + Number(x), 0) * 1000 : Infinity;
+  if(ms < prevMs){ try{ localStorage.setItem(bestKey(), t); }catch(e){} }
+  confetti();
+  $('gWin').innerHTML = `<div class="g-win">🎉 ¡Lo lograste en ${t}!</div>`;
+  $('gAgain').classList.remove('hidden');
+  if(!sb || !cardCode || !gameStat || !gameStat.card){ $('gMsg').textContent = 'Para ganar premios necesitás tu tarjeta: llega con tu primer pedido 🍦'; renderArcade(); return; }
+  if(gameStat.claimed){ $('gMsg').textContent = `Ya ganaste tu premio de ${periodWord()}. ${ms < prevMs ? '¡Nueva mejor marca! 🏅' : ''}`; renderArcade(); return; }
+  $('gMsg').textContent = 'Cobrando tu premio…';
+  const {data, error} = await sb.rpc('claim_game', {p_code: cardCode, p_game: gameState.key});
+  if(error){ $('gMsg').textContent = (error.message || '').includes('socios') ? '🔒 El premio es solo para socios del club.' : 'No se pudo cobrar el premio (¿ya lo ganaste?).'; fetchGameStatus(); return; }
+  $('gMsg').innerHTML = data.reward === 'sobre' ? '🎁 ¡Ganaste un <b>sobre de figuritas</b>! Abrilo en el Álbum.' : '⭐ ¡Ganaste <b>1 sticker</b>! Te llega en un sobre al cerrar el juego.';
+  fetchGameStatus(); fetchAlbum();
+}
+$('arcPlay').addEventListener('click', startGame);
+$('gAgain').addEventListener('click', startGame);
+$('gameOverlay').addEventListener('click', e => { if(e.target.closest('[data-close="gameOverlay"]') && gameState){ clearInterval(gameState.tick); setTimeout(fetchCard, 400); } });
+
+/* --- Laberinto --- */
+function mulberry32(a){ return function(){ a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function hashStr(s){ let h = 1779033703 ^ s.length; for(let i = 0; i < s.length; i++){ h = Math.imul(h ^ s.charCodeAt(i), 3432918353); h = h << 13 | h >>> 19; } return h >>> 0; }
+const MZ_D = [[0,-1,1,4],[1,0,2,8],[0,1,4,1],[-1,0,8,2]];   // arriba, derecha, abajo, izquierda: [dx, dy, pared, pared opuesta]
+let mz = null;
+function mazeStart(){
+  const lv = state.config.arcadeLevel || 'medio', n = lv === 'facil' ? 7 : lv === 'dificil' ? 13 : 10;
+  const wk = isoWeek(), per = (state.config.arcadePeriod || 'semana') === 'mes' ? `${new Date().getFullYear()}-${new Date().getMonth()}` : `${wk.y}-${wk.w}`;
+  const rnd = mulberry32(hashStr(`area42-${per}-${lv}`));
+  const g = new Array(n * n).fill(15), seen = new Uint8Array(n * n), st = [0]; seen[0] = 1;
+  while(st.length){
+    const c = st[st.length - 1], x = c % n, y = (c / n) | 0;
+    const opts = MZ_D.filter(([dx, dy]) => { const nx = x + dx, ny = y + dy; return nx >= 0 && ny >= 0 && nx < n && ny < n && !seen[ny * n + nx]; });
+    if(!opts.length){ st.pop(); continue; }
+    const [dx, dy, b, ob] = opts[Math.floor(rnd() * opts.length)], nb = (y + dy) * n + x + dx;
+    g[c] &= ~b; g[nb] &= ~ob; seen[nb] = 1; st.push(nb);
+  }
+  const size = Math.max(240, Math.min(340, (document.querySelector('#gameOverlay .sheet').clientWidth || 360) - 40));
+  const cv = document.createElement('canvas'), dpr = window.devicePixelRatio || 1;
+  cv.width = size * dpr; cv.height = size * dpr; cv.style.width = cv.style.height = size + 'px';
+  $('gBoard').innerHTML = ''; $('gBoard').appendChild(cv);
+  mz = {n, g, pos:0, size, cv, ctx:cv.getContext('2d'), dpr, trail:new Set([0]), busy:false};
+  $('dpad').classList.remove('hidden');
+  $('gMsg').textContent = 'Deslizá el dedo sobre el laberinto o usá las flechas.';
+  mazeDraw();
+}
+function mazeDraw(){
+  const {n, g, pos, size, ctx, dpr} = mz, cs = size / n;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.fillStyle = '#07051A'; ctx.fillRect(0, 0, size, size);
+  ctx.fillStyle = 'rgba(155,92,255,.22)';
+  mz.trail.forEach(c => ctx.fillRect((c % n) * cs + cs * .3, ((c / n) | 0) * cs + cs * .3, cs * .4, cs * .4));
+  ctx.strokeStyle = '#22D3EE'; ctx.lineWidth = Math.max(2, cs * .09); ctx.lineCap = 'round';
+  ctx.shadowColor = '#22D3EE'; ctx.shadowBlur = 6; ctx.beginPath();
+  for(let c = 0; c < n * n; c++){
+    const x = (c % n) * cs, y = ((c / n) | 0) * cs, w = g[c];
+    if(w & 1){ ctx.moveTo(x, y); ctx.lineTo(x + cs, y); }
+    if(w & 2){ ctx.moveTo(x + cs, y); ctx.lineTo(x + cs, y + cs); }
+    if(w & 4){ ctx.moveTo(x, y + cs); ctx.lineTo(x + cs, y + cs); }
+    if(w & 8){ ctx.moveTo(x, y); ctx.lineTo(x, y + cs); }
+  }
+  ctx.stroke(); ctx.shadowBlur = 0;
+  ctx.font = `${cs * .72}px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  const goal = n * n - 1;
+  ctx.fillText('🍦', (goal % n) * cs + cs / 2, ((goal / n) | 0) * cs + cs / 2 + 1);
+  ctx.fillText('🛸', (pos % n) * cs + cs / 2, ((pos / n) | 0) * cs + cs / 2 + 1);
+}
+function mazeOpen(c, d){ return !(mz.g[c] & MZ_D[d][2]); }
+function mazeMove(d){
+  if(!mz || mz.busy || gameState.done || !mazeOpen(mz.pos, d)) return;
+  mz.busy = true; addMove();
+  const step = () => {
+    const x = mz.pos % mz.n, y = (mz.pos / mz.n) | 0;
+    mz.pos = (y + MZ_D[d][1]) * mz.n + x + MZ_D[d][0]; mz.trail.add(mz.pos); mazeDraw();
+    if(mz.pos === mz.n * mz.n - 1){ mz.busy = false; gameWon(); return; }
+    const side = [(d + 1) % 4, (d + 3) % 4].some(k => mazeOpen(mz.pos, k));
+    if(mazeOpen(mz.pos, d) && !side) setTimeout(step, 45); else mz.busy = false;   // sigue derecho por el pasillo
+  };
+  step();
+}
+$('dpad').addEventListener('click', e => { const b = e.target.closest('[data-dir]'); if(b) mazeMove(Number(b.dataset.dir)); });
+(function(){
+  let sx = 0, sy = 0, on = false;
+  $('gBoard').addEventListener('pointerdown', e => { if(!mz || gameState.key !== 'laberinto') return; on = true; sx = e.clientX; sy = e.clientY; });
+  $('gBoard').addEventListener('pointerup', e => {
+    if(!on) return; on = false;
+    const dx = e.clientX - sx, dy = e.clientY - sy; if(Math.max(Math.abs(dx), Math.abs(dy)) < 18) return;
+    mazeMove(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 1 : 3) : (dy > 0 ? 2 : 0));
+  });
+})();
+document.addEventListener('keydown', e => {
+  if($('gameOverlay').classList.contains('hidden') || !gameState || gameState.key !== 'laberinto') return;
+  const k = {ArrowUp:0, ArrowRight:1, ArrowDown:2, ArrowLeft:3}[e.key];
+  if(k !== undefined){ e.preventDefault(); mazeMove(k); }
+});
+
+/* --- Memotest --- */
+let memo = null;
+function memoStart(){
+  $('dpad').classList.add('hidden'); mz = null;
+  const lv = state.config.arcadeLevel || 'medio', pairs = lv === 'facil' ? 6 : lv === 'dificil' ? 10 : 8;
+  const pool = [...new Set(FIGS.filter(Boolean).map(f => f.e))].sort(() => Math.random() - .5).slice(0, pairs);
+  const deck = [...pool, ...pool].map((e, i) => ({e, k:i})).sort(() => Math.random() - .5);
+  memo = {deck, open:[], ok:0, pairs, lock:false};
+  const cols = pairs === 6 ? 4 : pairs === 8 ? 4 : 5;
+  $('gBoard').innerHTML = `<div class="memo" style="grid-template-columns:repeat(${cols},minmax(0,1fr))">${deck.map((c, i) =>
+    `<button class="mcard" data-m="${i}" aria-label="Carta ${i + 1}"><span class="in"><span class="fa">42</span><span class="fb">${c.e}</span></span></button>`).join('')}</div>`;
+  $('gMsg').textContent = 'Tocá dos cartas para dar vuelta.';
+}
+$('gBoard').addEventListener('click', e => {
+  const b = e.target.closest('[data-m]'); if(!b || !memo || memo.lock || gameState.done) return;
+  if(b.classList.contains('up') || b.classList.contains('ok')) return;
+  b.classList.add('up'); memo.open.push(b);
+  if(memo.open.length < 2) return;
+  addMove();
+  const [a, c] = memo.open; memo.open = [];
+  if(memo.deck[a.dataset.m].e === memo.deck[c.dataset.m].e){
+    a.classList.add('ok'); c.classList.add('ok'); memo.ok++;
+    if(memo.ok === memo.pairs) setTimeout(gameWon, 300);
+  } else { memo.lock = true; setTimeout(() => { a.classList.remove('up'); c.classList.remove('up'); memo.lock = false; }, 750); }
+});
+
+/* =================== ÁLBUM GALÁCTICO =================== */
+const FIG_PAGES = [
+  {t:'Tripulación', e:'👽', c:['#39FF88','#0B6B42']},
+  {t:'Planetas Helados', e:'🪐', c:['#B48CFF','#3B1E8F']},
+  {t:'Naves y Bases', e:'🚀', c:['#22D3EE','#0B5470']},
+  {t:'Sabores Legendarios', e:'🍦', c:['#FF7FE3','#8A1A6E']},
+];
+const FIGS = [null,
+  {n:'Zorg el Heladero', e:'👽'}, {n:'Capitana Frutilla', e:'👩‍🚀'}, {n:'Robo-Limón', e:'🤖'}, {n:'Pulpo Glaseado', e:'🐙'}, {n:'Cadete Chispa', e:'🧑‍🚀', r:'b'}, {n:'Comandante Santi', e:'🛸', r:'l'},
+  {n:'Planeta Choco', e:'🪐'}, {n:'Luna de Vainilla', e:'🌙'}, {n:'Cometa Coco', e:'☄️'}, {n:'Sol Naranja', e:'🌞'}, {n:'Nebulosa Uva', e:'🌌', r:'b'}, {n:'Estrella Polar', e:'⭐'},
+  {n:'Platito Volador', e:'🛸'}, {n:'Cohete Apolo', e:'🚀'}, {n:'Satélite Antena', e:'🛰️'}, {n:'Base Cordillera', e:'🏔️'}, {n:'Nave Galaxia', e:'🌠', r:'b'}, {n:'Portal Paralelo 42', e:'🌀'},
+  {n:'Rayo de Limón', e:'🍋'}, {n:'Súper Frutilla', e:'🍓'}, {n:'Agujero Negro', e:'🍫'}, {n:'Vía Láctea', e:'🥛'}, {n:'Marcianito Dorado', e:'🍦', r:'b'}, {n:'Helado Supremo', e:'👑', r:'l'},
+];
+let album = null, albPage = null, packOpening = null, packNotified = false;
+const figPage = f => Math.floor((f - 1) / 6);
+function figHTML(f, n){
+  const d = FIGS[f], pg = FIG_PAGES[figPage(f)], no = '#' + String(f).padStart(2, '0');
+  if(!n) return `<div class="fig empty"><span class="fno">${no}</span><span class="fe">?</span><span class="fn">${esc(d.n)}</span></div>`;
+  const rar = d.r || 'c';
+  return `<div class="fig r-${rar}" style="--f1:${pg.c[0]};--f2:${pg.c[1]}"><span class="fno">${no}</span><span class="fe">${d.e}</span><span class="fn">${esc(d.n)}</span>${n > 1 ? `<span class="fx">x${n}</span>` : ''}${rar === 'l' ? '<span class="frar">👑</span>' : rar === 'b' ? '<span class="frar">✨</span>' : ''}</div>`;
+}
+async function fetchAlbum(){
+  if(!sb || !cardCode || state.config.albumOn === false){ album = null; renderAlbum(); return; }
+  const {data, error} = await sb.rpc('get_album', {p_code: cardCode});
+  if(error){ console.warn('Álbum', error); renderAlbum(); return; }
+  album = data || null; renderAlbum();
+  if(album && album.packs && album.packs.length && !packNotified && navState.screen === 'shop'){
+    packNotified = true; const np = album.packs.length;
+    setTimeout(() => toast(`🎁 ¡Tenés ${np} sobre${np === 1 ? '' : 's'} de figuritas para abrir!`), 1800);
+  }
+}
+function albumCounts(){ const m = {}; (album && album.figs || []).forEach(x => m[x.fig] = x.n); return m; }
+function renderAlbum(){
+  const c = state.config, sec = $('album');
+  const show = !!(sb && c.albumOn !== false);
+  sec.classList.toggle('hidden', !show);
+  if(!show) return;
+  const have = albumCounts(), total = Object.keys(have).length;
+  $('albumCount').textContent = `${total}/24`;
+  $('albPagePrize').textContent = c.albumPagePrize || 'Premio sorpresa 🎁';
+  $('albPrize').textContent = c.albumPrize || 'Gran premio sorpresa 🏆';
+  const eligible = album ? album.eligible !== false : (c.albumFor || 'todos') === 'todos' || isMember();
+  $('albumSub').innerHTML = !eligible ? '🔒 El álbum es solo para socios del club.'
+    : album ? 'Cada pedido entregado te da un <b>sobre con una figurita</b>. Al canjear tus 5 stickers llega un <b>sobre dorado</b> con 3.'
+    : 'Hacé tu pedido: cuando Santi lo entrega te llega tu <b>primer sobre de figuritas</b> 🎁';
+  const pageDone = p => [1,2,3,4,5,6].every(i => have[p * 6 + i]);
+  if(albPage === null){ albPage = 0; for(let p = 0; p < 4; p++){ if(!pageDone(p)){ albPage = p; break; } } }
+  $('albTabs').innerHTML = FIG_PAGES.map((pg, p) => {
+    const n = [1,2,3,4,5,6].filter(i => have[p * 6 + i]).length;
+    return `<button class="${p === albPage ? 'on' : ''} ${n === 6 ? 'done' : ''}" data-albp="${p}"><span>${pg.e}</span>${n === 6 ? '✅' : `${n}/6`}</button>`;
+  }).join('');
+  $('albPTitle').textContent = `${FIG_PAGES[albPage].e} ${FIG_PAGES[albPage].t}`;
+  $('albGrid').innerHTML = [1,2,3,4,5,6].map(i => { const f = albPage * 6 + i; return figHTML(f, have[f] || 0); }).join('');
+  $('albDone').innerHTML = total === 24 ? `<div class="alb-done">🏆 ¡ÁLBUM COMPLETO! Avisale a Santi para tu premio: ${esc(c.albumPrize || 'gran premio')}</div>`
+    : pageDone(albPage) ? `<div class="alb-done">✅ ¡Página completa! Avisale a Santi para tu premio: ${esc(c.albumPagePrize || 'premio')}</div>` : '';
+  const packs = album && album.packs || [], btn = $('albOpen');
+  btn.classList.toggle('hidden', !packs.length);
+  btn.classList.toggle('gold', !!(packs[0] && packs[0].kind === 'dorado'));
+  btn.textContent = packs.length ? `🎁 Abrir ${packs[0].kind === 'dorado' ? 'sobre dorado' : 'sobre'}${packs.length > 1 ? ` (tenés ${packs.length})` : ''}` : '';
+  const dups = (album && album.figs || []).reduce((a, x) => a + Math.max(0, x.n - 1), 0);
+  $('albDups').innerHTML = !album ? '' : dups >= 3
+    ? `Tenés <b>${dups}</b> repetidas.<button class="btn ghost" id="albTrade" style="border-color:var(--cyan);color:var(--cyan)">♻️ Cambiar 3 repetidas por un sobre</button>`
+    : `Repetidas: <b>${dups}</b> · Con 3 las cambiás por un sobre nuevo ♻️`;
+}
+$('albTabs').addEventListener('click', e => { const b = e.target.closest('[data-albp]'); if(b){ albPage = Number(b.dataset.albp); renderAlbum(); } });
+$('albDups').addEventListener('click', async e => {
+  const b = e.target.closest('#albTrade'); if(!b) return;
+  b.disabled = true;
+  const {error} = await sb.rpc('trade_dups', {p_code: cardCode});
+  if(error){ b.disabled = false; toast('⚠️ No se pudo hacer el cambio'); return; }
+  toast('♻️ ¡Cambio hecho! Tenés un sobre nuevo');
+  await fetchAlbum(); startPack();
+});
+function startPack(){
+  const packs = album && album.packs || []; if(!packs.length) return;
+  packOpening = packs[0];
+  const gold = packOpening.kind === 'dorado';
+  $('pack').className = 'pack' + (gold ? ' gold' : '');
+  $('packBrand').textContent = brandName();
+  $('packKind').textContent = gold ? 'SOBRE DORADO · 3 FIGURITAS' : packOpening.kind === 'cambio' ? 'SOBRE DE CAMBIO' : packOpening.kind === 'regalo' ? 'SOBRE DE REGALO 🎁' : 'FIGURITAS GALÁCTICAS';
+  $('t-pack').textContent = gold ? '¡Sobre dorado!' : '¡Sobre de figuritas!';
+  $('pack').classList.remove('hidden'); $('packCards').classList.add('hidden'); $('packCards').innerHTML = '';
+  $('packText').textContent = 'Tocá el sobre para abrirlo';
+  $('packBtn').textContent = 'Abrir sobre'; $('packBtn').disabled = false; $('packBtn').dataset.step = 'open';
+  open('packOverlay');
+}
+async function tearPack(){
+  if(!packOpening || $('packBtn').dataset.step !== 'open') return;
+  $('packBtn').disabled = true; $('packBtn').dataset.step = 'busy';
+  const {data, error} = await sb.rpc('open_pack', {p_code: cardCode, p_pack: packOpening.id});
+  if(error || !data){ $('packBtn').disabled = false; $('packBtn').dataset.step = 'open'; toast('⚠️ No se pudo abrir el sobre'); return; }
+  $('pack').classList.add('torn');
+  const items = data.items || [];
+  setTimeout(() => {
+    $('pack').classList.add('hidden');
+    $('packCards').innerHTML = items.map((it, i) => `<div class="fwrap" style="animation-delay:${i * .25}s">${figHTML(it.fig, 1)}<span class="tag ${it.new ? 'new' : 'rep'}">${it.new ? '¡NUEVA!' : 'Repetida'}</span></div>`).join('');
+    $('packCards').classList.remove('hidden');
+    const nNew = items.filter(x => x.new).length, special = items.find(x => FIGS[x.fig].r === 'l') ? 'legend' : items.find(x => FIGS[x.fig].r === 'b') ? 'bright' : '';
+    $('packText').innerHTML = special === 'legend' ? '👑 ¡¡Te salió una LEGENDARIA!!' : special === 'bright' ? '✨ ¡Te salió una brillante!'
+      : nNew ? `¡${nNew === 1 ? 'Una figurita nueva' : nNew + ' figuritas nuevas'} para tu álbum!` : 'Repetida… ¡juntá 3 y cambialas por un sobre nuevo!';
+    if(nNew || special) confetti();
+    const left = (album.packs || []).length - 1;
+    $('packBtn').textContent = left > 0 ? `Pegar y abrir otro (${left})` : 'Pegar en el álbum 📒';
+    $('packBtn').dataset.step = 'done'; $('packBtn').disabled = false;
+    const firstNew = items.find(x => x.new); if(firstNew) albPage = figPage(firstNew.fig);
+  }, 650);
+}
+$('pack').addEventListener('click', tearPack);
+$('pack').addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); tearPack(); } });
+$('packBtn').addEventListener('click', async () => {
+  const step = $('packBtn').dataset.step;
+  if(step === 'open') return tearPack();
+  if(step !== 'done') return;
+  await fetchAlbum();
+  if(album && album.packs && album.packs.length) startPack();
+  else { close('packOverlay'); setTimeout(() => $('album').scrollIntoView({behavior:'smooth', block:'start'}), 350); }
+});
+$('albOpen').addEventListener('click', startPack);
 
 /* =================== COMPETENCIA DE STICKERS =================== */
 let comp = null, compOpen = false;
@@ -2428,7 +3190,7 @@ $('joinGo').addEventListener('click', async () => {
   card = data; cardCode = data.code;
   try{ localStorage.setItem(TKEY, cardCode); localStorage.setItem(AVKEY, String(joinAvatar)); }catch(e){}
   markSeen((card.stickers || []).map(x => x.id));
-  renderCardChip(); renderCart(); renderClubLock(); fetchRace();
+  renderCardChip(); renderCart(); renderClubLock(); fetchRace(); fetchAlbum();
   renderWelcome(); open('welcomeOverlay'); setTimeout(confetti, 400);   // reemplaza el formulario por la bienvenida
 });
 $('invGo').addEventListener('click', () => {
@@ -2685,7 +3447,7 @@ $('loginPass').addEventListener('keydown', e => { if(e.key === 'Enter') tryPin()
 function refreshShop(){ renderHero(); renderStatus(); renderCombos(); renderGrid(); renderCart(); }
 refreshShop();
 pullConfig();
-renderCardChip(); renderClubLock(); fetchCard(); renderInstallBanner(); fetchRace(); fetchComp();
+renderCardChip(); renderClubLock(); renderArcade(); renderLiveBanner(); fetchCard(); renderInstallBanner(); fetchRace(); fetchComp();
 setInterval(() => { renderStatus(); updateWaLink(); }, 60000);
 </script>
 </body>
