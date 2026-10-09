@@ -1768,9 +1768,20 @@ $('logSave').addEventListener('click', () => {
 let cards = [];
 async function fetchCards(){
   if(!sb || !loggedIn) return;
-  const {data, error} = await sb.from('cards').select('code,name,created_at,hide_rank,avatar,member_no,member,stickers(id,redeemed_at),vouchers(id,status),album_items(fig,traded_at)')
-    .order('created_at', {ascending:false}).limit(500);
-  if(error){ toast('⚠️ No se pudieron traer las tarjetas'); console.warn(error); return; }
+  // Si falta alguna parte de la base (por ej. el álbum), igual se muestran los tripulantes
+  const tries = [
+    'code,name,created_at,hide_rank,avatar,member_no,member,stickers(id,redeemed_at),vouchers(id,status),album_items(fig,traded_at)',
+    'code,name,created_at,hide_rank,avatar,member_no,member,stickers(id,redeemed_at),vouchers(id,status)',
+    'code,name,created_at,stickers(id,redeemed_at),vouchers(id,status)',
+    'code,name,created_at'
+  ];
+  let data = null, error = null;
+  for(let i = 0; i < tries.length; i++){
+    ({data, error} = await sb.from('cards').select(tries[i]).order('created_at', {ascending:false}).limit(500));
+    if(!error){ if(i > 0) toast('⚠️ Falta actualizar la base: corré supabase-TODO-EN-UNO.sql'); break; }
+    console.warn('Tarjetas (intento ' + (i + 1) + ')', error);
+  }
+  if(error){ toast('⚠️ No se pudieron traer las tarjetas: ' + (error.message || '').slice(0, 60)); return; }
   cards = data || [];
   if(navState.screen === 'admin' && view === 'crew') renderCrew();
 }
