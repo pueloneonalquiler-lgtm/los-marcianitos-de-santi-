@@ -635,6 +635,19 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
   </header>
   <button class="live-banner hidden" id="liveBanner"><span class="live-dot"></span>¡Carrera en vivo! Entrá ya 🏁</button>
 
+
+  <section aria-labelledby="t-combos">
+    <h2 id="t-combos">Combos espaciales</h2>
+    <p class="sub">Elegí los sabores que quieras: el mejor combo se aplica solo.</p>
+    <div class="combos" id="combos"></div>
+  </section>
+
+  <section aria-labelledby="t-sabores">
+    <h2 id="t-sabores">Sabores galácticos</h2>
+    <p class="sub">Tocá + para sumar a tu Bodega de Carga.</p>
+    <div class="grid" id="grid"></div>
+  </section>
+
   <section class="comp hidden" id="comp" aria-labelledby="t-comp">
     <div class="race-head"><h2 id="t-comp">⭐ Competencia de Stickers</h2></div>
     <div class="prize-row">
@@ -648,18 +661,6 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
     <ol class="comp-list" id="compList"></ol>
     <div class="race-me" id="compMe"></div>
     <button class="race-more hidden" id="compMore" aria-expanded="false">Ver todos ▾</button>
-  </section>
-
-  <section aria-labelledby="t-combos">
-    <h2 id="t-combos">Combos espaciales</h2>
-    <p class="sub">Elegí los sabores que quieras: el mejor combo se aplica solo.</p>
-    <div class="combos" id="combos"></div>
-  </section>
-
-  <section aria-labelledby="t-sabores">
-    <h2 id="t-sabores">Sabores galácticos</h2>
-    <p class="sub">Tocá + para sumar a tu Bodega de Carga.</p>
-    <div class="grid" id="grid"></div>
   </section>
 
   <div class="zone-club">
@@ -931,6 +932,11 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
       <ul class="flist" id="sFlavors"></ul>
     </div>
     <div class="panel">
+      <h2>Sticker de bienvenida</h2>
+      <label class="checkrow"><input type="checkbox" id="sWelcomeSticker"> 🎁 Regalar 1 sticker a cada tarjeta nueva</label>
+      <p class="note">Cuando la persona abre su link por primera vez, la recibe un sobre con su primer sticker y después va directo a los helados.</p>
+    </div>
+    <div class="panel">
       <h2>Competencia de Stickers</h2>
       <label class="checkrow"><input type="checkbox" id="sCompOn"> Mostrar la competencia en la tienda</label>
       <label for="sCompFor">¿Quiénes compiten?</label>
@@ -1170,7 +1176,7 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
   <div class="env-stage">
     <h2 id="t-welcome" class="hidden">Bienvenida al club</h2>
     <div id="credBox"></div>
-    <button class="btn primary" id="welcomeGo">Ver mi tarjeta de socio ⭐</button>
+    <button class="btn primary" id="welcomeGo">🍦 Ver los helados</button>
   </div>
 </div>
 
@@ -1270,6 +1276,7 @@ const DEFAULT = {
     storeName:'AREA 42', storePill:'CLUB', storeTagline:'Los helados de Santi', storeLine:'Comarca Andina del Paralelo 42',
     deliveryArea:'', logoImg:'', logoOnly:false, compPrizeImg:'', raceFor:'socios',
     social:{ig:'', fb:'', tt:'', web:''},
+    welcomeSticker:true,
     compOn:true, compFor:'todos', compPrize:'¡Un Pack Cohete Apolo gratis!', compStart:'', compEnd:'',
     raceOn:true, raceGoal:100, racePrize:'¡Un Pack Galaxia gratis! (5 + 1)', raceStart:'',
     flavors: DEFAULT_FLAVORS,
@@ -1836,6 +1843,7 @@ async function addCrew(kind){
     const client = kind === 'cliente';
     const {data:nc, error} = await sb.from('cards').insert({code:newCode(), name:n.slice(0,60), member:!client}).select('code,name,avatar,member_no,member').single();
     if(error){ toast('⚠️ No se pudo crear la tarjeta'); return; }
+    if(state.config.welcomeSticker !== false) await sb.from('stickers').insert({card_code:nc.code});
     $('crewName').value = ''; toast(client ? `⭐ Tarjeta de cliente creada para ${n}` : `🪪 ¡${n} es socio del club!`); fetchCards(); setTimeout(checkMedals, 800);
     openWelcomeSend({...nc, member: !client});
     return;
@@ -1913,6 +1921,7 @@ function renderSettings(){
   $('sGoalName').value = c.goalName; $('sGoalAmount').value = c.goalAmount;
   $('sPhone').value = c.phone; $('sPin').value = c.pin;
   $('sInvites').value = Number.isInteger(c.invitesPerMember) ? c.invitesPerMember : 2;
+  $('sWelcomeSticker').checked = c.welcomeSticker !== false;
   $('sCompOn').checked = c.compOn !== false; $('sCompFor').value = c.compFor || 'todos';
   $('sCompPrize').value = c.compPrize || ''; $('sCompEnd').value = c.compEnd || '';
   $('compStartNote').textContent = c.compStart ? `Competencia actual desde el ${prettyDate(isoDay(c.compStart))}. Cuentan los stickers ganados desde ese día.` : 'Cuentan todos los stickers ganados.';
@@ -1953,6 +1962,7 @@ $('setSave').addEventListener('click', () => {
     goalName:$('sGoalName').value.trim() || 'Mi meta', goalAmount:num('sGoalAmount'), goalEmoji:pickEmoji,
     phone:$('sPhone').value.replace(/\D/g,'') || DEFAULT.config.phone, pin: sb ? state.config.pin : pin,
     invitesPerMember: Math.max(0, Math.min(10, Math.round(num('sInvites')) || 0)),
+    welcomeSticker:$('sWelcomeSticker').checked,
     compOn:$('sCompOn').checked, compFor:$('sCompFor').value, compPrize:$('sCompPrize').value.trim().slice(0,80), compEnd:$('sCompEnd').value || '',
     raceFor:$('sRaceFor').value,
     arcadeOn:$('sArcOn').checked, arcadeGame:$('sArcGame').value, arcadeLevel:$('sArcLevel').value,
@@ -2210,6 +2220,7 @@ const STICKER_DESIGNS = [
 ];
 const TKEY = 'marcianitos-tarjeta', SEENKEY = 'marcianitos-vistos', VPKEY = 'marcianitos-vale-pendiente';
 const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+let envWelcome = false;
 let cardCode = null, card = null, useVoucher = true, envOpened = false, openCardOnLoad = false, welcomeOnLoad = false, pendingInvite = null;
 const isMember = () => !!(sb && card && card.member !== false);
 const hasCard = () => !!(sb && card);
@@ -2218,7 +2229,7 @@ try{ cardCode = localStorage.getItem(TKEY) || null; }catch(e){}
   try{
     const u = new URL(location.href), t = (u.searchParams.get('t') || '').toUpperCase();
     if(/^[A-Z0-9]{10}$/.test(t)){
-      if(t !== cardCode){ openCardOnLoad = true; welcomeOnLoad = true; }   // si es la misma tarjeta (ícono instalado), no la abre cada vez
+      if(t !== cardCode){ welcomeOnLoad = true; }   // si es la misma tarjeta (ícono instalado), no la abre cada vez
       cardCode = t; localStorage.setItem(TKEY, t);
     }
     if(u.searchParams.get('tarjeta') === '1') openCardOnLoad = true;   // atajo "Mi tarjeta" del ícono
@@ -2343,16 +2354,17 @@ function markSeen(ids){ const s = new Set(seenIds()); ids.forEach(i => s.add(i))
 function checkNewStickers(){
   if(!card || $('shop').classList.contains('hidden')) return;
   const seen = new Set(seenIds()), fresh = card.stickers.filter(x => !seen.has(x.id));
-  if(welcomeOnLoad && isMember() && navState.ov === null && !welcomeSeen()){ welcomeOnLoad = false; showWelcome(); return; }
+  if(welcomeOnLoad && hasCard() && navState.ov === null && !welcomeSeen()){ welcomeOnLoad = false; if(fresh.length) showEnvelope(fresh, true); else showWelcome(); return; }
   if(fresh.length && navState.ov === null){ showEnvelope(fresh); return; }
   if(openCardOnLoad && navState.ov === null){ openCardOnLoad = false; renderCardBody(); open('cardOverlay'); }
 }
-function showEnvelope(fresh){
-  openCardOnLoad = false; envOpened = false;
+function showEnvelope(fresh, welcome = false){
+  openCardOnLoad = false; envOpened = false; envWelcome = welcome;
   const list = fresh.slice(-5), n = list.length;
   $('envCards').innerHTML = list.map((x,i) => stickerHTML(x.id, `--dx:${Math.round((i-(n-1)/2)*58)}px;transition-delay:${(.3+i*.12).toFixed(2)}s`)).join('');
   $('envelope').classList.remove('open');
-  $('t-env').textContent = n > 1 ? `¡Te llegaron ${n} stickers galácticos! 💌` : '¡Te llegó un sticker galáctico! 💌';
+  $('t-env').textContent = welcome ? `¡Bienvenido/a${card ? ', ' + firstName(card.name) : ''}! Te llegó un regalo 💌`
+    : n > 1 ? `¡Te llegaron ${n} stickers galácticos! 💌` : '¡Te llegó un sticker galáctico! 💌';
   $('envText').textContent = 'Tocá el sobre para abrirlo';
   $('envBtn').textContent = 'Abrir sobre';
   open('envOverlay');
@@ -2360,13 +2372,19 @@ function showEnvelope(fresh){
 function openEnvelope(){
   if(envOpened){
     markSeen(card.stickers.map(x => x.id));
+    if(envWelcome){                              // bienvenida: directo a los helados
+      markWelcome(); envWelcome = false; close('envOverlay');
+      setTimeout(() => document.querySelector('[aria-labelledby="t-combos"]').scrollIntoView({behavior:'smooth', block:'start'}), 350);
+      return;
+    }
     renderCardBody(); open('cardOverlay');      // reemplaza el sobre por la tarjeta
     return;
   }
   envOpened = true; $('envelope').classList.add('open'); setTimeout(confetti, 450);
   const n = card.stickers.length;
-  $('envText').textContent = n >= 5 ? '¡Completaste tu tarjeta! Tu sticker de CANJE te espera 🎟️' : `Ya tenés ${n} de 5. ¡Te falta${5-n===1?'':'n'} ${5-n}!`;
-  $('envBtn').textContent = 'Guardar en mi tarjeta ⭐';
+  $('envText').textContent = envWelcome ? `¡Tu primer sticker! Juntá 5 y canjeás un marcianito gratis 🍦`
+    : n >= 5 ? '¡Completaste tu tarjeta! Tu sticker de CANJE te espera 🎟️' : `Ya tenés ${n} de 5. ¡Te falta${5-n===1?'':'n'} ${5-n}!`;
+  $('envBtn').textContent = envWelcome ? '🍦 Ver los helados' : 'Guardar en mi tarjeta ⭐';
 }
 $('envelope').addEventListener('click', () => { if(!envOpened) openEnvelope(); });
 $('envelope').addEventListener('keydown', e => { if((e.key === 'Enter' || e.key === ' ') && !envOpened){ e.preventDefault(); openEnvelope(); } });
@@ -2799,7 +2817,7 @@ async function fetchAlbum(){
   album = data || null; renderAlbum();
   if(album && album.packs && album.packs.length && !packNotified && navState.screen === 'shop'){
     packNotified = true; const np = album.packs.length;
-    setTimeout(() => toast(`🎁 ¡Tenés ${np} sobre${np === 1 ? '' : 's'} de figuritas para abrir!`), 1800);
+    setTimeout(() => { if(navState.ov === null) toast(`🎁 ¡Tenés ${np} sobre${np === 1 ? '' : 's'} de figuritas para abrir!`); else packNotified = false; }, 1800);
   }
 }
 function albumCounts(){ const m = {}; (album && album.figs || []).forEach(x => m[x.fig] = x.n); return m; }
@@ -3200,9 +3218,10 @@ $('joinGo').addEventListener('click', async () => {
   if(error || !data){ $('joinGo').disabled = false; $('joinErr').textContent = 'No se pudo usar la invitación. Puede que ya la hayan usado.'; return; }
   card = data; cardCode = data.code;
   try{ localStorage.setItem(TKEY, cardCode); localStorage.setItem(AVKEY, String(joinAvatar)); }catch(e){}
-  markSeen((card.stickers || []).map(x => x.id));
   renderCardChip(); renderCart(); renderClubLock(); fetchRace(); fetchAlbum();
-  renderWelcome(); open('welcomeOverlay'); setTimeout(confetti, 400);   // reemplaza el formulario por la bienvenida
+  const fr = card.stickers || [];
+  if(fr.length) showEnvelope(fr, true);                                  // reemplaza el formulario por el sobre de bienvenida
+  else { renderWelcome(); open('welcomeOverlay'); setTimeout(confetti, 400); }
 });
 $('invGo').addEventListener('click', () => {
   const c = normInv($('invInput').value);
@@ -3230,8 +3249,7 @@ async function createMemberInvite(btn){
   toast('🎟️ ¡Invitación creada! Mandásela a tu amigo');
 }
 function inviteText(code, from){
-  return `👽 ¡Te invito a ${brand()}!\n\nEs un club solo por invitación: los socios juntan stickers galácticos, corren la Carrera Galáctica y participan por premios exclusivos. 🏆\n\n` +
-    `Entrá con este link: ${inviteLink(code)}\n(o poné el código ${code} en la web)` + (from ? `\n\nTe invita: ${from}` : '');
+  return `👽 ¡${from ? from + ' te invita' : 'Te invitamos'} al club ${brandName()}!\n\n👇 Tocá acá para entrar:\n${inviteLink(code)}`;
 }
 async function shareInvite(code, from){
   const text = inviteText(code, from);
@@ -3253,19 +3271,12 @@ const memberNo = n => String(n).padStart(4, '0');
 const WKEY = 'marcianitos-bienvenida';
 function welcomeSeen(){ try{ return localStorage.getItem(WKEY) === cardCode; }catch(e){ return false; } }
 function markWelcome(){ try{ localStorage.setItem(WKEY, cardCode); }catch(e){} }
+const firstName = n => { const w = (n || '').trim().split(/\s+/)[0] || ''; return w ? w[0].toUpperCase() + w.slice(1) : ''; };
 function welcomeText(c){
   if(c.member === false){
-    const rf = state.config.raceFor || 'socios';
-    return `¡Hola ${c.name}! 👽 Esta es tu Tarjeta de Stickers de ${brand()} 🍦\n\n` +
-      `Cada pedido entregado te suma 1 sticker galáctico ⭐. Con 5 stickers canjeás un marcianito gratis, y además participás en la Competencia de Stickers${rf !== 'socios' ? ' y en la Carrera Galáctica' : ''} por premios. 🏆\n\n` +
-      `⭐ Tu tarjeta: ${cardLink(c.code)}\n\n` +
-      `Guardá este link: ahí ves tus stickers y elegís tu avatar. 🚀\n— ${brandLine()}`;
+    return `🍦 ¡Hola ${firstName(c.name)}! Esta es tu página de ${brand()}\n\n👇 Tocá acá para ver los helados y pedir:\n${cardLink(c.code)}`;
   }
-  return `¡Te damos la bienvenida a ${brand()}, ${c.name}! 👽🛸\n\n` +
-    `Ya sos parte de este club especial de socios, donde vas a juntar stickers galácticos y participar por premios exclusivos para socios. 🏆\n\n` +
-    `🪪 Tu tarjeta de socio${c.member_no ? ` (Nº ${memberNo(c.member_no)})` : ''}: ${cardLink(c.code)}\n\n` +
-    `Guardá este link: ahí ves tus stickers, elegís tu avatar y seguís tu nave en la Carrera Galáctica. 🚀\n` +
-    `— ${brandLine()}`;
+  return `👽 ¡Bienvenido/a al club ${brandName()}, ${firstName(c.name)}!\n\n👇 Tocá acá y entrá a tu página especial:\n${cardLink(c.code)}`;
 }
 /* --- Cliente: pantalla de bienvenida --- */
 function renderWelcome(){
@@ -3273,12 +3284,12 @@ function renderWelcome(){
   $('credBox').innerHTML = `<div class="cred">
     <div class="cred-logo">${esc(brandName())}</div>
     <div class="cred-club">${esc(brandSub())}</div>
-    <div class="cred-hello">¡Te damos la bienvenida al club!</div>
+    <div class="cred-hello">${isMember() ? '¡Bienvenido/a al club!' : '¡Hola! Esta es tu página'}</div>
     ${avHTML(a, 'lg') || '<span class="av lg" aria-hidden="true">❔</span>'}
     ${a === null ? '<div><button class="mini" id="welcomeAv" style="margin-top:10px">Elegí tu avatar</button></div>' : ''}
     <div class="cred-name">${esc(name)}</div>
-    ${card && card.member_no ? `<div class="cred-no">SOCIO Nº ${memberNo(card.member_no)}</div>` : ''}
-    <p>Ya sos parte de este club especial donde vas a juntar stickers galácticos y participar por <b>premios exclusivos para socios</b>.</p>
+    ${isMember() && card.member_no ? `<div class="cred-no">SOCIO Nº ${memberNo(card.member_no)}</div>` : ''}
+    <p>${isMember() ? 'Ya sos parte del club. ' : ''}Elegí tus helados 🍦 y pedilos por WhatsApp en un toque.</p>
     <span class="cred-tag">${esc((state.config.storeLine || '').toUpperCase())}</span>
   </div>`;
 }
@@ -3288,7 +3299,7 @@ $('welcomeGo').addEventListener('click', () => {
   markWelcome(); openCardOnLoad = false;
   const seen = new Set(seenIds()), fresh = card ? card.stickers.filter(x => !seen.has(x.id)) : [];
   if(fresh.length) showEnvelope(fresh);          // reemplaza la bienvenida por el sobre
-  else { renderCardBody(); open('cardOverlay'); }
+  else { close('welcomeOverlay'); setTimeout(() => document.querySelector('[aria-labelledby="t-combos"]').scrollIntoView({behavior:'smooth', block:'start'}), 350); }
 });
 
 /* --- Santi: credencial como imagen para mandar por WhatsApp --- */
@@ -3319,7 +3330,7 @@ async function makeCarnet(c){
   // Credencial
   rrect(x, 80, 300, 920, 900, 48); x.fillStyle = 'rgba(11,8,32,.92)'; x.fill();
   x.lineWidth = 8; x.strokeStyle = '#39FF88'; x.stroke();
-  x.fillStyle = '#FFD23F'; x.font = '700 60px Fredoka, sans-serif'; sp('0px'); x.fillText(client ? '¡Tu tarjeta de stickers!' : '¡Bienvenido/a al club!', W/2, 395);
+  x.fillStyle = '#FFD23F'; x.font = '700 60px Fredoka, sans-serif'; sp('0px'); x.fillText(client ? '¡Hola! Esta es tu tarjeta' : '¡Bienvenido/a al club!', W/2, 395);
   x.fillStyle = '#A8A2C8'; x.font = '800 26px Nunito, sans-serif'; sp('8px'); x.fillText(client ? 'TARJETA DE CLIENTE' : 'CREDENCIAL DE SOCIO', W/2, 445);
   // Avatar
   const av = AVATARS[c.avatar];
@@ -3337,7 +3348,7 @@ async function makeCarnet(c){
   x.beginPath(); x.moveTo(150, 950); x.lineTo(930, 950); x.stroke(); x.setLineDash([]);
   // Mensaje
   x.fillStyle = '#F4F1FF'; x.font = '600 38px Nunito, sans-serif'; sp('0px');
-  wrapLines(x, client ? 'Cada pedido te suma 1 sticker. Con 5 canjeás un marcianito gratis ¡y competís por premios!' : 'Ya sos parte de este club especial donde vas a participar por premios exclusivos para socios.', 800)
+  wrapLines(x, client ? '👇 Tocá el enlace del mensaje para ver los helados y pedir 🍦' : '👇 Tocá el enlace del mensaje y entrá a tu página especial 🚀', 800)
     .forEach((l, i) => x.fillText(l, W/2, 1015 + i * 52));
   x.fillStyle = '#A8A2C8'; x.font = '800 26px Nunito, sans-serif'; sp('4px'); x.fillText(`CÓDIGO ${c.code}`, W/2, 1165);
   // Pie
@@ -3356,7 +3367,7 @@ async function openWelcomeSend(c){
     const slug = c.name.normalize('NFD').replace(/[^\w]+/g, '-').replace(/^-|-$/g, '').toLowerCase() || 'socio';
     wsFile = new File([blob], `bienvenida-area42-${slug}.png`, {type:'image/png'});
     wsUrl = URL.createObjectURL(blob); $('wsImg').src = wsUrl;
-    $('wsNote').textContent = c.member === false ? `Mandásela a ${c.name}: le llega su tarjeta de stickers con el link para ver sus stickers.` : `Mandásela a ${c.name}: le llega su credencial con el mensaje de bienvenida y el link de su tarjeta.`;
+    $('wsNote').textContent = c.member === false ? `Mandásela a ${c.name}: le llega la tarjeta con un mensaje corto y el link para ver los helados y pedir.` : `Mandásela a ${c.name}: le llega la credencial con un mensaje corto y el link a su página especial.`;
     $('wsShare').disabled = false;
   }catch(e){ console.warn(e); $('wsNote').textContent = 'No se pudo armar la imagen, pero podés mandar el mensaje.'; $('wsShare').disabled = false; }
 }
