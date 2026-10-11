@@ -663,6 +663,23 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
 .hole.hit .mo{animation:hitp .35s forwards}
 @keyframes hitp{to{transform:translateX(-50%) scale(1.6);opacity:0}}
 .caza-pts{position:fixed;z-index:96;pointer-events:none;font-family:var(--display);font-weight:700;font-size:24px;animation:emofly 1s ease-out forwards}
+/* ---------- Mini stickers de sabores (impresión) ---------- */
+#printArea{display:none}
+.msk{position:relative;width:var(--d);height:var(--d);border-radius:50%;flex:none;box-sizing:border-box;
+  background:radial-gradient(circle at 34% 28%,var(--c1),var(--c2) 75%);border:.9mm solid #fff;outline:.2mm solid #bbb;outline-offset:.3mm;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.msk .mb{font-family:'Black Ops One',Fredoka,sans-serif;font-size:calc(var(--d) * .085);color:#fff;letter-spacing:.2mm;text-shadow:0 .3mm .6mm rgba(0,0,0,.5);line-height:1}
+.msk .me{font-size:calc(var(--d) * .36);line-height:1.05;margin:.4mm 0}
+.msk .mn{max-width:86%;background:rgba(11,8,32,.82);color:#fff;border-radius:2mm;padding:.4mm 1.2mm;font-family:Fredoka,Nunito,sans-serif;font-weight:700;
+  font-size:calc(var(--d) * .078);line-height:1.08;text-align:center}
+.ms-head{width:100%;font:9pt Nunito,sans-serif;color:#666;margin-bottom:2mm}
+@media print{
+  @page{size:A4;margin:10mm}
+  body.printing{background:#fff !important}
+  body.printing::before{display:none !important}
+  body.printing > *:not(#printArea){display:none !important}
+  body.printing #printArea{display:flex !important;flex-wrap:wrap;gap:3mm;align-content:flex-start}
+}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 @media (max-width:360px){.grid{gap:10px}.planet{width:72px;height:72px;font-size:34px}.mission{grid-template-columns:80px 1fr}.pct{font-size:52px}}
 </style>
@@ -960,12 +977,27 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
     </div>
     <div class="panel">
       <h2>Precios</h2>
+      <label for="sPrice">Precio de 1 marcianito</label>
+      <input id="sPrice" type="number" inputmode="numeric" min="0">
+    </div>
+    <div class="panel">
+      <div class="ohead"><h2>Combos</h2><button class="mini" id="comboNew">＋ Nuevo combo</button></div>
+      <p class="sub">Tocá un combo para editarlo. El interruptor lo muestra u oculta. En el carrito se aplica solo el combo más conveniente.</p>
+      <ul class="flist" id="sCombos"></ul>
+      <label>💡 Ideas para agregar con un toque</label>
+      <div class="chips" id="comboIdeas"></div>
+    </div>
+    <div class="panel">
+      <h2>🖨️ Mini stickers de sabores</h2>
+      <p class="sub">Para pegar en cada helado, al lado de la etiqueta con el QR. Se imprimen redondos con el color y el nombre de cada sabor.</p>
       <div class="two">
-        <div><label for="sPrice">1 marcianito</label><input id="sPrice" type="number" inputmode="numeric" min="0"></div>
-        <div><label for="sApolo">Pack Apolo (3)</label><input id="sApolo" type="number" inputmode="numeric" min="0"></div>
-        <div><label for="sGalaxia">Pack Galaxia (5+1)</label><input id="sGalaxia" type="number" inputmode="numeric" min="0"></div>
-        <div><label for="sFamiliar">Pack Familiar (10)</label><input id="sFamiliar" type="number" inputmode="numeric" min="0"></div>
+        <div><label for="mkSize">Tamaño</label><select class="inp" id="mkSize"><option value="25">2,5 cm</option><option value="30" selected>3 cm</option><option value="40">4 cm</option></select></div>
+        <div><label for="mkCopies">Copias de cada sabor</label><input id="mkCopies" type="number" inputmode="numeric" min="1" max="80" value="10"></div>
       </div>
+      <label for="mkWhich">¿Qué sabores?</label>
+      <select class="inp" id="mkWhich"><option value="visibles">Los que se ven en la tienda</option><option value="todos">Todos los sabores</option></select>
+      <button class="btn primary" id="mkPrint" style="margin-top:12px">🖨️ Imprimir o guardar PDF</button>
+      <p class="note">En la ventana de impresión elegí tamaño real / 100%. Para guardarlo como PDF elegí "Guardar como PDF" como impresora.</p>
     </div>
     <div class="panel">
       <h2>Meta</h2>
@@ -1047,7 +1079,6 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
         <option value="todos">Todos (clientes y socios)</option>
         <option value="socios">Solo socios del club</option>
       </select>
-      <label class="checkrow"><input type="checkbox" id="sFamiliarPack"> 🎁 El Pack Familiar trae 1 sobre de figuritas de regalo</label>
       <label for="sAlbPagePrize">Premio por página completa</label>
       <input id="sAlbPagePrize" type="text" maxlength="80" placeholder="Ej: ¡Un marcianito gratis!">
       <label for="sAlbPrize">Premio por álbum completo</label>
@@ -1122,6 +1153,30 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
     <button class="btn primary" data-close="celebrate">¡Seguir volando!</button></div>
 </div>
 <div class="toast hidden" id="toast" role="status"></div>
+
+<!-- Editor de combos -->
+<div class="overlay hidden" id="comboOverlay" role="dialog" aria-modal="true" aria-labelledby="t-combo">
+  <div class="sheet">
+    <div class="sheet-head"><h2 id="t-combo">Nuevo combo</h2><button class="close" data-close="comboOverlay" aria-label="Cerrar">✕</button></div>
+    <label for="cbName">Nombre del combo</label>
+    <input id="cbName" type="text" maxlength="40" placeholder="Ej: Nave Nodriza">
+    <label>Ícono</label>
+    <div class="chips emojis" id="cbEmojis"></div>
+    <div class="two">
+      <div><label for="cbQty">Cantidad de marcianitos</label><input id="cbQty" type="number" inputmode="numeric" min="2" max="200"></div>
+      <div><label for="cbPrice">Precio del combo ($)</label><input id="cbPrice" type="number" inputmode="numeric" min="1"></div>
+    </div>
+    <p class="note" id="cbHint"></p>
+    <label for="cbDesc">Descripción corta (opcional)</label>
+    <input id="cbDesc" type="text" maxlength="40" placeholder="Ej: Ideal para cumpleaños">
+    <label for="cbPacks">Sobres de figuritas de regalo</label>
+    <select class="inp" id="cbPacks"><option value="0">Ninguno</option><option value="1">🎁 1 sobre</option><option value="2">🎁 2 sobres</option><option value="3">🎁 3 sobres</option></select>
+    <label class="checkrow"><input type="checkbox" id="cbOn"> Mostrar en la tienda</label>
+    <div class="err" id="cbErr" role="alert"></div>
+    <button class="btn primary" id="cbSave">Guardar combo</button>
+    <button class="btn danger hidden" id="cbDelete">Eliminar combo</button>
+  </div>
+</div>
 
 <!-- Editor de sabores -->
 <div class="overlay hidden" id="flavorOverlay" role="dialog" aria-modal="true" aria-labelledby="t-flavor">
@@ -1427,7 +1482,7 @@ function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.remove('
    Cada pantalla y ventana abierta crea una entrada en el historial del navegador.
    Así, la flecha "atrás" cierra la ventana abierta o vuelve a la pantalla anterior
    en lugar de salir del sitio. */
-const OVERLAYS = ['cartOverlay','pinOverlay','celebrate','flavorOverlay','cardOverlay','envOverlay','installOverlay','avatarOverlay','welcomeOverlay','welcomeSend','joinOverlay','packOverlay','gameOverlay','liveOverlay','regOverlay'];
+const OVERLAYS = ['cartOverlay','pinOverlay','celebrate','flavorOverlay','cardOverlay','envOverlay','installOverlay','avatarOverlay','welcomeOverlay','welcomeSend','joinOverlay','packOverlay','gameOverlay','liveOverlay','regOverlay','comboOverlay'];
 const HOME_NAV = {screen:'shop', view:'home', ov:null};
 let navState = {...HOME_NAV};
 let adminUnlocked = false;
@@ -1466,13 +1521,21 @@ function renderStatus(){
     : w === 'before' ? `Nave en el hangar. Despega hoy a las ${c.start} hs`
     : `Nave en el hangar. Vuelve mañana a las ${c.start} hs`;
 }
-function comboDefs(){
+function syncCombos(){
   const c = state.config;
-  return [
-    {k:3,  p:c.apolo,    e:'🚀', n:'Pack Cohete Apolo',         t:'3 marcianitos'},
-    {k:6,  p:c.galaxia,  e:'🌌', n:'Pack Galaxia',              t:'5 + 1 de regalo'},
-    {k:10, p:c.familiar, e:'👨‍👩‍👧', n:'Pack Tripulación Familiar', t:'10 marcianitos'},
-  ];
+  if(!Array.isArray(c.combos)){
+    c.combos = [
+      {id:'apolo',   n:'Pack Cohete Apolo',         e:'🚀', k:3,  p:c.apolo || 1300,    t:'3 marcianitos',   packs:0, on:true},
+      {id:'galaxia', n:'Pack Galaxia',              e:'🌌', k:6,  p:c.galaxia || 2500,  t:'5 + 1 de regalo', packs:0, on:true},
+      {id:'familiar',n:'Pack Tripulación Familiar', e:'👨‍👩‍👧', k:10, p:c.familiar || 4500, t:'10 marcianitos',  packs:c.familiarPack === false ? 0 : 1, on:true},
+    ];
+  }
+}
+function comboDefs(){
+  syncCombos();
+  return state.config.combos.filter(c => c.on !== false && c.k >= 2 && c.p > 0)
+    .map(c => ({k:c.k, p:c.p, e:c.e || '🍦', n:c.n, t:(c.t || '').trim() || `${c.k} marcianitos`, packs:c.packs || 0}))
+    .sort((a, b) => a.k - b.k);
 }
 function renderCombos(){
   const unit = state.config.price;
@@ -1481,7 +1544,7 @@ function renderCombos(){
     return `<div class="combo"><div class="ce">${cb.e}</div><h3>${esc(cb.n)}</h3>
       <div class="cp">${esc(cb.t)} por ${money(cb.p)}</div>
       ${save>0?`<span class="cs">Ahorrás ${money(save)}</span>`:''}
-      ${cb.k === 10 && sb && state.config.familiarPack !== false && state.config.albumOn !== false ? '<span class="cs" style="background:var(--cyan);margin-left:4px">+ 🎁 sobre de figuritas</span>' : ''}</div>`;
+      ${cb.packs > 0 && sb && state.config.albumOn !== false ? `<span class="cs" style="background:var(--cyan);margin-left:4px">+ 🎁 ${cb.packs} sobre${cb.packs > 1 ? 's' : ''} de figuritas</span>` : ''}</div>`;
   }).join('');
 }
 function renderGrid(){
@@ -1990,7 +2053,7 @@ let pickEmoji = null;
 function renderSettings(){
   const c = state.config;
   $('sStart').value = c.start; $('sEnd').value = c.end;
-  $('sPrice').value = c.price; $('sApolo').value = c.apolo; $('sGalaxia').value = c.galaxia; $('sFamiliar').value = c.familiar;
+  $('sPrice').value = c.price; renderComboList();
   $('sGoalName').value = c.goalName; $('sGoalAmount').value = c.goalAmount;
   $('sPhone').value = c.phone; $('sPin').value = c.pin;
   $('sInvites').value = Number.isInteger(c.invitesPerMember) ? c.invitesPerMember : 2;
@@ -2002,7 +2065,6 @@ function renderSettings(){
   $('sArcOn').checked = c.arcadeOn !== false; $('sArcGame').value = c.arcadeGame || 'auto'; $('sArcLevel').value = c.arcadeLevel || 'medio';
   $('sArcReward').value = c.arcadeReward || 'sticker'; $('sArcPeriod').value = c.arcadePeriod || 'semana'; $('sArcFor').value = c.arcadeFor || 'todos';
   $('sAlbumOn').checked = c.albumOn !== false; $('sAlbumFor').value = c.albumFor || 'todos';
-  $('sFamiliarPack').checked = c.familiarPack !== false;
   $('sAlbPagePrize').value = c.albumPagePrize || ''; $('sAlbPrize').value = c.albumPrize || '';
   $('sLogoOnly').checked = !!c.logoOnly; $('sStoreName').value = c.storeName || ''; $('sStorePill').value = c.storePill || '';
   $('sStoreTagline').value = c.storeTagline || ''; $('sStoreLine').value = c.storeLine || ''; $('sDeliveryArea').value = c.deliveryArea || '';
@@ -2032,7 +2094,7 @@ $('setSave').addEventListener('click', () => {
   if(!(rg >= 5 && rg <= 1000)){ $('setErr').textContent = 'La meta de la carrera tiene que ser entre 5 y 1000.'; return; }
   if(!sb && !/^\d{4,6}$/.test(pin)){ $('setErr').textContent = 'El PIN tiene que tener de 4 a 6 números.'; return; }
   Object.assign(state.config, {
-    start, end, price:num('sPrice'), apolo:num('sApolo')||0, galaxia:num('sGalaxia')||0, familiar:num('sFamiliar')||0,
+    start, end, price:num('sPrice'),
     goalName:$('sGoalName').value.trim() || 'Mi meta', goalAmount:num('sGoalAmount'), goalEmoji:pickEmoji,
     phone:$('sPhone').value.replace(/\D/g,'') || DEFAULT.config.phone, pin: sb ? state.config.pin : pin,
     invitesPerMember: Math.max(0, Math.min(10, Math.round(num('sInvites')) || 0)),
@@ -2041,7 +2103,6 @@ $('setSave').addEventListener('click', () => {
     raceFor:$('sRaceFor').value,
     arcadeOn:$('sArcOn').checked, arcadeGame:$('sArcGame').value, arcadeLevel:$('sArcLevel').value,
     arcadeReward:$('sArcReward').value, arcadePeriod:$('sArcPeriod').value, arcadeFor:$('sArcFor').value,
-    familiarPack:$('sFamiliarPack').checked,
     albumOn:$('sAlbumOn').checked, albumFor:$('sAlbumFor').value, albumPagePrize:$('sAlbPagePrize').value.trim().slice(0,80), albumPrize:$('sAlbPrize').value.trim().slice(0,80),
     logoOnly:$('sLogoOnly').checked, storeName:$('sStoreName').value.trim().slice(0,30) || 'AREA 51', storePill:$('sStorePill').value.trim().slice(0,16),
     storeTagline:$('sStoreTagline').value.trim().slice(0,50), storeLine:$('sStoreLine').value.trim().slice(0,60), deliveryArea:$('sDeliveryArea').value.trim().slice(0,60),
@@ -2236,6 +2297,113 @@ $('sFlavors').addEventListener('click', e => {
   else if(ed) openFlavorEditor(ed.dataset.fedit);
 });
 $('flavorNew').addEventListener('click', () => openFlavorEditor(null));
+
+/* =================== EDITOR DE COMBOS =================== */
+const COMBO_EMOJIS = ['🚀','🌌','👨‍👩‍👧','🛸','🌕','🪐','☄️','🎂','🏫','⭐','👽','🎉','🧊','🍦'];
+const COMBO_IDEAS = [   // cada combo más grande sale más barato por unidad, así el carrito siempre los usa
+  {e:'🪐', n:'Combo Planeta Doble',       k:2,  f:.95, t:'2 para compartir'},
+  {e:'🚀', n:'Pack Cohete Apolo',         k:3,  f:.87},
+  {e:'🌌', n:'Pack Galaxia',              k:6,  f:5/6, t:'5 + 1 de regalo'},
+  {e:'👨‍👩‍👧', n:'Pack Tripulación Familiar', k:10, f:.8,  packs:1},
+  {e:'☄️', n:'Lluvia de Meteoritos',      k:12, f:.78, t:'La docena galáctica', packs:1},
+  {e:'🏫', n:'Escuadrón del Recreo',      k:15, f:.76, t:'Para el curso o el equipo', packs:1},
+  {e:'🛸', n:'Nave Nodriza',              k:20, f:.74, t:'Ideal para cumpleaños', packs:2},
+  {e:'🎂', n:'Cumpleaños Galáctico',      k:25, f:.72, t:'Fiesta asegurada', packs:2},
+  {e:'🌕', n:'Misión Luna Llena',         k:40, f:.7,  t:'Para eventos grandes', packs:3},
+];
+let cbEdit = null, cbDraft = null;
+const ideaPrice = i => Math.max(50, Math.round(i.k * (state.config.price || 500) * i.f / 50) * 50);
+function renderComboList(){
+  syncCombos();
+  const list = [...state.config.combos].sort((a, b) => a.k - b.k);
+  $('sCombos').innerHTML = list.map(c => {
+    const on = c.on !== false;
+    return `<li class="frow">
+      <button class="fedit" data-cedit="${esc(c.id)}"><span class="fdot" style="--c1:#B48CFF;--c2:#3B1E8F">${esc(c.e || '🍦')}</span>
+        <span class="fname">${esc(c.n)}<br><span style="font-weight:600;color:var(--muted);font-size:13px">${c.k} por ${money(c.p)}${c.packs ? ` · 🎁 ${c.packs}` : ''}</span>${on && costWithout(c.k, c.id) <= c.p ? '<br><span style="color:var(--yellow);font-size:12px;font-weight:800">⚠️ No se aplica: otros combos salen más baratos</span>' : ''}</span><span class="fpen" aria-hidden="true">✏️</span></button>
+      <button class="switch ${on ? 'on' : ''}" data-ctoggle="${esc(c.id)}" role="switch" aria-checked="${on}" aria-label="Mostrar ${esc(c.n)} en la tienda"><i></i></button>
+    </li>`;
+  }).join('') || '<li class="empty">No hay combos. Creá uno o agregá una idea.</li>';
+  const names = new Set(state.config.combos.map(c => c.n.toLowerCase()));
+  $('comboIdeas').innerHTML = COMBO_IDEAS.filter(i => !names.has(i.n.toLowerCase()))
+    .map((i, x) => `<button class="chip" data-idea="${COMBO_IDEAS.indexOf(i)}">${i.e} ${esc(i.n)} · ${i.k} x ${money(ideaPrice(i))}${i.packs ? ' + 🎁' : ''}</button>`).join('')
+    || '<span class="note">¡Ya agregaste todas las ideas!</span>';
+}
+function commitCombos(msg){ save(); pushConfig(); refreshShop(); renderComboList(); if(msg) toast(msg); }
+$('sCombos').addEventListener('click', e => {
+  const t = e.target.closest('[data-ctoggle]'), ed = e.target.closest('[data-cedit]');
+  if(t){ const c = state.config.combos.find(x => x.id === t.dataset.ctoggle); if(c){ c.on = c.on === false; commitCombos(c.on ? '🟢 Combo visible en la tienda' : '⚪ Combo oculto'); } }
+  else if(ed) openComboEditor(ed.dataset.cedit);
+});
+$('comboIdeas').addEventListener('click', e => {
+  const b = e.target.closest('[data-idea]'); if(!b) return;
+  const i = COMBO_IDEAS[Number(b.dataset.idea)];
+  openComboEditor(null, {n:i.n, e:i.e, k:i.k, p:ideaPrice(i), t:i.t || '', packs:i.packs || 0, on:true});
+});
+$('comboNew').addEventListener('click', () => openComboEditor(null));
+function openComboEditor(id, preset){
+  syncCombos();
+  const c = id ? state.config.combos.find(x => x.id === id) : null;
+  cbEdit = c ? c.id : null;
+  cbDraft = c ? {...c} : (preset || {n:'', e:'🛸', k:12, p:Math.round(12 * (state.config.price || 500) * .85 / 50) * 50, t:'', packs:0, on:true});
+  $('t-combo').textContent = c ? 'Editar combo' : 'Nuevo combo';
+  $('cbName').value = cbDraft.n; $('cbQty').value = cbDraft.k; $('cbPrice').value = cbDraft.p; $('cbDesc').value = cbDraft.t || '';
+  $('cbPacks').value = String(cbDraft.packs || 0); $('cbOn').checked = cbDraft.on !== false; $('cbErr').textContent = '';
+  $('cbDelete').classList.toggle('hidden', !c);
+  drawComboEmojis(); comboHint(); open('comboOverlay');
+}
+function drawComboEmojis(){ $('cbEmojis').innerHTML = COMBO_EMOJIS.map(e => `<button class="chip ${cbDraft.e === e ? 'on' : ''}" data-cbe="${e}">${e}</button>`).join(''); }
+// ¿Cuánto salen k marcianitos usando los OTROS combos? (si es más barato, este combo nunca se aplica)
+function costWithout(k, excludeId){
+  const unit = state.config.price || 0;
+  const opts = [{k:1, p:unit}, ...(state.config.combos || []).filter(c => c.id !== excludeId && c.on !== false && c.k >= 2 && c.p > 0).map(c => ({k:c.k, p:c.p}))];
+  const best = [0];
+  for(let i = 1; i <= k; i++){ let b = Infinity; for(const o of opts) if(i >= o.k) b = Math.min(b, best[i - o.k] + o.p); best[i] = b; }
+  return best[k];
+}
+function comboHint(){
+  const k = Number($('cbQty').value), pr = Number($('cbPrice').value), normal = k * (state.config.price || 0);
+  if(!(k >= 2 && pr > 0 && normal)){ $('cbHint').textContent = ''; return; }
+  const other = costWithout(k, cbEdit);
+  let h = pr < normal ? `Precio normal ${money(normal)} → ahorran ${money(normal - pr)} (${Math.round((1 - pr / normal) * 100)}% de descuento). Sale ${money(Math.round(pr / k))} c/u.` : `⚠️ Sale igual o más caro que comprar ${k} sueltos (${money(normal)}).`;
+  if(other <= pr) h += ` ⚠️ Ojo: con los otros combos, ${k} marcianitos ya salen ${money(other)}, así que el carrito no va a usar este combo. Bajalo a menos de ${money(other)}.`;
+  $('cbHint').textContent = h;
+}
+$('cbEmojis').addEventListener('click', e => { const b = e.target.closest('[data-cbe]'); if(b){ cbDraft.e = b.dataset.cbe; drawComboEmojis(); } });
+['cbQty','cbPrice'].forEach(id => $(id).addEventListener('input', comboHint));
+$('cbSave').addEventListener('click', () => {
+  const n = $('cbName').value.replace(/\+/g, ' ').trim().replace(/\s+/g, ' '), k = Math.round(Number($('cbQty').value)), pr = Math.round(Number($('cbPrice').value));
+  if(n.length < 3){ $('cbErr').textContent = 'Ponele un nombre.'; return; }
+  if(!(k >= 2 && k <= 200)){ $('cbErr').textContent = 'La cantidad tiene que ser entre 2 y 200.'; return; }
+  if(!(pr > 0)){ $('cbErr').textContent = 'Poné el precio del combo.'; return; }
+  if(state.config.combos.some(x => x.id !== cbEdit && x.n.toLowerCase() === n.toLowerCase())){ $('cbErr').textContent = 'Ya hay un combo con ese nombre.'; return; }
+  const data = {n, e:cbDraft.e || '🍦', k, p:pr, t:$('cbDesc').value.trim().slice(0, 40), packs:Number($('cbPacks').value) || 0, on:$('cbOn').checked};
+  if(cbEdit) Object.assign(state.config.combos.find(x => x.id === cbEdit), data);
+  else state.config.combos.push({id:'c' + Date.now().toString(36), ...data});
+  close('comboOverlay');
+  commitCombos(cbEdit ? '✅ Combo actualizado' : '🎉 ¡Combo nuevo en la tienda!');
+});
+$('cbDelete').addEventListener('click', () => {
+  const c = state.config.combos.find(x => x.id === cbEdit); if(!c || !confirm(`¿Eliminar "${c.n}"?`)) return;
+  state.config.combos = state.config.combos.filter(x => x.id !== cbEdit);
+  close('comboOverlay'); commitCombos('🗑️ Combo eliminado');
+});
+
+/* =================== MINI STICKERS DE SABORES =================== */
+function miniStickerHTML(f, d){
+  return `<div class="msk" style="--d:${d}mm;--c1:${f.c[0]};--c2:${f.c[1]}"><span class="mb">${esc(brandName())}</span><span class="me">${esc(f.e)}</span><span class="mn">${esc(f.name)}</span></div>`;
+}
+$('mkPrint').addEventListener('click', () => {
+  const d = Number($('mkSize').value) || 30, copies = Math.max(1, Math.min(80, Math.round(Number($('mkCopies').value)) || 1));
+  const list = FLAVORS.filter(f => $('mkWhich').value === 'todos' || state.config.available[f.id]);
+  if(!list.length){ toast('No hay sabores para imprimir'); return; }
+  $('printArea').innerHTML = `<div class="ms-head">${esc(brand())} · Mini stickers de ${d / 10} cm — imprimir en tamaño real (100%) y recortar por el borde gris</div>` +
+    list.map(f => Array.from({length:copies}, () => miniStickerHTML(f, d)).join('')).join('');
+  document.body.classList.add('printing');
+  const done = () => document.body.classList.remove('printing');
+  window.addEventListener('afterprint', done, {once:true});
+  setTimeout(() => { try{ window.print(); }catch(e){ done(); } setTimeout(done, 60000); }, 400);
+});
 function openFlavorEditor(id){
   const f = id ? FLAVORS.find(x => x.id === id) : null;
   fEdit = f ? f.id : null;
@@ -3116,7 +3284,7 @@ function startPack(){
   const gold = packOpening.kind === 'dorado';
   $('pack').className = 'pack' + (gold ? ' gold' : '');
   $('packBrand').textContent = brandName();
-  $('packKind').textContent = gold ? 'SOBRE DORADO · 5 FIGURITAS' : packOpening.kind === 'cambio' ? 'SOBRE DE CAMBIO' : packOpening.kind === 'regalo' ? 'SOBRE DE REGALO 🎁' : packOpening.kind === 'familiar' ? 'SOBRE FAMILIAR 👨‍👩‍👧' : 'FIGURITAS GALÁCTICAS';
+  $('packKind').textContent = gold ? 'SOBRE DORADO · 5 FIGURITAS' : packOpening.kind === 'cambio' ? 'SOBRE DE CAMBIO' : packOpening.kind === 'regalo' ? 'SOBRE DE REGALO 🎁' : packOpening.kind === 'familiar' ? 'SOBRE DE REGALO DEL COMBO 🎁' : 'FIGURITAS GALÁCTICAS';
   $('t-pack').textContent = gold ? '¡Sobre dorado!' : '¡Sobre de figuritas!';
   $('pack').classList.remove('hidden', 'torn', 'shake'); $('packCards').classList.add('hidden'); $('packCards').innerHTML = '';
   $('packText').textContent = 'Tocá el sobre para abrirlo';
@@ -3810,5 +3978,6 @@ pullConfig();
 renderCardChip(); renderClubLock(); renderArcade(); renderLiveBanner(); fetchCard(); renderInstallBanner(); fetchRace(); fetchComp();
 setInterval(() => { renderStatus(); updateWaLink(); }, 60000);
 </script>
+<div id="printArea" aria-hidden="true"></div>
 </body>
 </html>
