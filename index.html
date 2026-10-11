@@ -985,6 +985,7 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
     <div class="panel">
       <h2>Sticker de bienvenida</h2>
       <label class="checkrow"><input type="checkbox" id="sWelcomeSticker"> 🎁 Regalar 1 sticker a cada tarjeta nueva</label>
+      <label class="checkrow"><input type="checkbox" id="sQrRegister"> 📱 Registro con el QR impreso (ferias): quien lo escanea por primera vez saca su tarjeta de cliente</label>
       <p class="note">Cuando la persona abre su link por primera vez, la recibe un sobre con su primer sticker y después va directo a los helados.</p>
     </div>
     <div class="panel">
@@ -1210,6 +1211,22 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
   </div>
 </div>
 
+<!-- Registro con el QR impreso -->
+<div class="overlay hidden" id="regOverlay" role="dialog" aria-modal="true" aria-labelledby="t-reg">
+  <div class="sheet">
+    <div class="sheet-head"><h2 id="t-reg">¡Bienvenido/a!</h2><button class="close" data-close="regOverlay" aria-label="Ahora no">✕</button></div>
+    <div class="join-hello"><div class="big" aria-hidden="true">👽</div><p class="sub" id="regHello">Escribí tu nombre y recibí tu tarjeta con un sticker de regalo 🎁</p></div>
+    <label for="regName">Tu nombre y apellido</label>
+    <input id="regName" type="text" maxlength="60" autocomplete="name" placeholder="Ej: Tomás Rodríguez">
+    <p class="note">En los rankings solo se muestra tu nombre y la inicial del apellido.</p>
+    <label>Elegí tu avatar (opcional)</label>
+    <div class="avgrid" id="regAvGrid" style="margin-top:6px"></div>
+    <div class="err" id="regErr" role="alert"></div>
+    <button class="btn primary" id="regGo">🎁 Quiero mi tarjeta</button>
+    <button class="btn ghost" data-close="regOverlay">Ahora no, solo mirar los helados</button>
+  </div>
+</div>
+
 <!-- Entrar al club con invitación -->
 <div class="overlay hidden" id="joinOverlay" role="dialog" aria-modal="true" aria-labelledby="t-join">
   <div class="sheet">
@@ -1331,7 +1348,7 @@ const DEFAULT = {
     storeName:'AREA 51', storePill:'CLUB', storeTagline:'Club de helados de Santi', storeLine:'Comarca Andina del Paralelo 42',
     deliveryArea:'', logoImg:'', logoOnly:false, compPrizeImg:'', raceFor:'socios',
     social:{ig:'', fb:'', tt:'', web:''},
-    welcomeSticker:true,
+    welcomeSticker:true, qrRegister:true,
     compOn:true, compFor:'todos', compPrize:'¡Un Pack Cohete Apolo gratis!', compStart:'', compEnd:'',
     raceOn:true, raceGoal:100, racePrize:'¡Un Pack Galaxia gratis! (5 + 1)', raceStart:'',
     flavors: DEFAULT_FLAVORS,
@@ -1410,7 +1427,7 @@ function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.remove('
    Cada pantalla y ventana abierta crea una entrada en el historial del navegador.
    Así, la flecha "atrás" cierra la ventana abierta o vuelve a la pantalla anterior
    en lugar de salir del sitio. */
-const OVERLAYS = ['cartOverlay','pinOverlay','celebrate','flavorOverlay','cardOverlay','envOverlay','installOverlay','avatarOverlay','welcomeOverlay','welcomeSend','joinOverlay','packOverlay','gameOverlay','liveOverlay'];
+const OVERLAYS = ['cartOverlay','pinOverlay','celebrate','flavorOverlay','cardOverlay','envOverlay','installOverlay','avatarOverlay','welcomeOverlay','welcomeSend','joinOverlay','packOverlay','gameOverlay','liveOverlay','regOverlay'];
 const HOME_NAV = {screen:'shop', view:'home', ov:null};
 let navState = {...HOME_NAV};
 let adminUnlocked = false;
@@ -1977,7 +1994,7 @@ function renderSettings(){
   $('sGoalName').value = c.goalName; $('sGoalAmount').value = c.goalAmount;
   $('sPhone').value = c.phone; $('sPin').value = c.pin;
   $('sInvites').value = Number.isInteger(c.invitesPerMember) ? c.invitesPerMember : 2;
-  $('sWelcomeSticker').checked = c.welcomeSticker !== false;
+  $('sWelcomeSticker').checked = c.welcomeSticker !== false; $('sQrRegister').checked = c.qrRegister !== false;
   $('sCompOn').checked = c.compOn !== false; $('sCompFor').value = c.compFor || 'todos';
   $('sCompPrize').value = c.compPrize || ''; $('sCompEnd').value = c.compEnd || '';
   $('compStartNote').textContent = c.compStart ? `Competencia actual desde el ${prettyDate(isoDay(c.compStart))}. Cuentan los stickers ganados desde ese día.` : 'Cuentan todos los stickers ganados.';
@@ -2019,7 +2036,7 @@ $('setSave').addEventListener('click', () => {
     goalName:$('sGoalName').value.trim() || 'Mi meta', goalAmount:num('sGoalAmount'), goalEmoji:pickEmoji,
     phone:$('sPhone').value.replace(/\D/g,'') || DEFAULT.config.phone, pin: sb ? state.config.pin : pin,
     invitesPerMember: Math.max(0, Math.min(10, Math.round(num('sInvites')) || 0)),
-    welcomeSticker:$('sWelcomeSticker').checked,
+    welcomeSticker:$('sWelcomeSticker').checked, qrRegister:$('sQrRegister').checked,
     compOn:$('sCompOn').checked, compFor:$('sCompFor').value, compPrize:$('sCompPrize').value.trim().slice(0,80), compEnd:$('sCompEnd').value || '',
     raceFor:$('sRaceFor').value,
     arcadeOn:$('sArcOn').checked, arcadeGame:$('sArcGame').value, arcadeLevel:$('sArcLevel').value,
@@ -2280,7 +2297,7 @@ const STICKER_DESIGNS = [
 ];
 const TKEY = 'marcianitos-tarjeta', SEENKEY = 'marcianitos-vistos', VPKEY = 'marcianitos-vale-pendiente';
 const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-let envWelcome = false;
+let envWelcome = false, qrArrive = false;
 let cardCode = null, card = null, useVoucher = true, envOpened = false, openCardOnLoad = false, welcomeOnLoad = false, pendingInvite = null;
 const isMember = () => !!(sb && card && card.member !== false);
 const hasCard = () => !!(sb && card);
@@ -2293,10 +2310,11 @@ try{ cardCode = localStorage.getItem(TKEY) || null; }catch(e){}
       cardCode = t; localStorage.setItem(TKEY, t);
     }
     if(u.searchParams.get('tarjeta') === '1') openCardOnLoad = true;   // atajo "Mi tarjeta" del ícono
+    if(u.searchParams.get('qr') === '1') qrArrive = true;              // vino escaneando el QR impreso
     const inv = (u.searchParams.get('inv') || '').toUpperCase();
     const invN = inv.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^A-Z0-9]+/g, '-').replace(/^-+|-+$/g, '');
     if(/^[A-Z0-9-]{6,30}$/.test(invN)) pendingInvite = invN;
-    ['t','tarjeta','source','inv'].forEach(k => u.searchParams.delete(k));
+    ['t','tarjeta','source','inv','qr'].forEach(k => u.searchParams.delete(k));
     history.replaceState(history.state, '', u.pathname + u.search + u.hash);
   }catch(e){}
 })();
@@ -2322,7 +2340,7 @@ function usableVoucher(){
 }
 async function fetchCard(){
   if(!sb){ renderCardChip(); renderAlbum(); renderArcade(); return; }
-  if(!cardCode){ card = null; album = null; gameStat = null; renderCardChip(); renderClubLock(); renderAlbum(); renderArcade(); if(pendingInvite){ const c0 = pendingInvite; pendingInvite = null; openJoin(c0); } return; }
+  if(!cardCode){ card = null; album = null; gameStat = null; renderCardChip(); renderClubLock(); renderAlbum(); renderArcade(); if(pendingInvite){ const c0 = pendingInvite; pendingInvite = null; openJoin(c0); } else if(qrArrive){ qrArrive = false; openReg(); } return; }
   const {data, error} = await sb.rpc('get_card', {p_code: cardCode});
   if(error){ console.warn('Tarjeta', error); renderCardChip(); return; }
   card = data || null;
@@ -2334,6 +2352,7 @@ async function fetchCard(){
   renderCardChip(); renderCart(); renderClubLock();
   if(!$('cardOverlay').classList.contains('hidden')) renderCardBody();
   if(pendingInvite && !isMember()){ const c0 = pendingInvite; pendingInvite = null; openJoin(c0); return; }
+  if(qrArrive){ qrArrive = false; if(!card){ openReg(); return; } toast(`👽 ¡Hola de nuevo, ${firstName(card.name)}!`); }
   if(pendingInvite && isMember()){ pendingInvite = null; toast('🪪 ¡Ya sos socio del club!'); }
   checkNewStickers();
 }
@@ -3493,6 +3512,36 @@ async function openJoin(code){
   $('joinGo').disabled = false;
   $('joinFrom').innerHTML = data.from ? `<b>${esc(data.from)}</b> te invitó a ser socio de ${esc(brand())}. 👽` : `Santi te invitó a ser socio de ${esc(brand())}. 👽`;
 }
+/* --- Registro por QR (ferias) --- */
+let regAvatar = null;
+function openReg(){
+  if(!sb || state.config.qrRegister === false || hasCard()) return;
+  regAvatar = null; $('regErr').textContent = ''; $('regGo').disabled = false;
+  $('regHello').textContent = `Escribí tu nombre y recibí tu tarjeta de ${brand()} con un sticker de regalo 🎁`;
+  $('t-reg').textContent = `¡Bienvenido/a a ${brandName()}! 👽`;
+  $('regAvGrid').innerHTML = AVATARS.map((a, i) => `<button data-rav="${i}" aria-label="Avatar ${a.e}">${avHTML(i, 'md')}</button>`).join('');
+  open('regOverlay'); setTimeout(() => $('regName').focus(), 300);
+}
+$('regAvGrid').addEventListener('click', e => {
+  const b = e.target.closest('[data-rav]'); if(!b) return;
+  regAvatar = Number(b.dataset.rav);
+  document.querySelectorAll('#regAvGrid button').forEach(x => x.classList.toggle('on', x === b));
+});
+$('regGo').addEventListener('click', async () => {
+  const name = $('regName').value.trim().replace(/\s+/g, ' ');
+  if(name.length < 2){ $('regErr').textContent = 'Escribí tu nombre.'; return; }
+  $('regGo').disabled = true; $('regErr').textContent = '';
+  const {data, error} = await sb.rpc('self_register', {p_name: name.slice(0, 60), p_avatar: regAvatar, p_code: ensureCardCode()});
+  if(error || !data){ $('regGo').disabled = false; $('regErr').textContent = (error && /minutos/.test(error.message || '')) ? 'Hay mucha gente registrándose. Probá en unos minutos.' : 'No se pudo crear la tarjeta. Probá de nuevo.'; return; }
+  card = data; cardCode = data.code;
+  try{ localStorage.setItem(TKEY, cardCode); if(regAvatar !== null) localStorage.setItem(AVKEY, String(regAvatar)); }catch(e){}
+  if(!$('cName').value) $('cName').value = name;
+  renderCardChip(); renderCart(); renderClubLock(); fetchAlbum(); fetchRace(); fetchComp();
+  const fr = card.stickers || [];
+  if(fr.length) showEnvelope(fr, true);                 // reemplaza el registro por el sobre de bienvenida
+  else { markWelcome(); close('regOverlay'); toast('🪪 ¡Listo! Ya tenés tu tarjeta'); }
+});
+
 $('joinAvGrid').addEventListener('click', e => {
   const b = e.target.closest('[data-jav]'); if(!b) return;
   joinAvatar = Number(b.dataset.jav);
