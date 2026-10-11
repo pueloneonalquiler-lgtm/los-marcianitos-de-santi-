@@ -613,6 +613,56 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
 .lv-host{margin-top:12px;padding:14px;border-radius:18px;border:1.5px dashed var(--pink);background:rgba(255,79,216,.08)}
 .lv-pod{display:flex;justify-content:center;align-items:flex-end;gap:10px;margin:8px 0}
 .lv-pod div{display:flex;flex-direction:column;align-items:center;gap:4px;font-weight:800;font-size:13px}
+/* ---------- Sobre flotante y apertura con más show ---------- */
+.packchip{position:fixed;top:calc(68px + env(safe-area-inset-top,0px));right:12px;z-index:25;display:flex;align-items:center;gap:6px;padding:10px 14px;border-radius:999px;
+  border:2px solid var(--cyan);background:linear-gradient(135deg,#22D3EE,#9B5CFF 60%,#FF4FD8);color:#fff;font-family:var(--display);font-weight:700;font-size:15px;
+  box-shadow:0 0 18px rgba(34,211,238,.5);animation:packwig 1.6s ease-in-out infinite}
+.packchip.gold{background:linear-gradient(135deg,#FFF3A8,#FFD23F 45%,#FF9A3D);color:#3B0A2A;border-color:#FFD23F}
+@keyframes packwig{0%,70%,100%{transform:rotate(0) scale(1)}76%{transform:rotate(-10deg) scale(1.1)}82%{transform:rotate(10deg) scale(1.1)}88%{transform:rotate(-6deg)}94%{transform:rotate(4deg)}}
+.pack.shake{animation:pshake .5s linear}
+@keyframes pshake{20%{transform:translateX(-8px) rotate(-4deg)}40%{transform:translateX(8px) rotate(4deg)}60%{transform:translateX(-6px) rotate(-3deg)}80%{transform:translateX(5px) rotate(2deg)}}
+.pcards{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin:8px 0 6px}
+.pcard{position:relative;width:96px;aspect-ratio:3/4;perspective:900px;cursor:pointer;background:none;border:none;padding:0;animation:pwob 1.3s ease-in-out infinite}
+.pcard:nth-child(2){animation-delay:.2s}.pcard:nth-child(3){animation-delay:.4s}.pcard:nth-child(4){animation-delay:.6s}.pcard:nth-child(5){animation-delay:.8s}
+@keyframes pwob{50%{transform:translateY(-6px) rotate(2deg)}}
+.pcard.flip{animation:ppop .5s .95s both}
+@keyframes ppop{50%{transform:scale(1.18)}}
+.pcard .pin{position:absolute;inset:0;transform-style:preserve-3d;transition:transform 1s cubic-bezier(.25,1.3,.5,1)}
+.pcard.flip .pin{transform:rotateY(900deg)}
+.pcard .pback,.pcard .pfront{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:14px}
+.pcard .pfront{transform:rotateY(180deg)}
+.pcard .pfront .fig{width:100%;height:100%}
+.pcard .pback{display:grid;place-items:center;background:linear-gradient(135deg,#22D3EE,#9B5CFF 55%,#FF4FD8);border:3px solid #fff;box-shadow:0 8px 20px rgba(0,0,0,.45);overflow:hidden}
+.pcard .pback::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 25%,rgba(255,255,255,.6) 45%,transparent 65%);background-size:250% 100%;animation:holo 1.8s linear infinite}
+.pcard .pback b{font-family:'Black Ops One',var(--display);font-size:30px;color:#fff;text-shadow:0 2px 6px rgba(0,0,0,.4)}
+.pcard .tag{position:absolute;bottom:-12px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:800;padding:2px 8px;border-radius:999px;white-space:nowrap;z-index:3;opacity:0;transition:opacity .3s 1s}
+.pcard.flip .tag{opacity:1}
+.pcard .tag.new{background:var(--green);color:var(--bg)}
+.pcard .tag.rep{background:rgba(11,8,32,.85);color:#fff}
+.pcard .rays{position:absolute;left:50%;top:50%;width:260px;height:260px;margin:-130px 0 0 -130px;border-radius:50%;z-index:-1;opacity:0;pointer-events:none;
+  background:repeating-conic-gradient(rgba(255,210,63,.75) 0 10deg,transparent 10deg 22deg);animation:rays 4s linear infinite;-webkit-mask:radial-gradient(circle,#000 30%,transparent 70%);mask:radial-gradient(circle,#000 30%,transparent 70%)}
+.pcard.flip.legend .rays{opacity:1;transition:opacity .4s 1s}
+.pcard.flip.bright .rays{opacity:.8;transition:opacity .4s 1s;background:repeating-conic-gradient(rgba(34,211,238,.6) 0 10deg,rgba(255,79,216,.5) 10deg 20deg,transparent 20deg 30deg)}
+@keyframes rays{to{transform:rotate(360deg)}}
+.spk{position:fixed;z-index:96;pointer-events:none;font-size:18px;animation:spk .9s ease-out forwards}
+@keyframes spk{from{transform:translate(-50%,-50%) scale(.4);opacity:1}to{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1.3) rotate(200deg);opacity:0}}
+.flashbang{position:fixed;inset:0;z-index:94;pointer-events:none;animation:flashb .9s ease-out forwards}
+@keyframes flashb{from{opacity:.95}to{opacity:0}}
+.screen-shake{animation:sshake .5s linear}
+@keyframes sshake{20%{transform:translate(-6px,3px)}40%{transform:translate(6px,-3px)}60%{transform:translate(-4px,2px)}80%{transform:translate(3px,-2px)}}
+.bigshout{position:fixed;left:50%;top:22%;z-index:97;transform:translateX(-50%);font-family:'Black Ops One',var(--display);font-size:38px;white-space:nowrap;pointer-events:none;
+  color:#FFD23F;text-shadow:0 0 18px rgba(255,210,63,.9),0 4px 0 #8a5a00;animation:shout 1.6s ease-out forwards}
+@keyframes shout{0%{transform:translateX(-50%) scale(.2) rotate(-15deg);opacity:0}20%{transform:translateX(-50%) scale(1.25) rotate(4deg);opacity:1}35%{transform:translateX(-50%) scale(1)}80%{opacity:1}100%{opacity:0;transform:translateX(-50%) translateY(-30px)}}
+/* ---------- Juegos nuevos ---------- */
+#gBoard canvas.shipcv{background:#000;box-shadow:0 0 0 2px var(--line),0 0 30px rgba(155,92,255,.35)}
+.caza{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;width:100%;max-width:330px}
+.hole{position:relative;aspect-ratio:1;border-radius:50%;border:none;padding:0;overflow:hidden;
+  background:radial-gradient(ellipse at 50% 70%,#07051A 35%,#2A1F5E 60%,#4A3B8F 75%);box-shadow:inset 0 -6px 12px rgba(0,0,0,.6),0 4px 0 #1A1440}
+.hole .mo{position:absolute;left:50%;bottom:-70%;transform:translateX(-50%);font-size:46px;line-height:1;transition:bottom .16s ease-out}
+.hole.up .mo{bottom:14%}
+.hole.hit .mo{animation:hitp .35s forwards}
+@keyframes hitp{to{transform:translateX(-50%) scale(1.6);opacity:0}}
+.caza-pts{position:fixed;z-index:96;pointer-events:none;font-family:var(--display);font-weight:700;font-size:24px;animation:emofly 1s ease-out forwards}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 @media (max-width:360px){.grid{gap:10px}.planet{width:72px;height:72px;font-size:34px}.mission{grid-template-columns:80px 1fr}.pct{font-size:52px}}
 </style>
@@ -621,6 +671,7 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
 
 <!-- ================= CLIENTE: MISIÓN MARCIANA ================= -->
 <main id="shop" class="wrap">
+  <button class="packchip hidden" id="packChip" aria-label="Abrir sobre de figuritas">🎁 <span id="packChipN">1</span></button>
   <button class="cardchip hidden" id="cardChip" aria-label="Ver mi tarjeta galáctica">⭐ <span id="cardChipText">Mi tarjeta</span></button>
   <header class="hero">
     <img class="hero-logo hidden" id="heroLogo" alt="">
@@ -970,6 +1021,8 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
         <option value="auto">Alternar solo: un juego distinto cada semana</option>
         <option value="laberinto">🌀 Laberinto Galáctico</option>
         <option value="memotest">🧠 Memotest Galáctico</option>
+        <option value="nave">🚀 Viaje Galáctico (esquivar cosas)</option>
+        <option value="caza">👾 Cazá Marcianitos</option>
       </select>
       <label for="sArcLevel">Dificultad</label>
       <select class="inp" id="sArcLevel">
@@ -993,11 +1046,12 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
         <option value="todos">Todos (clientes y socios)</option>
         <option value="socios">Solo socios del club</option>
       </select>
+      <label class="checkrow"><input type="checkbox" id="sFamiliarPack"> 🎁 El Pack Familiar trae 1 sobre de figuritas de regalo</label>
       <label for="sAlbPagePrize">Premio por página completa</label>
       <input id="sAlbPagePrize" type="text" maxlength="80" placeholder="Ej: ¡Un marcianito gratis!">
       <label for="sAlbPrize">Premio por álbum completo</label>
       <input id="sAlbPrize" type="text" maxlength="80" placeholder="Ej: ¡Un Pack Galaxia + sorpresa!">
-      <p class="note">Cada pedido entregado da 1 sobre con 1 figurita. Al canjear 5 stickers llega un sobre dorado con 3. Con 3 repetidas se cambia por un sobre nuevo.</p>
+      <p class="note">Cada pedido entregado da 1 sobre con 3 figuritas. Al canjear 5 stickers llega un sobre dorado con 5. Con 3 repetidas se cambia por un sobre nuevo.</p>
     </div>
     <div class="panel">
       <h2>Carrera Galáctica</h2>
@@ -1272,6 +1326,7 @@ const DEFAULT = {
     invitesPerMember:2,
     liveOpen:false, liveRoom:'',
     arcadeOn:true, arcadeGame:'auto', arcadeLevel:'medio', arcadeReward:'sticker', arcadePeriod:'semana', arcadeFor:'todos',
+    familiarPack:true,
     albumOn:true, albumFor:'todos', albumPagePrize:'¡Un marcianito gratis!', albumPrize:'¡Un Pack Galaxia + sorpresa!',
     storeName:'AREA 42', storePill:'CLUB', storeTagline:'Los helados de Santi', storeLine:'Comarca Andina del Paralelo 42',
     deliveryArea:'', logoImg:'', logoOnly:false, compPrizeImg:'', raceFor:'socios',
@@ -1408,7 +1463,8 @@ function renderCombos(){
     const save = cb.k*unit - cb.p;
     return `<div class="combo"><div class="ce">${cb.e}</div><h3>${esc(cb.n)}</h3>
       <div class="cp">${esc(cb.t)} por ${money(cb.p)}</div>
-      ${save>0?`<span class="cs">Ahorrás ${money(save)}</span>`:''}</div>`;
+      ${save>0?`<span class="cs">Ahorrás ${money(save)}</span>`:''}
+      ${cb.k === 10 && sb && state.config.familiarPack !== false && state.config.albumOn !== false ? '<span class="cs" style="background:var(--cyan);margin-left:4px">+ 🎁 sobre de figuritas</span>' : ''}</div>`;
   }).join('');
 }
 function renderGrid(){
@@ -1929,6 +1985,7 @@ function renderSettings(){
   $('sArcOn').checked = c.arcadeOn !== false; $('sArcGame').value = c.arcadeGame || 'auto'; $('sArcLevel').value = c.arcadeLevel || 'medio';
   $('sArcReward').value = c.arcadeReward || 'sticker'; $('sArcPeriod').value = c.arcadePeriod || 'semana'; $('sArcFor').value = c.arcadeFor || 'todos';
   $('sAlbumOn').checked = c.albumOn !== false; $('sAlbumFor').value = c.albumFor || 'todos';
+  $('sFamiliarPack').checked = c.familiarPack !== false;
   $('sAlbPagePrize').value = c.albumPagePrize || ''; $('sAlbPrize').value = c.albumPrize || '';
   $('sLogoOnly').checked = !!c.logoOnly; $('sStoreName').value = c.storeName || ''; $('sStorePill').value = c.storePill || '';
   $('sStoreTagline').value = c.storeTagline || ''; $('sStoreLine').value = c.storeLine || ''; $('sDeliveryArea').value = c.deliveryArea || '';
@@ -1967,6 +2024,7 @@ $('setSave').addEventListener('click', () => {
     raceFor:$('sRaceFor').value,
     arcadeOn:$('sArcOn').checked, arcadeGame:$('sArcGame').value, arcadeLevel:$('sArcLevel').value,
     arcadeReward:$('sArcReward').value, arcadePeriod:$('sArcPeriod').value, arcadeFor:$('sArcFor').value,
+    familiarPack:$('sFamiliarPack').checked,
     albumOn:$('sAlbumOn').checked, albumFor:$('sAlbumFor').value, albumPagePrize:$('sAlbPagePrize').value.trim().slice(0,80), albumPrize:$('sAlbPrize').value.trim().slice(0,80),
     logoOnly:$('sLogoOnly').checked, storeName:$('sStoreName').value.trim().slice(0,30) || 'AREA 42', storePill:$('sStorePill').value.trim().slice(0,16),
     storeTagline:$('sStoreTagline').value.trim().slice(0,50), storeLine:$('sStoreLine').value.trim().slice(0,60), deliveryArea:$('sDeliveryArea').value.trim().slice(0,60),
@@ -1987,11 +2045,13 @@ $('wipe').addEventListener('click', () => {
   state = clone(DEFAULT); syncFlavors(); save(); pushConfig(); refreshShop(); renderSettings(); toast('Datos borrados');
 });
 function showShopUI(){
+  setTimeout(renderAlbum, 0);
   setTimeout(renderLiveBanner, 0);
   $('admin').classList.add('hidden'); $('nav').classList.add('hidden'); $('shop').classList.remove('hidden');
   refreshShop();
 }
 function showAdminUI(){
+  $('packChip').classList.add('hidden');
   $('liveBanner').classList.add('hidden');
   $('shop').classList.add('hidden'); $('fab').classList.add('hidden');
   $('admin').classList.remove('hidden'); $('nav').classList.remove('hidden');
@@ -2429,7 +2489,10 @@ async function joinLive(asHost, room){
     if(!live) return;
     const pl = {}; Object.values(ch.presenceState()).forEach(arr => arr.forEach(m => { pl[m.pid] = m; }));
     live.players = pl;
-    if(!live.host && live.me.plays && !lvRacers().some(r => r.pid === live.pid)){ toast('🚫 La sala está llena (máximo 8 naves)'); leaveLive(false); close('liveOverlay'); return; }
+    // Solo "sala llena" si ya figuro en la sala y hay 8 naves que entraron antes que yo
+    const order = Object.values(pl).filter(x => x.plays).sort((a, b) => a.joined - b.joined || (a.pid < b.pid ? -1 : 1));
+    const idx = order.findIndex(r => r.pid === live.pid);
+    if(!live.host && live.me.plays && idx >= LIVE_MAX){ toast('🚫 La sala está llena (máximo 8 naves)'); leaveLive(false); close('liveOverlay'); return; }
     renderLive();
   });
   ch.on('broadcast', {event:'g'}, ({payload}) => onLive(payload));
@@ -2614,6 +2677,8 @@ function renderLive(){ if(!live) return; renderLanes(); renderLiveCenter(); }
 const GAMES = {
   laberinto:{n:'Laberinto Galáctico', e:'🌀', how:'Llevá la nave 🛸 hasta el marcianito 🍦. ¡Todos juegan el mismo laberinto esta semana!'},
   memotest:{n:'Memotest Galáctico', e:'🧠', how:'Encontrá los pares de personajes galácticos con la menor cantidad de intentos.'},
+  nave:{n:'Viaje Galáctico', e:'🚀', how:'Manejá tu nave y esquivá meteoritos, planetas y marcianos. ⭐ te da turbo. ¡Llegá a la meta antes de que se acabe el tiempo!'},
+  caza:{n:'Cazá Marcianitos', e:'👾', how:'Tocá los marcianitos que salen de los cráteres. ¡Ojo con los meteoritos ☄️! Llegá al puntaje antes de que termine el tiempo.'},
 };
 let gameStat = null, gameState = null;
 function isoWeek(d = new Date()){
@@ -2661,14 +2726,21 @@ function startGame(){
   $('t-game').textContent = `${g.e} ${g.n}`;
   $('gWin').innerHTML = ''; $('gMsg').textContent = ''; $('gAgain').classList.add('hidden');
   $('gTime').textContent = '⏱️ 0:00'; $('gMoves').textContent = key === 'memotest' ? '🔁 0 intentos' : '👣 0';
-  gameState.tick = setInterval(() => { if(!gameState.done) $('gTime').textContent = '⏱️ ' + fmtT(Date.now() - gameState.t0); }, 500);
+  stopGames();
+  gameState.tick = setInterval(() => {
+    if(gameState.done) return;
+    const el = Date.now() - gameState.t0;
+    $('gTime').textContent = '⏱️ ' + fmtT(gameState.limit ? Math.max(0, gameState.limit - el) : el);
+    if(gameState.limit && el >= gameState.limit) gameLost('⏰ ¡Se acabó el tiempo! Probá de nuevo.');
+  }, 250);
   if($('gameOverlay').classList.contains('hidden')) open('gameOverlay');   // primero se abre, así el tablero sabe cuánto mide
-  if(key === 'laberinto') mazeStart(); else memoStart();
+  ({laberinto:mazeStart, memotest:memoStart, nave:shipStart, caza:cazaStart})[key]();
 }
 function addMove(){ gameState.moves++; $('gMoves').textContent = gameState.key === 'memotest' ? `🔁 ${gameState.moves} intentos` : `👣 ${gameState.moves}`; }
 async function gameWon(){
   if(gameState.done) return;
   gameState.done = true; clearInterval(gameState.tick);
+  if(ship) cancelAnimationFrame(ship.raf); if(caza) clearTimeout(caza.t);
   const ms = Date.now() - gameState.t0, t = fmtT(ms);
   const prev = bestTime(); const prevMs = prev ? prev.split(':').reduce((a, x) => a * 60 + Number(x), 0) * 1000 : Infinity;
   if(ms < prevMs){ try{ localStorage.setItem(bestKey(), t); }catch(e){} }
@@ -2685,7 +2757,160 @@ async function gameWon(){
 }
 $('arcPlay').addEventListener('click', startGame);
 $('gAgain').addEventListener('click', startGame);
-$('gameOverlay').addEventListener('click', e => { if(e.target.closest('[data-close="gameOverlay"]') && gameState){ clearInterval(gameState.tick); setTimeout(fetchCard, 400); } });
+$('gameOverlay').addEventListener('click', e => { if(e.target.closest('[data-close="gameOverlay"]') && gameState){ clearInterval(gameState.tick); stopGames(); setTimeout(fetchCard, 400); } });
+function stopGames(){
+  if(ship){ cancelAnimationFrame(ship.raf); ship = null; }
+  if(caza){ clearTimeout(caza.t); caza = null; }
+}
+function gameLost(msg){
+  if(!gameState || gameState.done) return;
+  gameState.done = true; clearInterval(gameState.tick); stopGames();
+  $('gWin').innerHTML = `<div class="g-win" style="color:var(--yellow)">${msg}</div>`;
+  $('gMsg').textContent = '¡Casi! Cada intento sale mejor 💪';
+  $('gAgain').classList.remove('hidden');
+}
+
+/* --- Viaje Galáctico (primera persona) --- */
+let ship = null;
+const SHIP_LV = {facil:{T:55, spawn:1.0, sp:.55}, medio:{T:45, spawn:1.5, sp:.65}, dificil:{T:40, spawn:2.1, sp:.75}};
+function shipStart(){
+  $('dpad').classList.add('hidden'); mz = null; memo = null;
+  const cfg = SHIP_LV[state.config.arcadeLevel || 'medio'] || SHIP_LV.medio;
+  gameState.limit = cfg.T * 1000;
+  const W = Math.max(260, Math.min(360, (document.querySelector('#gameOverlay .sheet').clientWidth || 360) - 40)), H = Math.round(W * 1.2);
+  const cv = document.createElement('canvas'), dpr = window.devicePixelRatio || 1;
+  cv.className = 'shipcv'; cv.width = W * dpr; cv.height = H * dpr; cv.style.width = W + 'px'; cv.style.height = H + 'px';
+  $('gBoard').innerHTML = ''; $('gBoard').appendChild(cv);
+  const stars = Array.from({length:110}, () => ({x:(Math.random() * 2 - 1) * 1.6, y:(Math.random() * 2 - 1) * 1.6, z:Math.random()}));
+  ship = {cv, ctx:cv.getContext('2d'), W, H, dpr, cfg, px:0, py:0, tx:0, ty:0, objs:[], stars, dist:0, goal:cfg.T * cfg.sp * .74,
+          boost:0, slow:0, hits:0, stars2:0, shake:0, acc:0, last:performance.now(), raf:0};
+  $('gMoves').textContent = '💥 0';
+  $('gMsg').textContent = 'Arrastrá el dedo para manejar. Esquivá todo y agarrá las ⭐.';
+  ship.raf = requestAnimationFrame(shipLoop);
+}
+function shipLoop(now){
+  if(!ship) return;
+  if($('gameOverlay').classList.contains('hidden') || gameState.done){ ship.raf = 0; return; }
+  const S = ship, dt = Math.min(.05, (now - S.last) / 1000); S.last = now;
+  S.px += (S.tx - S.px) * Math.min(1, dt * 8); S.py += (S.ty - S.py) * Math.min(1, dt * 8);
+  S.boost = Math.max(0, S.boost - dt); S.slow = Math.max(0, S.slow - dt); S.shake = Math.max(0, S.shake - dt);
+  const v = S.cfg.sp * (S.boost ? 1.7 : 1) * (S.slow ? .35 : 1);
+  S.dist += v * dt;
+  // aparecer cosas
+  S.acc += dt * S.cfg.spawn * (0.8 + v);
+  while(S.acc >= 1){ S.acc -= 1;
+    const bonus = Math.random() < .18;
+    S.objs.push({x:(Math.random() * 2 - 1) * 1.15, y:(Math.random() * 2 - 1) * .85, z:1,
+      e:bonus ? '⭐' : ['☄️','🪨','👾','🛸','🪐','👽'][Math.floor(Math.random() * 6)], bonus}); }
+  const ctx = S.ctx, W = S.W, H = S.H, f = W * .55;
+  ctx.setTransform(S.dpr, 0, 0, S.dpr, 0, 0);
+  if(S.shake){ ctx.translate((Math.random() - .5) * 12, (Math.random() - .5) * 12); }
+  ctx.fillStyle = '#04030F'; ctx.fillRect(-20, -20, W + 40, H + 40);
+  const cx = W / 2, cy = H * .45;
+  // estrellas con estela
+  ctx.strokeStyle = '#fff';
+  S.stars.forEach(st => {
+    const z0 = st.z; st.z -= dt * v * 1.3; if(st.z <= .02){ st.z = 1; st.x = (Math.random() * 2 - 1) * 1.6; st.y = (Math.random() * 2 - 1) * 1.6; return; }
+    const x1 = cx + (st.x - S.px * .4) / z0 * f * .4, y1 = cy + (st.y - S.py * .4) / z0 * f * .4;
+    const x2 = cx + (st.x - S.px * .4) / st.z * f * .4, y2 = cy + (st.y - S.py * .4) / st.z * f * .4;
+    ctx.globalAlpha = Math.min(1, (1 - st.z) * 1.4); ctx.lineWidth = (1 - st.z) * 2.2 + .3;
+    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+  });
+  ctx.globalAlpha = 1;
+  // objetos (de lejos a cerca)
+  S.objs.sort((a, b) => b.z - a.z);
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  for(let i = S.objs.length - 1; i >= 0; i--){
+    const o = S.objs[i]; o.z -= dt * v * .9;
+    if(o.z <= .1){
+      if(!o.done && Math.abs(o.x - S.px) < .3 && Math.abs(o.y - S.py) < .3){
+        o.done = true;
+        if(o.bonus){ S.boost = 1.6; S.stars2++; flashGame('rgba(255,210,63,.35)'); sfx('bright'); }
+        else { S.slow = 1.1; S.hits++; S.shake = .35; flashGame('rgba(255,59,92,.45)'); sfx('tear'); $('gMoves').textContent = `💥 ${S.hits}`; }
+      }
+      if(o.z <= .04){ S.objs.splice(i, 1); continue; }
+    }
+  }
+  S.objs.forEach(o => {
+    const sx = cx + (o.x - S.px) / o.z * f * .5, sy = cy + (o.y - S.py) / o.z * f * .5, size = Math.min(W * .9, W * .07 / o.z);
+    ctx.globalAlpha = Math.min(1, (1 - o.z) * 2.5);
+    ctx.font = `${size}px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif`;
+    ctx.fillText(o.e, sx, sy);
+  });
+  ctx.globalAlpha = 1;
+  // meta a la vista
+  const left = S.goal - S.dist;
+  if(left < S.cfg.sp * 1.2){
+    const z = Math.max(.08, left / (S.cfg.sp * 1.2));
+    ctx.font = `${Math.min(W, W * .12 / z)}px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif`;
+    ctx.fillText('🏁', cx - S.px / z * f * .3, cy - S.py / z * f * .3);
+  }
+  // cabina: mira y tablero
+  ctx.strokeStyle = S.slow ? '#FF3B5C' : S.boost ? '#FFD23F' : '#39FF88'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.arc(cx, cy, 16, 0, Math.PI * 2); ctx.moveTo(cx - 26, cy); ctx.lineTo(cx - 8, cy); ctx.moveTo(cx + 8, cy); ctx.lineTo(cx + 26, cy);
+  ctx.moveTo(cx, cy - 26); ctx.lineTo(cx, cy - 8); ctx.moveTo(cx, cy + 8); ctx.lineTo(cx, cy + 26); ctx.stroke();
+  const g = ctx.createLinearGradient(0, H * .78, 0, H); g.addColorStop(0, 'rgba(26,20,64,.6)'); g.addColorStop(1, '#1A1440');
+  ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(0, H); ctx.lineTo(0, H * .86); ctx.quadraticCurveTo(cx, H * .74, W, H * .86); ctx.lineTo(W, H); ctx.fill();
+  ctx.strokeStyle = '#9B5CFF'; ctx.beginPath(); ctx.moveTo(0, H * .86); ctx.quadraticCurveTo(cx, H * .74, W, H * .86); ctx.stroke();
+  // barra de progreso
+  const pr = Math.min(1, S.dist / S.goal);
+  ctx.fillStyle = 'rgba(255,255,255,.12)'; ctx.fillRect(16, H - 26, W - 32, 10);
+  ctx.fillStyle = S.boost ? '#FFD23F' : '#22D3EE'; ctx.fillRect(16, H - 26, (W - 32) * pr, 10);
+  ctx.fillStyle = '#fff'; ctx.font = 'bold 13px Nunito, sans-serif'; ctx.textAlign = 'left';
+  ctx.fillText(S.boost ? '⭐ TURBO' : S.slow ? '💥 ¡CHOQUE!' : `${Math.round(pr * 100)}% hasta la meta 🏁`, 16, H - 38);
+  if(S.dist >= S.goal){ gameWon(); return; }
+  S.raf = requestAnimationFrame(shipLoop);
+}
+function flashGame(c){ const b = $('gBoard'); b.style.transition = 'none'; b.style.filter = 'drop-shadow(0 0 18px ' + c + ')'; setTimeout(() => { b.style.transition = 'filter .4s'; b.style.filter = ''; }, 120); }
+(function(){
+  let on = false, sx = 0, sy = 0, bx = 0, by = 0;
+  $('gBoard').addEventListener('pointerdown', e => { if(!ship) return; on = true; sx = e.clientX; sy = e.clientY; bx = ship.tx; by = ship.ty; });
+  window.addEventListener('pointermove', e => { if(!on || !ship) return; const k = ship.W * .4;
+    ship.tx = Math.max(-1.1, Math.min(1.1, bx + (e.clientX - sx) / k)); ship.ty = Math.max(-.8, Math.min(.8, by + (e.clientY - sy) / k)); });
+  window.addEventListener('pointerup', () => { on = false; });
+  document.addEventListener('keydown', e => {
+    if(!ship) return; const d = {ArrowLeft:[-.25,0], ArrowRight:[.25,0], ArrowUp:[0,-.2], ArrowDown:[0,.2]}[e.key];
+    if(d){ e.preventDefault(); ship.tx = Math.max(-1.1, Math.min(1.1, ship.tx + d[0])); ship.ty = Math.max(-.8, Math.min(.8, ship.ty + d[1])); }
+  });
+})();
+
+/* --- Cazá Marcianitos --- */
+let caza = null;
+const CAZA_LV = {facil:{goal:15, up:1150, gap:650}, medio:{goal:22, up:900, gap:520}, dificil:{goal:28, up:700, gap:420}};
+function cazaStart(){
+  $('dpad').classList.add('hidden'); mz = null; memo = null;
+  const cfg = CAZA_LV[state.config.arcadeLevel || 'medio'] || CAZA_LV.medio;
+  gameState.limit = 30000;
+  caza = {cfg, pts:0, t:0};
+  $('gBoard').innerHTML = `<div class="caza">${Array.from({length:9}, (_, i) => `<button class="hole" data-h="${i}" aria-label="Cráter ${i + 1}"><span class="mo"></span></button>`).join('')}</div>`;
+  $('gMoves').textContent = `👾 0/${cfg.goal}`;
+  $('gMsg').textContent = `👾 +1 · 🌟 +3 · ☄️ −2 ¡no lo toques! Llegá a ${cfg.goal} en 30 segundos.`;
+  cazaPop();
+}
+function cazaPop(){
+  if(!caza || gameState.done) return;
+  const holes = [...document.querySelectorAll('.hole:not(.up)')]; if(!holes.length){ caza.t = setTimeout(cazaPop, 200); return; }
+  const h = holes[Math.floor(Math.random() * holes.length)], r = Math.random();
+  const kind = r < .12 ? 'gold' : r < .3 ? 'bomb' : 'alien';
+  h.dataset.k = kind; h.querySelector('.mo').textContent = kind === 'gold' ? '🌟' : kind === 'bomb' ? '☄️' : ['👾','👽','🤖'][Math.floor(Math.random() * 3)];
+  h.classList.remove('hit'); h.classList.add('up');
+  const stay = caza.cfg.up * (kind === 'gold' ? .75 : 1);
+  setTimeout(() => { if(h.classList.contains('up') && !h.classList.contains('hit')) h.classList.remove('up'); }, stay);
+  const elapsed = Date.now() - gameState.t0, faster = Math.max(.6, 1 - elapsed / 60000);
+  caza.t = setTimeout(cazaPop, caza.cfg.gap * faster * (0.7 + Math.random() * .6));
+}
+$('gBoard').addEventListener('pointerdown', e => {
+  const h = e.target.closest('.hole'); if(!h || !caza || gameState.done || !h.classList.contains('up') || h.classList.contains('hit')) return;
+  const k = h.dataset.k, add = k === 'gold' ? 3 : k === 'bomb' ? -2 : 1;
+  caza.pts = Math.max(0, caza.pts + add); h.classList.add('hit');
+  setTimeout(() => h.classList.remove('up', 'hit'), 330);
+  const fx = document.createElement('div'); fx.className = 'caza-pts'; fx.textContent = (add > 0 ? '+' : '') + add;
+  fx.style.color = add > 0 ? '#39FF88' : '#FF3B5C'; fx.style.left = e.clientX - 10 + 'px'; fx.style.top = e.clientY - 30 + 'px';
+  document.body.appendChild(fx); setTimeout(() => fx.remove(), 1000);
+  sfx(add > 1 ? 'bright' : add > 0 ? 'flip' : 'tear');
+  $('gMoves').textContent = `👾 ${caza.pts}/${caza.cfg.goal}`;
+  if(caza.pts >= caza.cfg.goal) gameWon();
+});
 
 /* --- Laberinto --- */
 function mulberry32(a){ return function(){ a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
@@ -2766,7 +2991,7 @@ document.addEventListener('keydown', e => {
 /* --- Memotest --- */
 let memo = null;
 function memoStart(){
-  $('dpad').classList.add('hidden'); mz = null;
+  $('dpad').classList.add('hidden'); mz = null; gameState.limit = 0;
   const lv = state.config.arcadeLevel || 'medio', pairs = lv === 'facil' ? 6 : lv === 'dificil' ? 10 : 8;
   const pool = [...new Set(FIGS.filter(Boolean).map(f => f.e))].sort(() => Math.random() - .5).slice(0, pairs);
   const deck = [...pool, ...pool].map((e, i) => ({e, k:i})).sort(() => Math.random() - .5);
@@ -2832,7 +3057,7 @@ function renderAlbum(){
   $('albPrize').textContent = c.albumPrize || 'Gran premio sorpresa 🏆';
   const eligible = album ? album.eligible !== false : (c.albumFor || 'todos') === 'todos' || isMember();
   $('albumSub').innerHTML = !eligible ? '🔒 El álbum es solo para socios del club.'
-    : album ? 'Cada pedido entregado te da un <b>sobre con una figurita</b>. Al canjear tus 5 stickers llega un <b>sobre dorado</b> con 3.'
+    : album ? 'Cada pedido entregado te da un <b>sobre con 3 figuritas</b>. Al canjear tus 5 stickers llega un <b>sobre dorado</b> con 5.'
     : 'Hacé tu pedido: cuando Santi lo entrega te llega tu <b>primer sobre de figuritas</b> 🎁';
   const pageDone = p => [1,2,3,4,5,6].every(i => have[p * 6 + i]);
   if(albPage === null){ albPage = 0; for(let p = 0; p < 4; p++){ if(!pageDone(p)){ albPage = p; break; } } }
@@ -2845,6 +3070,10 @@ function renderAlbum(){
   $('albDone').innerHTML = total === 24 ? `<div class="alb-done">🏆 ¡ÁLBUM COMPLETO! Avisale a Santi para tu premio: ${esc(c.albumPrize || 'gran premio')}</div>`
     : pageDone(albPage) ? `<div class="alb-done">✅ ¡Página completa! Avisale a Santi para tu premio: ${esc(c.albumPagePrize || 'premio')}</div>` : '';
   const packs = album && album.packs || [], btn = $('albOpen');
+  const chip = $('packChip');
+  chip.classList.toggle('hidden', !packs.length || $('shop').classList.contains('hidden'));
+  chip.classList.toggle('gold', !!(packs[0] && packs[0].kind === 'dorado'));
+  $('packChipN').textContent = packs.length;
   btn.classList.toggle('hidden', !packs.length);
   btn.classList.toggle('gold', !!(packs[0] && packs[0].kind === 'dorado'));
   btn.textContent = packs.length ? `🎁 Abrir ${packs[0].kind === 'dorado' ? 'sobre dorado' : 'sobre'}${packs.length > 1 ? ` (tenés ${packs.length})` : ''}` : '';
@@ -2868,45 +3097,105 @@ function startPack(){
   const gold = packOpening.kind === 'dorado';
   $('pack').className = 'pack' + (gold ? ' gold' : '');
   $('packBrand').textContent = brandName();
-  $('packKind').textContent = gold ? 'SOBRE DORADO · 3 FIGURITAS' : packOpening.kind === 'cambio' ? 'SOBRE DE CAMBIO' : packOpening.kind === 'regalo' ? 'SOBRE DE REGALO 🎁' : 'FIGURITAS GALÁCTICAS';
+  $('packKind').textContent = gold ? 'SOBRE DORADO · 5 FIGURITAS' : packOpening.kind === 'cambio' ? 'SOBRE DE CAMBIO' : packOpening.kind === 'regalo' ? 'SOBRE DE REGALO 🎁' : packOpening.kind === 'familiar' ? 'SOBRE FAMILIAR 👨‍👩‍👧' : 'FIGURITAS GALÁCTICAS';
   $('t-pack').textContent = gold ? '¡Sobre dorado!' : '¡Sobre de figuritas!';
-  $('pack').classList.remove('hidden'); $('packCards').classList.add('hidden'); $('packCards').innerHTML = '';
+  $('pack').classList.remove('hidden', 'torn', 'shake'); $('packCards').classList.add('hidden'); $('packCards').innerHTML = '';
   $('packText').textContent = 'Tocá el sobre para abrirlo';
   $('packBtn').textContent = 'Abrir sobre'; $('packBtn').disabled = false; $('packBtn').dataset.step = 'open';
   open('packOverlay');
 }
+/* --- Sonidos cortitos (solo cuando la persona toca) --- */
+let sfxCtx = null;
+function sfx(kind){
+  try{
+    sfxCtx = sfxCtx || new (window.AudioContext || window.webkitAudioContext)();
+    const t = sfxCtx.currentTime, notes = kind === 'legend' ? [523,659,784,1047,1319] : kind === 'bright' ? [659,880,1175] : kind === 'tear' ? [180,120] : [740];
+    notes.forEach((f, i) => {
+      const o = sfxCtx.createOscillator(), g = sfxCtx.createGain();
+      o.type = kind === 'tear' ? 'sawtooth' : 'triangle'; o.frequency.value = f;
+      const st = t + i * (kind === 'legend' ? .09 : .07);
+      g.gain.setValueAtTime(0.0001, st); g.gain.exponentialRampToValueAtTime(kind === 'tear' ? .05 : .09, st + .02); g.gain.exponentialRampToValueAtTime(0.0001, st + .28);
+      o.connect(g); g.connect(sfxCtx.destination); o.start(st); o.stop(st + .3);
+    });
+  }catch(e){}
+}
+function sparkles(el, n, set){
+  const r = el.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+  for(let i = 0; i < n; i++){
+    const sp = document.createElement('span'); sp.className = 'spk';
+    sp.textContent = set[i % set.length];
+    const ang = Math.random() * Math.PI * 2, dist = 60 + Math.random() * 110;
+    sp.style.left = cx + 'px'; sp.style.top = cy + 'px';
+    sp.style.setProperty('--dx', Math.cos(ang) * dist + 'px'); sp.style.setProperty('--dy', Math.sin(ang) * dist + 'px');
+    sp.style.animationDelay = (Math.random() * .15) + 's'; sp.style.fontSize = (14 + Math.random() * 14) + 'px';
+    document.body.appendChild(sp); setTimeout(() => sp.remove(), 1200);
+  }
+}
+function flashScreen(color){ const f = document.createElement('div'); f.className = 'flashbang'; f.style.background = color; document.body.appendChild(f); setTimeout(() => f.remove(), 950); }
+function shout(text){ const d = document.createElement('div'); d.className = 'bigshout'; d.textContent = text; document.body.appendChild(d); setTimeout(() => d.remove(), 1700); }
+let packItems = [], packFlipped = 0;
 async function tearPack(){
   if(!packOpening || $('packBtn').dataset.step !== 'open') return;
   $('packBtn').disabled = true; $('packBtn').dataset.step = 'busy';
   const {data, error} = await sb.rpc('open_pack', {p_code: cardCode, p_pack: packOpening.id});
   if(error || !data){ $('packBtn').disabled = false; $('packBtn').dataset.step = 'open'; toast('⚠️ No se pudo abrir el sobre'); return; }
-  $('pack').classList.add('torn');
-  const items = data.items || [];
+  packItems = data.items || []; packFlipped = 0;
+  const pk = $('pack'); pk.classList.add('shake'); sfx('tear');
+  setTimeout(() => { pk.classList.remove('shake'); pk.classList.add('torn'); sparkles(pk, 18, ['✨','⭐','💫']); flashScreen('rgba(255,255,255,.7)'); }, 450);
   setTimeout(() => {
-    $('pack').classList.add('hidden');
-    $('packCards').innerHTML = items.map((it, i) => `<div class="fwrap" style="animation-delay:${i * .25}s">${figHTML(it.fig, 1)}<span class="tag ${it.new ? 'new' : 'rep'}">${it.new ? '¡NUEVA!' : 'Repetida'}</span></div>`).join('');
+    pk.classList.add('hidden');
+    $('packCards').className = 'pcards';
+    $('packCards').innerHTML = packItems.map((it, i) => {
+      const r = FIGS[it.fig].r;
+      return `<button class="pcard ${r === 'l' ? 'legend' : r === 'b' ? 'bright' : ''}" data-pi="${i}" aria-label="Dar vuelta figurita ${i + 1}">
+        <span class="rays"></span>
+        <span class="pin"><span class="pback"><b>42</b></span><span class="pfront">${figHTML(it.fig, 1)}</span></span>
+        <span class="tag ${it.new ? 'new' : 'rep'}">${it.new ? '¡NUEVA!' : 'Repetida'}</span></button>`;
+    }).join('');
     $('packCards').classList.remove('hidden');
-    const nNew = items.filter(x => x.new).length, special = items.find(x => FIGS[x.fig].r === 'l') ? 'legend' : items.find(x => FIGS[x.fig].r === 'b') ? 'bright' : '';
-    $('packText').innerHTML = special === 'legend' ? '👑 ¡¡Te salió una LEGENDARIA!!' : special === 'bright' ? '✨ ¡Te salió una brillante!'
-      : nNew ? `¡${nNew === 1 ? 'Una figurita nueva' : nNew + ' figuritas nuevas'} para tu álbum!` : 'Repetida… ¡juntá 3 y cambialas por un sobre nuevo!';
-    if(nNew || special) confetti();
-    const left = (album.packs || []).length - 1;
-    $('packBtn').textContent = left > 0 ? `Pegar y abrir otro (${left})` : 'Pegar en el álbum 📒';
-    $('packBtn').dataset.step = 'done'; $('packBtn').disabled = false;
-    const firstNew = items.find(x => x.new); if(firstNew) albPage = figPage(firstNew.fig);
-  }, 650);
+    $('packText').textContent = `👆 Tocá cada figurita para darla vuelta (${packItems.length})`;
+    $('packBtn').textContent = 'Dar vuelta todas'; $('packBtn').dataset.step = 'flip'; $('packBtn').disabled = false;
+  }, 1100);
 }
+function flipCard(btn){
+  if(!btn || btn.classList.contains('flip')) return;
+  btn.classList.add('flip');
+  const it = packItems[Number(btn.dataset.pi)], r = FIGS[it.fig].r;
+  setTimeout(() => {
+    if(r === 'l'){ sfx('legend'); flashScreen('radial-gradient(circle,rgba(255,232,120,.95),rgba(255,154,61,.6))'); shout('👑 ¡LEGENDARIA!');
+      document.querySelector('#packOverlay .env-stage').classList.add('screen-shake'); setTimeout(() => document.querySelector('#packOverlay .env-stage').classList.remove('screen-shake'), 520);
+      sparkles(btn, 34, ['⭐','✨','👑','💛']); confetti(); }
+    else if(r === 'b'){ sfx('bright'); flashScreen('radial-gradient(circle,rgba(34,211,238,.6),rgba(255,79,216,.4))'); shout('✨ ¡BRILLANTE!'); sparkles(btn, 24, ['✨','💎','🌈','💫']); }
+    else { sfx('flip'); sparkles(btn, it.new ? 14 : 8, it.new ? ['✨','⭐','🎉'] : ['💨','✨']); }
+    packFlipped++;
+    if(packFlipped === packItems.length) packDone();
+  }, 950);
+}
+function packDone(){
+  const nNew = packItems.filter(x => x.new).length;
+  const special = packItems.find(x => FIGS[x.fig].r === 'l') ? 'legend' : packItems.find(x => FIGS[x.fig].r === 'b') ? 'bright' : '';
+  $('packText').innerHTML = special === 'legend' ? '👑 ¡¡Te salió una LEGENDARIA!!' : special === 'bright' ? '✨ ¡Te salió una brillante!'
+    : nNew ? `🎉 ¡${nNew === 1 ? 'Una figurita nueva' : nNew + ' figuritas nuevas'} para tu álbum!` : 'Todas repetidas… ¡juntá 3 y cambialas por un sobre nuevo! ♻️';
+  if(nNew && !special) confetti();
+  const left = (album.packs || []).length - 1;
+  $('packBtn').textContent = left > 0 ? `Pegar y abrir otro (${left}) 🎁` : 'Pegar en el álbum 📒';
+  $('packBtn').dataset.step = 'done'; $('packBtn').disabled = false;
+  const firstNew = packItems.find(x => x.new); if(firstNew) albPage = figPage(firstNew.fig);
+}
+$('packCards').addEventListener('click', e => flipCard(e.target.closest('.pcard')));
 $('pack').addEventListener('click', tearPack);
 $('pack').addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); tearPack(); } });
 $('packBtn').addEventListener('click', async () => {
   const step = $('packBtn').dataset.step;
   if(step === 'open') return tearPack();
+  if(step === 'flip'){ [...document.querySelectorAll('#packCards .pcard:not(.flip)')].forEach((c, i) => setTimeout(() => flipCard(c), i * 380)); return; }
   if(step !== 'done') return;
   await fetchAlbum();
   if(album && album.packs && album.packs.length) startPack();
   else { close('packOverlay'); setTimeout(() => $('album').scrollIntoView({behavior:'smooth', block:'start'}), 350); }
 });
 $('albOpen').addEventListener('click', startPack);
+$('packChip').addEventListener('click', startPack);
 
 /* =================== COMPETENCIA DE STICKERS =================== */
 let comp = null, compOpen = false;
