@@ -673,12 +673,16 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
 .msk .mn{max-width:86%;background:rgba(11,8,32,.82);color:#fff;border-radius:2mm;padding:.4mm 1.2mm;font-family:Fredoka,Nunito,sans-serif;font-weight:700;
   font-size:calc(var(--d) * .078);line-height:1.08;text-align:center}
 .ms-head{width:100%;font:9pt Nunito,sans-serif;color:#666;margin-bottom:2mm}
+.qlbl{display:block;flex:none;border-radius:2.5mm;outline:.2mm solid #bbb;outline-offset:.6mm;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.qposter{display:block;width:190mm;height:auto;max-height:275mm;margin:0 auto;object-fit:contain;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 @media print{
   @page{size:A4;margin:10mm}
+  :root{color-scheme:light !important}
+  html{background:#fff !important}
   body.printing{background:#fff !important}
   body.printing::before{display:none !important}
   body.printing > *:not(#printArea){display:none !important}
-  body.printing #printArea{display:flex !important;flex-wrap:wrap;gap:3mm;align-content:flex-start}
+  body.printing #printArea{display:flex !important;flex-wrap:wrap;gap:3mm;align-content:flex-start;justify-content:center}
 }
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 @media (max-width:360px){.grid{gap:10px}.planet{width:72px;height:72px;font-size:34px}.mission{grid-template-columns:80px 1fr}.pct{font-size:52px}}
@@ -991,13 +995,29 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
       <h2>🖨️ Mini stickers de sabores</h2>
       <p class="sub">Para pegar en cada helado, al lado de la etiqueta con el QR. Se imprimen redondos con el color y el nombre de cada sabor.</p>
       <div class="two">
-        <div><label for="mkSize">Tamaño</label><select class="inp" id="mkSize"><option value="25">2,5 cm</option><option value="30" selected>3 cm</option><option value="40">4 cm</option></select></div>
+        <div><label for="mkSize">Tamaño</label><select class="inp" id="mkSize"><option value="20">2 cm</option><option value="25" selected>2,5 cm (para el tubito)</option><option value="30">3 cm</option><option value="40">4 cm</option></select></div>
         <div><label for="mkCopies">Copias de cada sabor</label><input id="mkCopies" type="number" inputmode="numeric" min="1" max="80" value="10"></div>
       </div>
       <label for="mkWhich">¿Qué sabores?</label>
       <select class="inp" id="mkWhich"><option value="visibles">Los que se ven en la tienda</option><option value="todos">Todos los sabores</option></select>
       <button class="btn primary" id="mkPrint" style="margin-top:12px">🖨️ Imprimir o guardar PDF</button>
       <p class="note">En la ventana de impresión elegí tamaño real / 100%. Para guardarlo como PDF elegí "Guardar como PDF" como impresora.</p>
+    </div>
+    <div class="panel">
+      <h2>🖨️ Etiquetas con el logo y el QR</h2>
+      <p class="sub">La tira angosta se pega a lo largo del marcianito; el mini sticker del sabor va en otra parte del tubito. El QR lleva a la tienda y le da su tarjeta con sticker de regalo a quien lo escanea.</p>
+      <label for="qlWhat">¿Qué querés imprimir?</label>
+      <select class="inp" id="qlWhat">
+        <option value="tira">⭐ Tira para marcianito 2,8 × 8 cm (recomendado)</option>
+        <option value="etiquetas">Etiquetas 7 × 4 cm</option>
+        <option value="grandes">Etiquetas grandes 9 × 5 cm (para bolsas o cajas)</option>
+        <option value="cartel">Cartel A4 para el puesto</option>
+      </select>
+      <label for="qlCopies">Cantidad de hojas A4</label>
+      <select class="inp" id="qlCopies"><option value="1">1 hoja</option><option value="2">2 hojas</option><option value="3">3 hojas</option><option value="5">5 hojas</option></select>
+      <p class="note" id="qlInfo"></p>
+      <button class="btn primary" id="qlPrint" style="margin-top:12px">🖨️ Imprimir o guardar PDF</button>
+      <p class="note">Elegí tamaño real / 100% y papel autoadhesivo para las etiquetas. El cartel sale en una hoja A4 completa.</p>
     </div>
     <div class="panel">
       <h2>Meta</h2>
@@ -2393,11 +2413,39 @@ $('cbDelete').addEventListener('click', () => {
 function miniStickerHTML(f, d){
   return `<div class="msk" style="--d:${d}mm;--c1:${f.c[0]};--c2:${f.c[1]}"><span class="mb">${esc(brandName())}</span><span class="me">${esc(f.e)}</span><span class="mn">${esc(f.name)}</span></div>`;
 }
+function printSheet(html){
+  $('printArea').innerHTML = html;
+  const imgs = [...$('printArea').querySelectorAll('img')];
+  document.body.classList.add('printing');
+  const done = () => document.body.classList.remove('printing');
+  window.addEventListener('afterprint', done, {once:true});
+  Promise.all(imgs.map(im => im.complete ? 1 : new Promise(r => { im.onload = im.onerror = r; })))
+    .then(() => setTimeout(() => { try{ window.print(); }catch(e){ done(); } setTimeout(done, 60000); }, 300));
+}
+const cm = mm => String(mm / 10).replace('.', ',');
+const QL_TYPES = {
+  tira:      {img:'print/tira-qr.jpg',     w:28, h:80, per:18, name:'Tiras para marcianito'},
+  etiquetas: {img:'print/etiqueta-qr.jpg', w:70, h:40, per:12, name:'Etiquetas'},
+  grandes:   {img:'print/etiqueta-qr.jpg', w:90, h:50, per:10, name:'Etiquetas grandes'},
+};
+function qlInfo(){
+  const t = QL_TYPES[$('qlWhat').value], hojas = Number($('qlCopies').value) || 1;
+  $('qlInfo').textContent = t ? `${t.per * hojas} ${t.name.toLowerCase()} de ${cm(t.w)} × ${cm(t.h)} cm (${t.per} por hoja).` : 'El cartel sale en una hoja A4 completa.';
+  $('qlCopies').disabled = !t;
+}
+['qlWhat','qlCopies'].forEach(id => $(id).addEventListener('change', qlInfo)); qlInfo();
+$('qlPrint').addEventListener('click', () => {
+  const what = $('qlWhat').value, hojas = Number($('qlCopies').value) || 1;
+  if(what === 'cartel'){ printSheet('<img class="qposter" src="print/cartel-qr.jpg" alt="Cartel con QR">'); return; }
+  const t = QL_TYPES[what], total = t.per * hojas;
+  printSheet(`<div class="ms-head">${esc(brand())} · ${t.name} con QR ${cm(t.w)} × ${cm(t.h)} cm — imprimir en tamaño real (100%) y recortar por el borde gris</div>` +
+    Array.from({length:total}, () => `<img class="qlbl" src="${t.img}" alt="" style="width:${t.w}mm;height:${t.h}mm">`).join(''));
+});
 $('mkPrint').addEventListener('click', () => {
   const d = Number($('mkSize').value) || 30, copies = Math.max(1, Math.min(80, Math.round(Number($('mkCopies').value)) || 1));
   const list = FLAVORS.filter(f => $('mkWhich').value === 'todos' || state.config.available[f.id]);
   if(!list.length){ toast('No hay sabores para imprimir'); return; }
-  $('printArea').innerHTML = `<div class="ms-head">${esc(brand())} · Mini stickers de ${d / 10} cm — imprimir en tamaño real (100%) y recortar por el borde gris</div>` +
+  $('printArea').innerHTML = `<div class="ms-head">${esc(brand())} · Mini stickers de ${cm(d)} cm — imprimir en tamaño real (100%) y recortar por el borde gris</div>` +
     list.map(f => Array.from({length:copies}, () => miniStickerHTML(f, d)).join('')).join('');
   document.body.classList.add('printing');
   const done = () => document.body.classList.remove('printing');
