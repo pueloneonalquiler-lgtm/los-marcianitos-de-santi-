@@ -1,7 +1,7 @@
-/* Service worker de AREA 42 Club
+/* Service worker de AREA 51 Club
    Permite instalar la web como app. Siempre busca la versión nueva en internet
    y solo usa la copia guardada si no hay conexión. */
-const CACHE = 'area42-v4';
+const CACHE = 'area51-v5';
 const BASICS = ['./', './index.html', './manifest.json', './icons/icon-192.png', './icons/icon-512.png'];
 
 self.addEventListener('install', e => {
