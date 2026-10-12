@@ -1008,7 +1008,9 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
       <p class="sub">La tira angosta se pega a lo largo del marcianito; el mini sticker del sabor va en otra parte del tubito. El QR lleva a la tienda y le da su tarjeta con sticker de regalo a quien lo escanea.</p>
       <label for="qlWhat">¿Qué querés imprimir?</label>
       <select class="inp" id="qlWhat">
-        <option value="tira">⭐ Tira para marcianito 2,8 × 8 cm (recomendado)</option>
+        <option value="tira">⭐ Tira para marcianito CON QR 2,8 × 8 cm</option>
+        <option value="tirasin">Tira para marcianito SIN QR 2,8 × 8 cm</option>
+        <option value="tiramix">Tiras mitad y mitad (9 con QR + 9 sin QR por hoja)</option>
         <option value="etiquetas">Etiquetas 7 × 4 cm</option>
         <option value="grandes">Etiquetas grandes 9 × 5 cm (para bolsas o cajas)</option>
         <option value="cartel">Cartel A4 para el puesto</option>
@@ -2425,6 +2427,8 @@ function printSheet(html){
 const cm = mm => String(mm / 10).replace('.', ',');
 const QL_TYPES = {
   tira:      {img:'print/tira-qr.jpg',     w:28, h:80, per:18, name:'Tiras para marcianito'},
+  tirasin:   {img:'print/tira-sin-qr.jpg', w:28, h:80, per:18, name:'Tiras sin QR'},
+  tiramix:   {img:'print/tira-qr.jpg', img2:'print/tira-sin-qr.jpg', w:28, h:80, per:18, name:'Tiras (mitad con QR y mitad sin QR)'},
   etiquetas: {img:'print/etiqueta-qr.jpg', w:70, h:40, per:12, name:'Etiquetas'},
   grandes:   {img:'print/etiqueta-qr.jpg', w:90, h:50, per:10, name:'Etiquetas grandes'},
 };
@@ -2438,8 +2442,8 @@ $('qlPrint').addEventListener('click', () => {
   const what = $('qlWhat').value, hojas = Number($('qlCopies').value) || 1;
   if(what === 'cartel'){ printSheet('<img class="qposter" src="print/cartel-qr.jpg" alt="Cartel con QR">'); return; }
   const t = QL_TYPES[what], total = t.per * hojas;
-  printSheet(`<div class="ms-head">${esc(brand())} · ${t.name} con QR ${cm(t.w)} × ${cm(t.h)} cm — imprimir en tamaño real (100%) y recortar por el borde gris</div>` +
-    Array.from({length:total}, () => `<img class="qlbl" src="${t.img}" alt="" style="width:${t.w}mm;height:${t.h}mm">`).join(''));
+  printSheet(`<div class="ms-head">${esc(brand())} · ${t.name} ${cm(t.w)} × ${cm(t.h)} cm — imprimir en tamaño real (100%) y recortar por el borde gris</div>` +
+    Array.from({length:total}, (_, i) => `<img class="qlbl" src="${t.img2 && i % 2 ? t.img2 : t.img}" alt="" style="width:${t.w}mm;height:${t.h}mm">`).join(''));
 });
 $('mkPrint').addEventListener('click', () => {
   const d = Number($('mkSize').value) || 30, copies = Math.max(1, Math.min(80, Math.round(Number($('mkCopies').value)) || 1));
