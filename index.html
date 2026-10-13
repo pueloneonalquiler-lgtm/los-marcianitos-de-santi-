@@ -684,6 +684,36 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
   body.printing > *:not(#printArea){display:none !important}
   body.printing #printArea{display:flex !important;flex-wrap:wrap;gap:3mm;align-content:flex-start;justify-content:center}
 }
+.crew .row{flex-wrap:wrap}
+.crew .row > .mini{flex:1 1 44%}
+/* ---------- Otras líneas de helados ---------- */
+.line-sec .lp{display:inline-block;margin-left:6px;padding:2px 10px;border-radius:999px;background:var(--violet);color:#fff;font-size:13px;font-weight:800;vertical-align:middle}
+.soon-banner{margin:4px 0 12px;padding:10px 14px;border-radius:16px;text-align:center;font-family:var(--display);font-weight:700;font-size:17px;color:var(--yellow);border:2px dashed var(--yellow);background:rgba(255,210,63,.08)}
+.card.soon{opacity:.6}
+.card.soon .soon-tag{display:inline-block;margin-top:6px;padding:4px 10px;border-radius:999px;background:var(--deep);border:1px solid var(--yellow);color:var(--yellow);font-size:12px;font-weight:800}
+.lstate{font-size:12px;font-weight:800;border-radius:999px;padding:2px 8px}
+.lstate.venta{background:rgba(57,255,136,.18);color:var(--green)}
+.lstate.pronto{background:rgba(255,210,63,.18);color:var(--yellow)}
+.lstate.oculta{background:rgba(168,162,200,.15);color:var(--muted)}
+/* ---------- Temas especiales ---------- */
+#decoLayer{position:fixed;inset:0;z-index:4;pointer-events:none;overflow:hidden}
+#decoLayer.hidden{display:none}
+.dc{position:absolute;line-height:1;opacity:.85;will-change:transform;filter:drop-shadow(0 0 6px rgba(0,0,0,.35))}
+.dc-fall{top:-8vh;animation:dcfall linear infinite}
+@keyframes dcfall{0%{transform:translate(0,0) rotate(0)}25%{transform:translate(18px,30vh) rotate(60deg)}50%{transform:translate(-14px,60vh) rotate(140deg)}75%{transform:translate(12px,88vh) rotate(220deg)}100%{transform:translate(0,118vh) rotate(300deg)}}
+.dc-rise{bottom:-8vh;animation:dcrise linear infinite}
+@keyframes dcrise{0%{transform:translate(0,0) scale(.8)}33%{transform:translate(16px,-40vh) scale(1)}66%{transform:translate(-14px,-80vh) scale(1.05)}100%{transform:translate(0,-118vh) scale(.9)}}
+.dc-fly{left:-12vw;animation:dcfly linear infinite}
+.dc-fly span{display:inline-block;animation:dcwob 1.8s ease-in-out infinite}
+@keyframes dcfly{to{transform:translateX(125vw)}}
+@keyframes dcwob{50%{transform:translateY(-26px) rotate(-8deg)}}
+.dc-tw{animation:dctw ease-in-out infinite}
+@keyframes dctw{0%,100%{transform:scale(0);opacity:0}45%{transform:scale(1.3);opacity:1}70%{transform:scale(1);opacity:.7}}
+.dc-spider{top:0;width:2px;background:linear-gradient(rgba(255,255,255,.15),rgba(255,255,255,.6));animation:dcthread ease-in-out infinite alternate}
+.dc-spider span{position:absolute;bottom:-.75em;left:50%;transform:translateX(-50%)}
+@keyframes dcthread{from{height:2vh}to{height:var(--len)}}
+.theme-banner{margin:14px auto 0;max-width:460px;padding:10px 16px;border-radius:16px;font-family:var(--display);font-weight:600;font-size:16px;line-height:1.25;
+  color:#fff;border:2px solid var(--tc,#FF4FD8);background:linear-gradient(135deg,color-mix(in srgb,var(--tc,#FF4FD8) 28%,transparent),rgba(11,8,32,.7));box-shadow:0 0 18px color-mix(in srgb,var(--tc,#FF4FD8) 45%,transparent)}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 @media (max-width:360px){.grid{gap:10px}.planet{width:72px;height:72px;font-size:34px}.mission{grid-template-columns:80px 1fr}.pct{font-size:52px}}
 </style>
@@ -701,6 +731,7 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
     <div class="club" id="heroPill">CLUB</div>
     <p class="tagline" id="heroTagline">Club de helados de Santi</p>
     <p id="heroLine">Comarca Andina del Paralelo 42</p>
+    <div class="theme-banner hidden" id="themeBanner"></div>
     <p class="deliv" id="heroDeliv">🛵 Envíos a domicilio</p>
     <div id="status" class="status on" role="status"><span class="dot"></span><span id="statusText"></span></div>
     <div class="socials hidden" id="heroSocials"></div>
@@ -719,6 +750,7 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
     <p class="sub">Tocá + para sumar a tu Bodega de Carga.</p>
     <div class="grid" id="grid"></div>
   </section>
+  <div id="lines"></div>
 
   <section class="comp hidden" id="comp" aria-labelledby="t-comp">
     <div class="race-head"><h2 id="t-comp">⭐ Competencia de Stickers</h2></div>
@@ -949,6 +981,18 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
   <!-- Ajustes -->
   <div data-view="settings" class="hidden">
     <div class="panel">
+      <h2>🎉 Tema especial</h2>
+      <p class="sub">Viste la tienda para cada fecha: decoraciones animadas, un cartel especial y un ícono distinto en la portada.</p>
+      <label for="sTheme">Tema</label>
+      <select class="inp" id="sTheme"></select>
+      <p class="note" id="themeNow"></p>
+      <label for="sThemeMsg">Mensaje del cartel (opcional)</label>
+      <input id="sThemeMsg" type="text" maxlength="90" placeholder="Si lo dejás vacío se usa el del tema">
+      <label for="sThemeAmount">Cantidad de decoración</label>
+      <select class="inp" id="sThemeAmount"><option value="poca">Poca</option><option value="normal">Normal</option><option value="mucha">Mucha</option></select>
+      <details style="margin-top:12px"><summary style="cursor:pointer;font-weight:800">📅 Calendario automático</summary><ul class="loglist" id="themeCal" style="margin-top:8px"></ul></details>
+    </div>
+    <div class="panel">
       <h2>Portada de la tienda</h2>
       <label>Logo (opcional)</label>
       <div class="prize-admin logo-admin">
@@ -1035,6 +1079,26 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
       <div class="ohead"><h2>Sabores</h2><button class="mini" id="flavorNew">＋ Nuevo sabor</button></div>
       <p class="sub">Tocá un sabor para editarlo. El interruptor lo muestra u oculta en la tienda.</p>
       <ul class="flist" id="sFlavors"></ul>
+    </div>
+    <div class="panel">
+      <div class="ohead"><h2>Otras líneas de helados</h2><button class="mini" id="lineNew">＋ Nueva línea</button></div>
+      <p class="sub">Para lanzar helados nuevos (paletas, potes, cucuruchos…). Cada línea tiene su precio y sus sabores. Mientras la armás dejala <b>Oculta</b>; podés mostrarla como <b>Próximamente</b> para generar expectativa y pasarla a <b>A la venta</b> el día del lanzamiento.</p>
+      <ul class="flist" id="sLines"></ul>
+      <label>💡 Ideas para empezar</label>
+      <div class="chips" id="lineIdeas"></div>
+    </div>
+    <div class="panel">
+      <h2>Reglas de stickers por compra</h2>
+      <p class="sub">Para que nadie complete la tarjeta haciendo varios pedidos chiquitos el mismo día.</p>
+      <label for="sStickerLimit">Stickers por compra</label>
+      <select class="inp" id="sStickerLimit">
+        <option value="dia">Máximo 1 por día (recomendado)</option>
+        <option value="semana">Máximo 1 por semana</option>
+        <option value="libre">Sin límite: 1 por cada pedido</option>
+      </select>
+      <label for="sStickerMin">Compra mínima para sumar sticker</label>
+      <select class="inp" id="sStickerMin"><option value="1">Cualquier pedido</option><option value="2">2 marcianitos o más</option><option value="3">3 marcianitos o más</option><option value="5">5 marcianitos o más</option></select>
+      <p class="note">El sobre de figuritas común sigue la misma regla. Los sobres de regalo de los combos grandes se dan siempre, y el "+1 sticker" de Santi en Tripulantes no tiene límite.</p>
     </div>
     <div class="panel">
       <h2>Sticker de bienvenida</h2>
@@ -1176,6 +1240,28 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
 </div>
 <div class="toast hidden" id="toast" role="status"></div>
 
+<!-- Editor de líneas de helados -->
+<div class="overlay hidden" id="lineOverlay" role="dialog" aria-modal="true" aria-labelledby="t-line">
+  <div class="sheet">
+    <div class="sheet-head"><h2 id="t-line">Línea de helados</h2><button class="close" data-close="lineOverlay" aria-label="Cerrar">✕</button></div>
+    <label for="lnName">Nombre de la línea</label>
+    <input id="lnName" type="text" maxlength="30" placeholder="Ej: Paletas heladas">
+    <label>Ícono</label>
+    <div class="chips emojis" id="lnEmojis"></div>
+    <label for="lnDesc">Descripción corta</label>
+    <input id="lnDesc" type="text" maxlength="50" placeholder="Ej: Paletas de agua y de crema">
+    <div class="two">
+      <div><label for="lnPrice">Precio por unidad ($)</label><input id="lnPrice" type="number" inputmode="numeric" min="1"></div>
+      <div><label for="lnState">Estado</label><select class="inp" id="lnState"><option value="oculta">🙈 Oculta</option><option value="pronto">🔜 Próximamente</option><option value="venta">🟢 A la venta</option></select></div>
+    </div>
+    <div class="ohead" style="margin-top:16px"><h3 style="font-size:18px">Sabores de esta línea</h3><button class="mini" id="lnAddFlavor">＋ Sabor</button></div>
+    <ul class="flist" id="lnFlavors"></ul>
+    <div class="err" id="lnErr" role="alert"></div>
+    <button class="btn primary" id="lnSave">Guardar línea</button>
+    <button class="btn danger" id="lnDelete">Eliminar línea</button>
+  </div>
+</div>
+
 <!-- Editor de combos -->
 <div class="overlay hidden" id="comboOverlay" role="dialog" aria-modal="true" aria-labelledby="t-combo">
   <div class="sheet">
@@ -1299,6 +1385,12 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
     <label>Elegí tu avatar (opcional)</label>
     <div class="avgrid" id="regAvGrid" style="margin-top:6px"></div>
     <div class="err" id="regErr" role="alert"></div>
+    <div class="inv-box hidden" id="regDup" style="margin:6px 0 12px">
+      <h3>🪪 ¿Ya tenés tarjeta?</h3>
+      <p class="sub" style="margin:4px 0 10px" id="regDupTxt"></p>
+      <a class="btn wa" id="regDupWa" href="#" target="_blank" rel="noopener">💬 Pedirle mi link a Santi</a>
+      <button class="btn ghost" id="regDupOther">Soy otra persona con el mismo nombre</button>
+    </div>
     <button class="btn primary" id="regGo">🎁 Quiero mi tarjeta</button>
     <button class="btn ghost" data-close="regOverlay">Ahora no, solo mirar los helados</button>
   </div>
@@ -1372,6 +1464,8 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
   </div>
 </div>
 
+<div id="printArea" aria-hidden="true"></div>
+<div id="decoLayer" class="hidden" aria-hidden="true"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 /* =========================================================
@@ -1425,7 +1519,8 @@ const DEFAULT = {
     storeName:'AREA 51', storePill:'CLUB', storeTagline:'Club de helados de Santi', storeLine:'Comarca Andina del Paralelo 42',
     deliveryArea:'', logoImg:'', logoOnly:false, compPrizeImg:'', raceFor:'socios',
     social:{ig:'', fb:'', tt:'', web:''},
-    welcomeSticker:true, qrRegister:true,
+    lines:[], theme:'auto', themeMsg:'', themeAmount:'normal',
+    welcomeSticker:true, qrRegister:true, stickerLimit:'dia', stickerMinQty:1,
     compOn:true, compFor:'todos', compPrize:'¡Un Pack Cohete Apolo gratis!', compStart:'', compEnd:'',
     raceOn:true, raceGoal:100, racePrize:'¡Un Pack Galaxia gratis! (5 + 1)', raceStart:'',
     flavors: DEFAULT_FLAVORS,
@@ -1504,7 +1599,7 @@ function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.remove('
    Cada pantalla y ventana abierta crea una entrada en el historial del navegador.
    Así, la flecha "atrás" cierra la ventana abierta o vuelve a la pantalla anterior
    en lugar de salir del sitio. */
-const OVERLAYS = ['cartOverlay','pinOverlay','celebrate','flavorOverlay','cardOverlay','envOverlay','installOverlay','avatarOverlay','welcomeOverlay','welcomeSend','joinOverlay','packOverlay','gameOverlay','liveOverlay','regOverlay','comboOverlay'];
+const OVERLAYS = ['cartOverlay','pinOverlay','celebrate','flavorOverlay','cardOverlay','envOverlay','installOverlay','avatarOverlay','welcomeOverlay','welcomeSend','joinOverlay','packOverlay','gameOverlay','liveOverlay','regOverlay','comboOverlay','lineOverlay'];
 const HOME_NAV = {screen:'shop', view:'home', ov:null};
 let navState = {...HOME_NAV};
 let adminUnlocked = false;
@@ -1572,7 +1667,7 @@ function renderCombos(){
 function renderGrid(){
   const c = state.config;
   const list = FLAVORS.filter(f => c.available[f.id]);
-  Object.keys(cart).forEach(id => { if(!c.available[id]) delete cart[id]; });
+  Object.keys(cart).forEach(id => { if(id.includes(LINE_SEP) ? !itemInfo(id) : !c.available[id]) delete cart[id]; });
   $('grid').innerHTML = list.length ? list.map(f => {
     const q = cart[f.id] || 0;
     return `<article class="card ${q?'has':''}" style="--c1:${f.c[0]};--c2:${f.c[1]}">
@@ -1586,8 +1681,11 @@ function renderGrid(){
         <button class="plus" data-id="${f.id}" data-d="1" aria-label="Sumar ${esc(f.name)}">+</button>
       </div></article>`;
   }).join('') : `<p class="empty" style="grid-column:1/-1">Hoy la nave está recargando sabores. ¡Volvé pronto!</p>`;
+  renderLines();
 }
-$('grid').addEventListener('click', e => {
+$('lines').addEventListener('click', e => { if(e.target.closest('button[data-id]')) gridClick(e); });
+$('grid').addEventListener('click', e => gridClick(e));
+function gridClick(e){
   const b = e.target.closest('button[data-id]'); if(!b) return;
   const id = b.dataset.id, d = Number(b.dataset.d);
   const before = cart[id] || 0;
@@ -1599,17 +1697,18 @@ $('grid').addEventListener('click', e => {
   if(added && !reduceMotion() && Element.prototype.animate){ pendingFlights++; }
   renderGrid(); renderCart();
   if(added){
-    const f = FLAVORS.find(x => x.id === id);
+    const f = itemInfo(id) || {e:'🍦'};
     if(pendingFlights && !reduceMotion() && Element.prototype.animate) flyToShip(f.e, from);
     else shipBump();
   }
-});
+
+}
 
 /* =================== NAVE NODRIZA =================== */
 const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const SEATS = 8;
 let pendingFlights = 0, shownPassengers = 0;
-function shipPassengers(){ const a = []; FLAVORS.forEach(f => { for(let i=0;i<(cart[f.id]||0);i++) a.push(f.e); }); return a; }
+function shipPassengers(){ const a = []; Object.entries(cart).forEach(([k, q]) => { const it = itemInfo(k); if(it) for(let i = 0; i < q; i++) a.push(it.e); }); return a; }
 function fillDome(domeId, moreId, list, animateFrom){
   const vis = list.slice(0, SEATS);
   $(domeId).innerHTML = vis.length
@@ -1665,15 +1764,22 @@ function bestPrice(n){
   return best[n];
 }
 function cartSummary(){
-  const items = FLAVORS.filter(f => cart[f.id]).map(f => ({f, q:cart[f.id]}));
+  const price = state.config.price;
+  const items = FLAVORS.filter(f => cart[f.id]).map(f => ({f:{id:f.id, name:f.name, e:f.e}, q:cart[f.id], price}));
+  const mainCount = items.reduce((a,i) => a+i.q, 0);
+  let extra = 0;
+  lineList().filter(l => l.state === 'venta').forEach(l => (l.flavors || []).forEach(f => {
+    const k = lineKey(l, f);
+    if(cart[k]){ items.push({f:{id:k, name:`${l.n} · ${f.name}`, e:f.e}, q:cart[k], price:l.p}); extra += cart[k] * l.p; }
+  }));
   const count = items.reduce((a,i) => a+i.q, 0);
-  const bp = bestPrice(count);
+  const bp0 = bestPrice(mainCount), bp = {cost:bp0.cost + extra, used:bp0.used};
   const combos = {};
   bp.used.forEach(n => combos[n] = (combos[n]||0) + 1);
   const comboText = Object.entries(combos).map(([n,k]) => (k>1?k+'x ':'') + n);
   const v = (count && useVoucher) ? usableVoucher() : null;
   const disc = v ? Math.min(state.config.price, bp.cost) : 0;
-  return {items, count, sub:bp.cost, total:bp.cost - disc, full:count*state.config.price, comboText, voucher:v, disc};
+  return {items, count, mainCount, sub:bp.cost, total:bp.cost - disc, full:mainCount*price + extra, comboText, voucher:v, disc};
 }
 function deliveryText(){
   const c = state.config, w = windowState();
@@ -1700,13 +1806,14 @@ function renderCart(bump){
   const s = cartSummary(), fab = $('fab');
   fab.classList.toggle('hidden', $('shop').classList.contains('hidden'));
   fab.classList.toggle('ready', s.count > 0);
-  $('dockT1').textContent = s.count ? `${s.count} marcianito${s.count===1?'':'s'} a bordo` : 'Tu nave espera tripulantes';
+  const wd = s.mainCount === s.count ? 'marcianito' : 'helado';
+  $('dockT1').textContent = s.count ? `${s.count} ${wd}${s.count===1?'':'s'} a bordo` : 'Tu nave espera tripulantes';
   $('dockT2').textContent = s.count ? `Total ${money(s.total)}${s.comboText.length ? ' · ' + s.comboText.join(' + ') : ''}` : 'Tocá + en un sabor para subirlo';
   $('dockGo').disabled = !s.count;
   $('dockGo').textContent = s.count ? 'Ver carga 🚀' : 'Nave vacía';
   if(shownPassengers > s.count) shownPassengers = s.count;
   renderShip();
-  let html = s.items.map(i => `<div class="line"><span>${i.q}x ${esc(i.f.name)}</span><span>${money(i.q*state.config.price)}</span></div>`).join('');
+  let html = s.items.map(i => `<div class="line"><span>${i.q}x ${esc(i.f.name)}</span><span>${money(i.q * i.price)}</span></div>`).join('');
   if(s.comboText.length && s.full > s.sub) html += `<div class="line combo-line"><span>🎁 ${esc(s.comboText.join(' + '))}</span><span>−${money(s.full - s.sub)}</span></div>`;
   const av = s.count ? usableVoucher() : null;
   if(av && s.voucher) html += `<div class="line voucher-line"><span>🎟️ Vale #V${av.id}: 1 gratis <button class="vtoggle" data-vt="0">Guardar para otro día</button></span><span>−${money(s.disc)}</span></div>`;
@@ -1935,6 +2042,7 @@ async function fetchCards(){
   if(!sb || !loggedIn) return;
   // Si falta alguna parte de la base (por ej. el álbum), igual se muestran los tripulantes
   const tries = [
+    'code,name,created_at,hide_rank,avatar,member_no,member,dup_of,stickers(id,redeemed_at),vouchers(id,status),album_items(fig,traded_at)',
     'code,name,created_at,hide_rank,avatar,member_no,member,stickers(id,redeemed_at),vouchers(id,status),album_items(fig,traded_at)',
     'code,name,created_at,hide_rank,avatar,member_no,member,stickers(id,redeemed_at),vouchers(id,status)',
     'code,name,created_at,stickers(id,redeemed_at),vouchers(id,status)',
@@ -1949,6 +2057,14 @@ async function fetchCards(){
   if(error){ toast('⚠️ No se pudieron traer las tarjetas: ' + (error.message || '').slice(0, 60)); return; }
   cards = data || [];
   if(navState.screen === 'admin' && view === 'crew') renderCrew();
+}
+const normName = n => (n || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, ' ');
+function dupTarget(c){
+  // la tarjeta más vieja con el mismo nombre (es la que seguramente ya tiene su link)
+  const same = cards.filter(x => x.code !== c.code && normName(x.name) === normName(c.name));
+  if(!same.length) return null;
+  const all = [c, ...same].sort((a, b) => (a.created_at || '').localeCompare(b.created_at || ''));
+  return all[0].code === c.code ? null : all[0];
 }
 function renderCloudCrew(){
   $('crewList').innerHTML = cards.length ? cards.map(c => {
@@ -1972,6 +2088,7 @@ function renderCloudCrew(){
       </div>
       ${vs.length ? `<button class="mini gift" style="width:100%;margin-top:8px" data-cvused="${vs[0].id}">✅ Ya le di el gratis en persona</button>` : ''}
       <button class="mini" style="width:100%;margin-top:8px" data-chide="${c.code}" data-h="${c.hide_rank ? 1 : 0}">${c.hide_rank ? '🙈 Oculto en la carrera · Mostrar' : '👁️ Visible en la carrera · Ocultar'}</button>
+      ${(() => { const d = dupTarget(c); return d ? `<div class="inv-box" style="margin-top:8px;border-color:var(--yellow)"><b style="color:var(--yellow)">⚠️ Posible repetida</b><p class="note" style="margin:4px 0 8px">Hay otra tarjeta de "${esc(d.name)}" creada antes. Si es la misma persona, unilas: los stickers, figuritas y pedidos pasan a la más vieja.</p><button class="mini gift" style="width:100%" data-cmerge="${c.code}" data-into="${d.code}">🔗 Unir con la tarjeta más vieja</button></div>` : ''; })()}
       <p class="note">📒 Álbum: ${new Set((c.album_items || []).filter(x => !x.traded_at).map(x => x.fig)).size}/24 figuritas</p>
       <p class="note">${c.member_no ? `<span class="memberno">SOCIO Nº ${memberNo(c.member_no)}</span> · ` : ''}Código ${esc(c.code)}${used ? ` · ${used} canje${used===1?'':'s'}` : ''}</p>
     </li>`;
@@ -1997,6 +2114,7 @@ function renderCrew(){
 }
 async function addCrew(kind){
   const n = $('crewName').value.trim(); if(!n){ $('crewName').focus(); return; }
+  if(sb && cards.some(x => normName(x.name) === normName(n)) && !confirm(`Ya hay una tarjeta a nombre de ${n}. ¿Crear otra igual?\n\nSi es la misma persona, mejor buscala en la lista y tocá "Mandar tarjeta".`)) return;
   if(sb){
     const client = kind === 'cliente';
     const {data:nc, error} = await sb.from('cards').insert({code:newCode(), name:n.slice(0,60), member:!client}).select('code,name,avatar,member_no,member').single();
@@ -2023,6 +2141,15 @@ $('crewList').addEventListener('click', async e => {
       const {error} = await sb.from('cards').update({member:true}).eq('code', c.code);
       if(error){ toast('⚠️ No se pudo'); return; }
       c.member = true; toast(`🪪 ¡${c.name} ahora es socio!`); fetchCards(); fetchRace(); openWelcomeSend({...c, member:true}); return;
+    }
+    if(t.dataset.cmerge){
+      const from = cards.find(x => x.code === t.dataset.cmerge), to = cards.find(x => x.code === t.dataset.into);
+      if(!from || !to || !confirm(`¿Unir las dos tarjetas de ${to.name}?\n\nTodo pasa a la más vieja y la repetida se borra. Después mandale el link de la que queda.`)) return;
+      const {data, error} = await sb.rpc('merge_cards', {p_from: from.code, p_to: to.code});
+      if(error){ toast('⚠️ No se pudieron unir'); console.warn(error); return; }
+      toast(`🔗 ¡Listo! Quedó una sola tarjeta de ${to.name}`); fetchCards();
+      if(confirm('¿Le mandás ahora el link de su tarjeta?')) openWelcomeSend({...to, ...(data || {}), member: (data && data.member) !== false && to.member !== false});
+      return;
     }
     if(t.dataset.cgift){
       const {error} = await sb.rpc('gift_pack', {p_card: t.dataset.cgift});
@@ -2075,10 +2202,15 @@ let pickEmoji = null;
 function renderSettings(){
   const c = state.config;
   $('sStart').value = c.start; $('sEnd').value = c.end;
-  $('sPrice').value = c.price; renderComboList();
+  $('sPrice').value = c.price; renderComboList(); renderLineList();
   $('sGoalName').value = c.goalName; $('sGoalAmount').value = c.goalAmount;
   $('sPhone').value = c.phone; $('sPin').value = c.pin;
   $('sInvites').value = Number.isInteger(c.invitesPerMember) ? c.invitesPerMember : 2;
+  $('sTheme').innerHTML = `<option value="auto">📅 Automático por fecha</option><option value="none">Sin tema</option>` +
+    Object.entries(THEMES).map(([k, t]) => `<option value="${k}">${t.e} ${t.n}</option>`).join('');
+  $('sTheme').value = c.theme || 'auto'; $('sThemeMsg').value = c.themeMsg || ''; $('sThemeAmount').value = c.themeAmount || 'normal';
+  renderThemeInfo();
+  $('sStickerLimit').value = c.stickerLimit || 'dia'; $('sStickerMin').value = String(c.stickerMinQty || 1);
   $('sWelcomeSticker').checked = c.welcomeSticker !== false; $('sQrRegister').checked = c.qrRegister !== false;
   $('sCompOn').checked = c.compOn !== false; $('sCompFor').value = c.compFor || 'todos';
   $('sCompPrize').value = c.compPrize || ''; $('sCompEnd').value = c.compEnd || '';
@@ -2120,6 +2252,8 @@ $('setSave').addEventListener('click', () => {
     goalName:$('sGoalName').value.trim() || 'Mi meta', goalAmount:num('sGoalAmount'), goalEmoji:pickEmoji,
     phone:$('sPhone').value.replace(/\D/g,'') || DEFAULT.config.phone, pin: sb ? state.config.pin : pin,
     invitesPerMember: Math.max(0, Math.min(10, Math.round(num('sInvites')) || 0)),
+    theme:$('sTheme').value, themeMsg:$('sThemeMsg').value.trim().slice(0, 90), themeAmount:$('sThemeAmount').value,
+    stickerLimit:$('sStickerLimit').value, stickerMinQty:Number($('sStickerMin').value) || 1,
     welcomeSticker:$('sWelcomeSticker').checked, qrRegister:$('sQrRegister').checked,
     compOn:$('sCompOn').checked, compFor:$('sCompFor').value, compPrize:$('sCompPrize').value.trim().slice(0,80), compEnd:$('sCompEnd').value || '',
     raceFor:$('sRaceFor').value,
@@ -2145,12 +2279,14 @@ $('wipe').addEventListener('click', () => {
   state = clone(DEFAULT); syncFlavors(); save(); pushConfig(); refreshShop(); renderSettings(); toast('Datos borrados');
 });
 function showShopUI(){
+  setTimeout(applyTheme, 0);
   setTimeout(renderAlbum, 0);
   setTimeout(renderLiveBanner, 0);
   $('admin').classList.add('hidden'); $('nav').classList.add('hidden'); $('shop').classList.remove('hidden');
   refreshShop();
 }
 function showAdminUI(){
+  $('decoLayer').classList.add('hidden');
   $('packChip').classList.add('hidden');
   $('liveBanner').classList.add('hidden');
   $('shop').classList.add('hidden'); $('fab').classList.add('hidden');
@@ -2224,6 +2360,17 @@ function unsubscribeOrders(){
   if(sb && ordersChannel){ sb.removeChannel(ordersChannel); }
   ordersChannel = null; orders = []; updateOrderBadge();
 }
+function stickerHint(o){
+  const c0 = state.config, lim = c0.stickerLimit || 'dia', minQ = Number(c0.stickerMinQty) || 1;
+  if(!o.card_code || o.status !== 'pendiente') return '';
+  if(o.qty < minQ) return `ℹ️ No suma sticker: menos de ${minQ} marcianitos`;
+  if(lim === 'libre') return '';
+  const day = d => dstr(new Date(d));
+  const wk = d => { const w = isoWeek(new Date(d)); return w.y + '-' + w.w; };
+  const same = orders.some(x => x.id !== o.id && x.card_code === o.card_code && x.status === 'entregado' && x.delivered_at &&
+    (lim === 'semana' ? wk(x.delivered_at) === wk(Date.now()) : day(x.delivered_at) === today()));
+  return same ? `ℹ️ Ya sumó sticker ${lim === 'semana' ? 'esta semana' : 'hoy'}: este pedido no suma` : '';
+}
 function orderCard(o){
   const t = today(), day = isoDay(o.created_at);
   const map = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(o.address)}`;
@@ -2231,6 +2378,7 @@ function orderCard(o){
     <div class="otop"><span class="oname">${avHTML(o.avatar,'sm') || '👽 '}${esc(o.customer_name)}${isMemberCode(o.card_code) ? '<span class="badge-soc si">🪪 SOCIO</span>' : '<span class="badge-soc no">CLIENTE</span>'}</span><span class="otime">${day === t ? 'Hoy' : prettyDate(day)} ${hhmm(o.created_at)}</span></div>
     <div class="oaddr">📍 ${esc(o.address)}${o.reference ? `<br><span class="oref">🗺️ ${esc(o.reference)}</span>` : ''}</div>
     <div class="oitems">🍧 ${esc(orderItems(o))}${o.combo ? `<br><span class="ocombo">🎁 ${esc(o.combo)}</span>` : ''}</div>
+    ${stickerHint(o) ? `<div class="note" style="margin-top:6px;color:var(--yellow);font-weight:800">${stickerHint(o)}</div>` : ''}
     ${o.voucher_id ? `<div class="ocombo" style="margin-top:6px">🎟️ Usa vale de canje #V${o.voucher_id} (ya descontado)</div>` : ''}
     <div class="ototal">${o.qty} marcianito${o.qty===1?'':'s'} · <b>${money(o.total)}</b></div>
     ${o.status === 'pendiente'
@@ -2277,7 +2425,9 @@ async function deliverOrder(id){
   save(); refreshOrderViews();
   const r = res || {}, nm = o.customer_name;
   if(r.voucher_requested && !r.voucher_used) alert(`⚠️ ${nm} pidió usar un vale que ya estaba usado. Cobrale el marcianito completo (${money(state.config.price)}).`);
-  toast(r.sticker_id == null ? `✅ Entregado (pedido sin tarjeta)`
+  toast(r.skip === 'limite' ? `✅ Entregado · sin sticker: ${nm} ya sumó ${r.rule === 'semana' ? 'esta semana' : 'hoy'}`
+      : r.skip === 'minimo' ? `✅ Entregado · sin sticker: el pedido tiene menos de ${r.min} marcianitos`
+      : r.sticker_id == null ? `✅ Entregado (pedido sin tarjeta)`
       : r.active >= 5 ? `🎟️ ¡${nm} completó su tarjeta! Ya puede canjear`
       : `⭐ ${nm} ganó el sticker #${String(r.sticker_id).padStart(4,'0')} (${r.active}/5)${r.member ? '' : ' · cliente'}`);
   fetchCards(); fetchComp();
@@ -2319,6 +2469,112 @@ $('sFlavors').addEventListener('click', e => {
   else if(ed) openFlavorEditor(ed.dataset.fedit);
 });
 $('flavorNew').addEventListener('click', () => openFlavorEditor(null));
+
+/* =================== OTRAS LÍNEAS DE HELADOS =================== */
+const LINE_SEP = '~';
+function lineList(){ if(!Array.isArray(state.config.lines)) state.config.lines = []; return state.config.lines; }
+const lineKey = (l, f) => l.id + LINE_SEP + f.id;
+function itemInfo(key){
+  if(!key.includes(LINE_SEP)){ const f = FLAVORS.find(x => x.id === key); return f ? {name:f.name, e:f.e, price:state.config.price} : null; }
+  const [lid, fid] = key.split(LINE_SEP), l = lineList().find(x => x.id === lid), f = l && (l.flavors || []).find(x => x.id === fid);
+  return l && f && l.state === 'venta' && (l.avail || {})[f.id] !== false ? {name:`${l.n} · ${f.name}`, e:f.e, price:l.p} : null;
+}
+function renderLines(){
+  const vis = lineList().filter(l => l.state === 'venta' || l.state === 'pronto');
+  $('lines').innerHTML = vis.map(l => {
+    const soon = l.state === 'pronto', fl = (l.flavors || []).filter(f => (l.avail || {})[f.id] !== false);
+    return `<section class="line-sec" aria-label="${esc(l.n)}">
+      <h2>${esc(l.e || '🍦')} ${esc(l.n)}${soon ? '' : `<span class="lp">${money(l.p)} c/u</span>`}</h2>
+      ${l.d ? `<p class="sub">${esc(l.d)}</p>` : ''}
+      ${soon ? `<div class="soon-banner">🔜 ¡Muy pronto en ${esc(brandName())}!</div>` : ''}
+      <div class="grid">${fl.map(f => {
+        const k = lineKey(l, f), q = cart[k] || 0;
+        return `<article class="card ${q ? 'has' : ''} ${soon ? 'soon' : ''}" style="--c1:${f.c[0]};--c2:${f.c[1]}">
+          ${q ? `<span class="badge">${q}</span>` : ''}
+          <div class="planet" aria-hidden="true">${esc(f.e)}</div>
+          <h3>${esc(f.name)}</h3>
+          ${soon ? '<span class="soon-tag">Próximamente</span>' : `<div class="price">${money(l.p)} c/u</div>
+          <div class="stepper">
+            <button data-id="${k}" data-d="-1" aria-label="Quitar ${esc(f.name)}" ${q ? '' : 'disabled'}>−</button>
+            <span class="n" aria-live="polite">${q}</span>
+            <button class="plus" data-id="${k}" data-d="1" aria-label="Sumar ${esc(f.name)}">+</button>
+          </div>`}
+        </article>`;
+      }).join('') || '<p class="empty" style="grid-column:1/-1">Sabores en camino…</p>'}</div>
+    </section>`;
+  }).join('');
+}
+/* --- Editor (Santi) --- */
+const LINE_EMOJIS = ['🍡','🍨','🍦','🥤','🧁','🍧','🍫','🧊','🍓','🥭','🍋','⭐'];
+const STARTER_FLAVORS = [
+  {name:'Frutilla', e:'🍓', c:['#FF9FBE','#E5194F']}, {name:'Chocolate', e:'🍫', c:['#B07A52','#3B1F12']}, {name:'Dulce de leche', e:'🥛', c:['#F5DEB3','#C68B3E']},
+];
+const LINE_IDEAS = [
+  {e:'🍡', n:'Paletas heladas',   d:'Paletas de agua y de crema',   f:1.6},
+  {e:'🍨', n:'Potes de helado',   d:'Pote de 1/4 kg para compartir', f:5},
+  {e:'🍦', n:'Cucuruchos',        d:'Cucurucho de 1 bocha',          f:2.4},
+  {e:'🥤', n:'Licuados helados',  d:'Vaso de 400 ml',                f:3},
+  {e:'🧁', n:'Vasitos helados',   d:'Vasito con topping',            f:2},
+];
+let lnEdit = null, fLine = null;
+const stateLabel = st => st === 'venta' ? '<span class="lstate venta">A la venta</span>' : st === 'pronto' ? '<span class="lstate pronto">Próximamente</span>' : '<span class="lstate oculta">Oculta</span>';
+function renderLineList(){
+  const L = lineList();
+  $('sLines').innerHTML = L.map(l => `<li class="frow"><button class="fedit" data-ledit="${esc(l.id)}"><span class="fdot" style="--c1:#7CFFB2;--c2:#0B6B42">${esc(l.e || '🍦')}</span>
+      <span class="fname">${esc(l.n)}<br><span style="font-weight:600;color:var(--muted);font-size:13px">${money(l.p)} c/u · ${(l.flavors || []).length} sabores</span> ${stateLabel(l.state)}</span><span class="fpen" aria-hidden="true">✏️</span></button></li>`).join('')
+    || '<li class="empty">Todavía no hay otras líneas. Creá una o elegí una idea.</li>';
+  const names = new Set(L.map(l => l.n.toLowerCase()));
+  $('lineIdeas').innerHTML = LINE_IDEAS.filter(i => !names.has(i.n.toLowerCase())).map(i => `<button class="chip" data-lidea="${LINE_IDEAS.indexOf(i)}">${i.e} ${esc(i.n)}</button>`).join('');
+}
+function commitLines(msg){ save(); pushConfig(); refreshShop(); renderLineList(); if(msg) toast(msg); }
+function newLine(preset){
+  const base = state.config.price || 500, i = preset || {e:'🍡', n:'Línea nueva', d:'', f:2};
+  const l = {id:'l' + Date.now().toString(36), n:i.n, e:i.e, d:i.d, p:Math.round(base * i.f / 50) * 50, state:'oculta',
+             flavors:STARTER_FLAVORS.map((f, x) => ({id:'s' + Date.now().toString(36) + x, ...f, c:[...f.c]})), avail:{}};
+  lineList().push(l); commitLines(); openLineEditor(l.id);
+}
+$('lineNew').addEventListener('click', () => newLine(null));
+$('lineIdeas').addEventListener('click', e => { const b = e.target.closest('[data-lidea]'); if(b) newLine(LINE_IDEAS[Number(b.dataset.lidea)]); });
+$('sLines').addEventListener('click', e => { const b = e.target.closest('[data-ledit]'); if(b) openLineEditor(b.dataset.ledit); });
+function openLineEditor(id){
+  const l = lineList().find(x => x.id === id); if(!l) return;
+  lnEdit = id; fLine = null;
+  $('t-line').textContent = l.n || 'Línea de helados';
+  $('lnName').value = l.n; $('lnDesc').value = l.d || ''; $('lnPrice').value = l.p; $('lnState').value = l.state || 'oculta'; $('lnErr').textContent = '';
+  $('lnEmojis').innerHTML = LINE_EMOJIS.map(e => `<button class="chip ${l.e === e ? 'on' : ''}" data-lne="${e}">${e}</button>`).join('');
+  renderLineFlavors(l); open('lineOverlay');
+}
+function renderLineFlavors(l){
+  l.avail = l.avail || {};
+  $('lnFlavors').innerHTML = (l.flavors || []).map(f => { const on = l.avail[f.id] !== false;
+    return `<li class="frow"><button class="fedit" data-lfedit="${esc(f.id)}"><span class="fdot" style="--c1:${f.c[0]};--c2:${f.c[1]}">${esc(f.e)}</span><span class="fname">${esc(f.name)}</span><span class="fpen" aria-hidden="true">✏️</span></button>
+      <button class="switch ${on ? 'on' : ''}" data-lftoggle="${esc(f.id)}" role="switch" aria-checked="${on}" aria-label="Mostrar ${esc(f.name)}"><i></i></button></li>`; }).join('')
+    || '<li class="empty">Sin sabores todavía.</li>';
+}
+$('lnEmojis').addEventListener('click', e => { const b = e.target.closest('[data-lne]'); if(!b) return; const l = lineList().find(x => x.id === lnEdit); l.e = b.dataset.lne; document.querySelectorAll('#lnEmojis .chip').forEach(c => c.classList.toggle('on', c === b)); });
+$('lnFlavors').addEventListener('click', e => {
+  const l = lineList().find(x => x.id === lnEdit); if(!l) return;
+  const t = e.target.closest('[data-lftoggle]'), ed = e.target.closest('[data-lfedit]');
+  if(t){ l.avail[t.dataset.lftoggle] = l.avail[t.dataset.lftoggle] === false; renderLineFlavors(l); }
+  else if(ed) openFlavorEditor(ed.dataset.lfedit, l.id);
+});
+$('lnAddFlavor').addEventListener('click', () => openFlavorEditor(null, lnEdit));
+$('lnSave').addEventListener('click', () => {
+  const l = lineList().find(x => x.id === lnEdit); if(!l) return;
+  const n = $('lnName').value.replace(/~/g, ' ').trim(), pr = Math.round(Number($('lnPrice').value));
+  if(n.length < 3){ $('lnErr').textContent = 'Ponele un nombre a la línea.'; return; }
+  if(!(pr > 0)){ $('lnErr').textContent = 'Poné el precio por unidad.'; return; }
+  if($('lnState').value === 'venta' && !(l.flavors || []).some(f => l.avail[f.id] !== false)){ $('lnErr').textContent = 'Para ponerla a la venta necesita al menos un sabor visible.'; return; }
+  Object.assign(l, {n, d:$('lnDesc').value.trim().slice(0, 50), p:pr, state:$('lnState').value});
+  close('lineOverlay');
+  commitLines(l.state === 'venta' ? `🚀 ¡${n} ya está a la venta!` : l.state === 'pronto' ? `🔜 ${n} aparece como "Próximamente"` : '✅ Línea guardada (oculta)');
+});
+$('lnDelete').addEventListener('click', () => {
+  const l = lineList().find(x => x.id === lnEdit); if(!l || !confirm(`¿Eliminar la línea "${l.n}" con todos sus sabores?`)) return;
+  state.config.lines = lineList().filter(x => x.id !== lnEdit);
+  Object.keys(cart).forEach(k => { if(k.startsWith(l.id + LINE_SEP)) delete cart[k]; });
+  close('lineOverlay'); commitLines('🗑️ Línea eliminada');
+});
 
 /* =================== EDITOR DE COMBOS =================== */
 const COMBO_EMOJIS = ['🚀','🌌','👨‍👩‍👧','🛸','🌕','🪐','☄️','🎂','🏫','⭐','👽','🎉','🧊','🍦'];
@@ -2456,10 +2712,13 @@ $('mkPrint').addEventListener('click', () => {
   window.addEventListener('afterprint', done, {once:true});
   setTimeout(() => { try{ window.print(); }catch(e){ done(); } setTimeout(done, 60000); }, 400);
 });
-function openFlavorEditor(id){
-  const f = id ? FLAVORS.find(x => x.id === id) : null;
+function fList(){ const l = fLine && lineList().find(x => x.id === fLine); return l ? (l.flavors = l.flavors || []) : FLAVORS; }
+function fAvail(){ const l = fLine && lineList().find(x => x.id === fLine); return l ? (l.avail = l.avail || {}) : state.config.available; }
+function openFlavorEditor(id, lineId = null){
+  fLine = lineId;
+  const f = id ? fList().find(x => x.id === id) : null;
   fEdit = f ? f.id : null;
-  fDraft = f ? {name:f.name, e:f.e, c:[...f.c], on:!!state.config.available[f.id]}
+  fDraft = f ? {name:f.name, e:f.e, c:[...f.c], on:fLine ? fAvail()[f.id] !== false : !!state.config.available[f.id]}
              : {name:'', e:'🍒', c:['#FFB3C1','#D6194F'], on:true};
   $('t-flavor').textContent = f ? 'Editar sabor' : 'Nuevo sabor';
   $('fName').value = fDraft.name;
@@ -2490,20 +2749,22 @@ $('fSave').addEventListener('click', () => {
   if(name.length < 2){ $('fErr').textContent = 'Ponele un nombre de al menos 2 letras.'; return; }
   if(!fDraft.e){ $('fErr').textContent = 'Elegí un ícono.'; return; }
   if(!HEX.test(fDraft.c[0]) || !HEX.test(fDraft.c[1])){ $('fErr').textContent = 'Elegí los colores del planeta.'; return; }
-  if(FLAVORS.some(x => x.id !== fEdit && x.name.toLowerCase() === name.toLowerCase())){ $('fErr').textContent = 'Ya existe un sabor con ese nombre.'; return; }
+  if(fList().some(x => x.id !== fEdit && x.name.toLowerCase() === name.toLowerCase())){ $('fErr').textContent = 'Ya existe un sabor con ese nombre.'; return; }
   const data = {name, e:fDraft.e.slice(0,8), c:[fDraft.c[0], fDraft.c[1]]};
   let id = fEdit;
-  if(id){ Object.assign(FLAVORS.find(x => x.id === id), data); }
-  else { id = 'f' + Date.now().toString(36); FLAVORS.push({id, ...data}); }
-  state.config.available[id] = fDraft.on;
+  if(id){ Object.assign(fList().find(x => x.id === id), data); }
+  else { id = 'f' + Date.now().toString(36); fList().push({id, ...data}); }
+  fAvail()[id] = fDraft.on;
+  if(fLine){ const ln = fLine; commitLines(fEdit ? '✅ Sabor actualizado' : '🍦 Sabor agregado a la línea'); openLineEditor(ln); return; }
   close('flavorOverlay');
   commitFlavors(fEdit ? '✅ Sabor actualizado' : '🪐 ¡Sabor nuevo en la tienda!');
 });
 $('fDelete').addEventListener('click', () => {
-  const f = FLAVORS.find(x => x.id === fEdit); if(!f) return;
+  const list = fList(), f = list.find(x => x.id === fEdit); if(!f) return;
   if(!confirm(`¿Eliminar "${f.name}"? Los pedidos viejos no se modifican.`)) return;
-  FLAVORS.splice(FLAVORS.indexOf(f), 1);
-  delete state.config.available[f.id]; delete cart[f.id];
+  list.splice(list.indexOf(f), 1);
+  delete fAvail()[f.id]; delete cart[f.id];
+  if(fLine){ const ln = fLine; Object.keys(cart).forEach(k => { if(k === ln + LINE_SEP + f.id) delete cart[k]; }); commitLines('🗑️ Sabor eliminado'); openLineEditor(ln); return; }
   close('flavorOverlay');
   commitFlavors('🗑️ Sabor eliminado');
 });
@@ -3607,6 +3868,125 @@ Object.entries(IMG_SLOTS).forEach(([key, sl]) => {
   });
 });
 
+/* =================== TEMAS ESPECIALES =================== */
+const THEMES = {
+  halloween: {n:'Halloween Marciano', e:'🎃', hero:'🎃', tc:'#FF8A00', msg:'🎃 Halloween Marciano: ¡cuidado con las arañas del espacio! 🕷️',
+    fx:[{t:'spider', items:['🕷️'], k:.5}, {t:'fly', items:['🦇','👻'], k:.3}, {t:'tw', items:['🎃'], k:.2}]},
+  primavera: {n:'Primavera Galáctica', e:'🦋', hero:'🌸', tc:'#FF7FE3', msg:'🌸 Primavera Galáctica: ¡llegaron las mariposas del espacio! 🦋',
+    fx:[{t:'fly', items:['🦋'], k:.5}, {t:'fall', items:['🌸','🌼'], k:.5}]},
+  enamorados: {n:'Amor Galáctico (San Valentín)', e:'💘', hero:'💘', tc:'#FF4F8B', msg:'💘 Amor Galáctico: compartí un Combo Planeta Doble con quien más querés',
+    fx:[{t:'rise', items:['💖','💜','💘','💗'], k:1}]},
+  navidad: {n:'Navidad en AREA 51', e:'🎄', hero:'🎄', tc:'#39FF88', msg:'🎄 Navidad en AREA 51: ¡marcianitos para la mesa dulce!',
+    fx:[{t:'fall', items:['❄️','⭐'], k:.7}, {t:'tw', items:['🎁','🎄'], k:.3}]},
+  anionuevo: {n:'Año Nuevo', e:'🎆', hero:'🎆', tc:'#FFD23F', msg:'🎆 ¡Feliz Año Nuevo, tripulantes! Brindemos con marcianitos',
+    fx:[{t:'tw', items:['🎆','🎇','✨'], k:1}]},
+  verano: {n:'Verano Marciano', e:'☀️', hero:'☀️', tc:'#FFD23F', msg:'☀️ Verano Marciano: el mejor momento para un marcianito bien frío',
+    fx:[{t:'rise', items:['🫧'], k:.6}, {t:'tw', items:['☀️','🏖️'], k:.4}]},
+  carnaval: {n:'Carnaval Espacial', e:'🎭', hero:'🎭', tc:'#FF4FD8', msg:'🎭 Carnaval Espacial: ¡a festejar con marcianitos!',
+    fx:[{t:'fall', items:['🎉','🎊','✨'], k:1}]},
+  otono: {n:'Otoño en la Comarca', e:'🍂', hero:'🍁', tc:'#FF9A3D', msg:'🍂 Otoño en la Comarca: ¡los marcianitos no se toman vacaciones!',
+    fx:[{t:'fall', items:['🍂','🍁'], k:1}]},
+  pascuas: {n:'Pascuas Galácticas', e:'🥚', hero:'🐰', tc:'#B48CFF', msg:'🐰 Pascuas Galácticas: ¡encontrá los huevos del espacio!',
+    fx:[{t:'tw', items:['🥚','🐣'], k:.6}, {t:'fly', items:['🐰'], k:.4}]},
+  padre: {n:'Día del Padre', e:'🧉', hero:'🧉', tc:'#22D3EE', msg:'🧉 Día del Padre: invitale un marcianito a papá',
+    fx:[{t:'rise', items:['⭐','🧉'], k:1}]},
+  invierno: {n:'Invierno Patagónico', e:'❄️', hero:'⛄', tc:'#A9F1FF', msg:'❄️ ¿Helado con frío? ¡En la Patagonia, siempre!',
+    fx:[{t:'fall', items:['❄️'], k:1}]},
+  amigo: {n:'Día del Amigo', e:'🤝', hero:'👽', tc:'#39FF88', msg:'🤝 Día del Amigo: compartí un Pack Galaxia con tu tripulación',
+    fx:[{t:'rise', items:['👽','🤝','💚'], k:1}]},
+  nino: {n:'Día del Niño', e:'🎈', hero:'🎈', tc:'#FF4FD8', msg:'🎈 Día del Niño: ¡sorpresas galácticas para los más chicos!',
+    fx:[{t:'rise', items:['🎈','🪁'], k:.7}, {t:'tw', items:['🎁'], k:.3}]},
+  madre: {n:'Día de la Madre', e:'💐', hero:'💐', tc:'#FF7FE3', msg:'💐 Feliz día a todas las mamás terrícolas',
+    fx:[{t:'fly', items:['🦋'], k:.4}, {t:'fall', items:['🌷','💐'], k:.6}]},
+  futbol: {n:'Hinchada Galáctica (fútbol)', e:'⚽', hero:'⚽', tc:'#74ACDF', msg:'⚽ ¡Vamos Argentina! La hinchada galáctica alienta con marcianitos',
+    fx:[{t:'fly', items:['⚽'], k:.4}, {t:'fall', items:['💙','🤍'], k:.6}]},
+  aniversario: {n:'Cumpleaños de AREA 51', e:'🎂', hero:'🎂', tc:'#FFD23F', msg:'🎂 ¡AREA 51 está de cumpleaños! Gracias, tripulantes',
+    fx:[{t:'fall', items:['🎉','🎊'], k:.6}, {t:'tw', items:['🎂','🎈'], k:.4}]},
+};
+// tercer domingo de un mes (Día del Padre: junio, del Niño: agosto, de la Madre: octubre)
+function thirdSunday(y, m){ const d = new Date(y, m, 1); const first = (7 - d.getDay()) % 7 + 1; return new Date(y, m, first + 14); }
+function themeCalendar(y){
+  const D = (m, d) => new Date(y, m, d), wk = dt => [new Date(dt.getFullYear(), dt.getMonth(), dt.getDate() - 7), dt];
+  return [
+    {k:'anionuevo', from:D(0, 1), to:D(0, 2)},
+    {k:'enamorados', from:D(1, 7), to:D(1, 14)},
+    {k:'verano', from:D(0, 3), to:D(1, 28)},
+    {k:'otono', from:D(2, 20), to:D(3, 5)},
+    {k:'padre', from:wk(thirdSunday(y, 5))[0], to:thirdSunday(y, 5)},
+    {k:'amigo', from:D(6, 17), to:D(6, 20)},
+    {k:'invierno', from:D(6, 7), to:D(6, 31)},
+    {k:'nino', from:wk(thirdSunday(y, 7))[0], to:thirdSunday(y, 7)},
+    {k:'primavera', from:D(8, 14), to:D(8, 27)},
+    {k:'madre', from:wk(thirdSunday(y, 9))[0], to:thirdSunday(y, 9)},
+    {k:'halloween', from:D(9, 22), to:D(10, 1)},
+    {k:'navidad', from:D(11, 8), to:D(11, 25)},
+    {k:'anionuevo', from:D(11, 26), to:D(11, 31)},
+  ];
+}
+function autoThemeKey(now = new Date()){
+  const t = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const hit = themeCalendar(now.getFullYear()).find(x => t >= x.from && t <= x.to);   // el primero de la lista tiene prioridad
+  return hit ? hit.k : null;
+}
+function activeThemeKey(){
+  const c = state.config.theme || 'auto';
+  if(c === 'none') return null;
+  if(c === 'auto') return autoThemeKey();
+  return THEMES[c] ? c : null;
+}
+function activeTheme(){ const k = activeThemeKey(); return k ? THEMES[k] : null; }
+let decoKey = null;
+function applyTheme(){
+  const th = activeTheme(), key = th ? activeThemeKey() + '|' + (state.config.themeAmount || 'normal') : null;
+  const banner = $('themeBanner'), layer = $('decoLayer');
+  banner.classList.toggle('hidden', !th);
+  if(th){ banner.textContent = (state.config.themeMsg || '').trim() || th.msg; banner.style.setProperty('--tc', th.tc); }
+  const inShop = !$('shop').classList.contains('hidden');
+  layer.classList.toggle('hidden', !th || !inShop);
+  if(key === decoKey) return;
+  decoKey = key; layer.innerHTML = '';
+  if(!th) return;
+  const total = {poca:6, normal:11, mucha:18}[state.config.themeAmount || 'normal'] || 11;
+  const still = reduceMotion();
+  const R = (a, b) => a + Math.random() * (b - a);
+  th.fx.forEach(fx => {
+    const n = Math.max(1, Math.round(total * fx.k));
+    for(let i = 0; i < n; i++){
+      const e = fx.items[i % fx.items.length], el = document.createElement('div');
+      el.className = 'dc';
+      const size = R(18, 32);
+      el.style.fontSize = size + 'px';
+      if(still){ el.textContent = e; el.style.left = R(2, 92) + 'vw'; el.style.top = R(4, 90) + 'vh'; el.style.opacity = '.5'; layer.appendChild(el); continue; }
+      if(fx.t === 'spider'){
+        el.className = 'dc dc-spider'; el.innerHTML = `<span>${e}</span>`;
+        el.style.left = (6 + (i * 88 / n) + R(-3, 3)) + 'vw'; el.style.setProperty('--len', R(12, 34) + 'vh');
+        el.style.animationDuration = R(4, 8) + 's'; el.style.animationDelay = -R(0, 8) + 's';
+      } else if(fx.t === 'fly'){
+        el.className = 'dc dc-fly'; el.innerHTML = `<span>${e}</span>`;
+        el.style.top = R(12, 80) + 'vh'; el.style.animationDuration = R(14, 24) + 's'; el.style.animationDelay = -R(0, 24) + 's';
+      } else if(fx.t === 'tw'){
+        el.className = 'dc dc-tw'; el.textContent = e;
+        el.style.left = R(3, 92) + 'vw'; el.style.top = R(8, 88) + 'vh'; el.style.animationDuration = R(2.5, 5) + 's'; el.style.animationDelay = -R(0, 5) + 's';
+      } else {
+        el.className = 'dc dc-' + (fx.t === 'rise' ? 'rise' : 'fall'); el.textContent = e;
+        el.style.left = R(2, 94) + 'vw'; el.style.animationDuration = R(10, 20) + 's'; el.style.animationDelay = -R(0, 20) + 's';
+      }
+      layer.appendChild(el);
+    }
+  });
+}
+function renderThemeInfo(){
+  const k = autoThemeKey(), sel = $('sTheme').value;
+  const cur = sel === 'auto' ? (k ? THEMES[k] : null) : sel === 'none' ? null : THEMES[sel];
+  $('themeNow').textContent = sel === 'auto' ? (cur ? `Hoy se muestra: ${cur.e} ${cur.n}` : 'Hoy no hay ninguna fecha especial: la tienda se ve normal.') : cur ? `Se muestra siempre: ${cur.e} ${cur.n}` : 'La tienda se ve normal.';
+  const y = new Date().getFullYear(), fmt = d => `${d.getDate()}/${d.getMonth() + 1}`;
+  const seen = new Set();
+  $('themeCal').innerHTML = themeCalendar(y).filter(x => { const id = x.k + x.from; if(seen.has(id)) return false; seen.add(id); return true; })
+    .sort((a, b) => a.from - b.from).map(x => `<li><span>${THEMES[x.k].e} ${esc(THEMES[x.k].n)}</span><span style="color:var(--muted)">${fmt(x.from)} al ${fmt(x.to)}</span></li>`).join('')
+    + '<li><span style="color:var(--muted)">Carnaval, Pascuas, fútbol y el cumpleaños del club se eligen a mano (cambian de fecha cada año).</span></li>';
+}
+$('sTheme').addEventListener('change', renderThemeInfo);
+
 /* =================== PORTADA Y REDES =================== */
 function brandName(){ return (state.config.storeName || 'AREA 51').trim(); }
 function brand(){ const p = (state.config.storePill || '').trim(); return brandName() + (p ? ' ' + p.charAt(0).toUpperCase() + p.slice(1).toLowerCase() : ''); }
@@ -3628,6 +4008,7 @@ function renderHero(){
   if(logo && img.getAttribute('src') !== logo) img.src = logo;
   img.alt = brand();
   $('heroUfo').classList.toggle('hidden', !!logo);
+  { const th = activeTheme(); $('heroUfo').textContent = th ? th.hero : '🛸'; }
   const hideName = !!(logo && c.logoOnly);
   $('heroName').textContent = brandName(); $('heroName').classList.toggle('hidden', hideName);
   $('heroPill').textContent = c.storePill || ''; $('heroPill').classList.toggle('hidden', hideName || !(c.storePill || '').trim());
@@ -3664,8 +4045,13 @@ function renderCartAvatar(){
   $('cartAvRow').classList.toggle('hidden', !sb);
   const note = $('stickerNote');
   note.classList.toggle('lock', false);
-  note.textContent = mem ? '⭐ Con esta compra sumás 1 sticker galáctico único. ¡Juntá 5 y canjeás un marcianito gratis!'
-    : (sb ? '⭐ Con esta compra sumás 1 sticker. ¡Juntá 5 y canjeás un marcianito gratis! 🔒 Los socios además corren la Carrera Galáctica.' : '⭐ ¡Gracias por tu compra!');
+  const c0 = state.config, minQ = Number(c0.stickerMinQty) || 1, lim = c0.stickerLimit || 'dia';
+  const rule = lim === 'libre' ? '' : ` (máximo 1 por ${lim === 'semana' ? 'semana' : 'día'}${minQ > 1 ? `, en pedidos de ${minQ} o más` : ''})`;
+  const cnt = cartSummary().count;
+  note.textContent = !sb ? '⭐ ¡Gracias por tu compra!'
+    : (minQ > 1 && cnt && cnt < minQ) ? `⭐ Sumá ${minQ - cnt} marcianito${minQ - cnt === 1 ? '' : 's'} más y este pedido te da 1 sticker galáctico.`
+    : mem ? `⭐ Con esta compra sumás 1 sticker galáctico${rule}. ¡Juntá 5 y canjeás un marcianito gratis!`
+    : `⭐ Con esta compra sumás 1 sticker${rule}. ¡Juntá 5 y canjeás un marcianito gratis! 🔒 Los socios además corren la Carrera Galáctica.`;
   const a = myAvatar();
   $('cartAv').innerHTML = avHTML(a, 'md') || '<span class="av md" aria-hidden="true">❔</span>';
   $('cartAvBtn').textContent = a === null ? 'Elegir' : 'Cambiar';
@@ -3733,15 +4119,18 @@ async function openJoin(code){
   $('joinFrom').innerHTML = data.from ? `<b>${esc(data.from)}</b> te invitó a ser socio de ${esc(brand())}. 👽` : `Santi te invitó a ser socio de ${esc(brand())}. 👽`;
 }
 /* --- Registro por QR (ferias) --- */
-let regAvatar = null;
+let regAvatar = null, regForce = false;
 function openReg(){
   if(!sb || state.config.qrRegister === false || hasCard()) return;
-  regAvatar = null; $('regErr').textContent = ''; $('regGo').disabled = false;
+  regAvatar = null; regForce = false; $('regErr').textContent = ''; $('regGo').disabled = false;
+  $('regDup').classList.add('hidden'); $('regGo').classList.remove('hidden');
   $('regHello').textContent = `Escribí tu nombre y recibí tu tarjeta de ${brand()} con un sticker de regalo 🎁`;
   $('t-reg').textContent = `¡Bienvenido/a a ${brandName()}! 👽`;
   $('regAvGrid').innerHTML = AVATARS.map((a, i) => `<button data-rav="${i}" aria-label="Avatar ${a.e}">${avHTML(i, 'md')}</button>`).join('');
   open('regOverlay'); setTimeout(() => $('regName').focus(), 300);
 }
+$('regDupOther').addEventListener('click', () => { regForce = true; $('regDup').classList.add('hidden'); $('regGo').classList.remove('hidden'); $('regGo').click(); });
+$('regName').addEventListener('input', () => { if(regForce) return; $('regDup').classList.add('hidden'); $('regGo').classList.remove('hidden'); });
 $('regAvGrid').addEventListener('click', e => {
   const b = e.target.closest('[data-rav]'); if(!b) return;
   regAvatar = Number(b.dataset.rav);
@@ -3751,7 +4140,15 @@ $('regGo').addEventListener('click', async () => {
   const name = $('regName').value.trim().replace(/\s+/g, ' ');
   if(name.length < 2){ $('regErr').textContent = 'Escribí tu nombre.'; return; }
   $('regGo').disabled = true; $('regErr').textContent = '';
-  const {data, error} = await sb.rpc('self_register', {p_name: name.slice(0, 60), p_avatar: regAvatar, p_code: ensureCardCode()});
+  const {data, error} = await sb.rpc('self_register', {p_name: name.slice(0, 60), p_avatar: regAvatar, p_code: ensureCardCode(), p_force: regForce});
+  if(error && /NOMBRE_EXISTE/.test(error.message || '')){
+    $('regGo').disabled = false;
+    $('regDupTxt').textContent = `Ya hay una tarjeta a nombre de ${name}. Si es tuya, abrí el link que te mandamos por WhatsApp, o pedíselo a Santi. Así no perdés tus stickers.`;
+    $('regDupWa').href = `https://wa.me/${(state.config.phone || '').replace(/\D/g, '')}?text=${encodeURIComponent(`¡Hola! Soy ${name}, ya tengo tarjeta en ${brand()}. ¿Me reenviás mi link? 🙏`)}`;
+    $('regDup').classList.remove('hidden'); $('regGo').classList.add('hidden');
+    setTimeout(() => $('regDup').scrollIntoView({behavior:'smooth', block:'center'}), 50);
+    return;
+  }
   if(error || !data){ $('regGo').disabled = false; $('regErr').textContent = (error && /minutos/.test(error.message || '')) ? 'Hay mucha gente registrándose. Probá en unos minutos.' : 'No se pudo crear la tarjeta. Probá de nuevo.'; return; }
   card = data; cardCode = data.code;
   try{ localStorage.setItem(TKEY, cardCode); if(regAvatar !== null) localStorage.setItem(AVKEY, String(regAvatar)); }catch(e){}
@@ -4024,12 +4421,11 @@ $('pinInput').addEventListener('keydown', e => { if(e.key === 'Enter') tryPin();
 $('loginPass').addEventListener('keydown', e => { if(e.key === 'Enter') tryPin(); });
 
 /* =================== INICIO =================== */
-function refreshShop(){ renderHero(); renderStatus(); renderCombos(); renderGrid(); renderCart(); }
+function refreshShop(){ applyTheme(); renderHero(); renderStatus(); renderCombos(); renderGrid(); renderCart(); }
 refreshShop();
 pullConfig();
 renderCardChip(); renderClubLock(); renderArcade(); renderLiveBanner(); fetchCard(); renderInstallBanner(); fetchRace(); fetchComp();
 setInterval(() => { renderStatus(); updateWaLink(); }, 60000);
 </script>
-<div id="printArea" aria-hidden="true"></div>
 </body>
 </html>
