@@ -95,6 +95,7 @@ section{margin-top:34px}
 .combo .ce{font-size:34px}
 .combo h3{font-size:18px;margin:6px 0 2px}
 .combo .cp{font-weight:800;color:var(--text)}
+.combo .cd{font-size:14px;color:var(--muted);margin-top:2px;line-height:1.25}
 .combo .cs{display:inline-block;margin-top:8px;font-size:13px;font-weight:800;color:var(--bg);background:var(--pink);padding:3px 10px;border-radius:999px}
 
 /* ---------- Sabores ---------- */
@@ -1074,7 +1075,7 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
     </div>
     <div class="panel">
       <div class="ohead"><h2>Combos</h2><button class="mini" id="comboNew">＋ Nuevo combo</button></div>
-      <p class="sub">Tocá un combo para editarlo. El interruptor lo muestra u oculta. En el carrito se aplica solo el combo más conveniente.</p>
+      <p class="sub">Cada combo tiene un <b>% de descuento</b> y su precio se calcula solo con el precio del marcianito. Si cambiás el precio, los combos se actualizan solos. En el carrito se aplica el combo más conveniente.</p>
       <ul class="flist" id="sCombos"></ul>
       <label>💡 Ideas para agregar con un toque</label>
       <div class="chips" id="comboIdeas"></div>
@@ -1316,7 +1317,7 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
     <div class="chips emojis" id="cbEmojis"></div>
     <div class="two">
       <div><label for="cbQty">Cantidad de marcianitos</label><input id="cbQty" type="number" inputmode="numeric" min="2" max="200"></div>
-      <div><label for="cbPrice">Precio del combo ($)</label><input id="cbPrice" type="number" inputmode="numeric" min="1"></div>
+      <div><label for="cbDisc">Descuento (%)</label><input id="cbDisc" type="number" inputmode="numeric" min="0" max="80"></div>
     </div>
     <p class="note" id="cbHint"></p>
     <label for="cbDesc">Descripción corta (opcional)</label>
@@ -1692,20 +1693,37 @@ function renderStatus(){
     : w === 'before' ? `Nave en el hangar. Despega hoy a las ${c.start} hs`
     : `Nave en el hangar. Vuelve mañana a las ${c.start} hs`;
 }
+// Precio del combo = cantidad × precio del marcianito − descuento, redondeado ($100 si el marcianito sale $1.000 o más; si no, $50)
+function comboPrice(cb){
+  const unit = Number(state.config.price) || 0, step = unit >= 1000 ? 100 : 50;
+  const d = Math.max(0, Math.min(80, Number(cb.d) || 0));
+  return Math.max(step, Math.round(cb.k * unit * (1 - d / 100) / step) * step);
+}
 function syncCombos(){
   const c = state.config;
+  if(Array.isArray(c.combos)){
+    // combos viejos con precio fijo: se convierten a descuento (%) para que se actualicen solos
+    c.combos.forEach(cb => {
+      if(cb.d === undefined || cb.d === null){
+        const normal = cb.k * (Number(c.price) || 0);
+        cb.d = normal > 0 && cb.p > 0 ? Math.max(0, Math.min(80, Math.round((1 - cb.p / normal) * 100))) : 10;
+      }
+      cb.p = comboPrice(cb);
+    });
+  }
   if(!Array.isArray(c.combos)){
     c.combos = [
       {id:'apolo',   n:'Pack Cohete Apolo',         e:'🚀', k:3,  p:c.apolo || 1300,    t:'3 marcianitos',   packs:0, on:true},
       {id:'galaxia', n:'Pack Galaxia',              e:'🌌', k:6,  p:c.galaxia || 2500,  t:'5 + 1 de regalo', packs:0, on:true},
       {id:'familiar',n:'Pack Tripulación Familiar', e:'👨‍👩‍👧', k:10, p:c.familiar || 4500, t:'10 marcianitos',  packs:c.familiarPack === false ? 0 : 1, on:true},
     ];
+    syncCombos();
   }
 }
 function comboDefs(){
   syncCombos();
-  return state.config.combos.filter(c => c.on !== false && c.k >= 2 && c.p > 0)
-    .map(c => ({k:c.k, p:c.p, e:c.e || '🍦', n:c.n, t:(c.t || '').trim() || `${c.k} marcianitos`, packs:c.packs || 0}))
+  return state.config.combos.filter(c => c.on !== false && c.k >= 2)
+    .map(c => ({k:c.k, p:comboPrice(c), e:c.e || '🍦', n:c.n, t:(c.t || '').trim() || `${c.k} marcianitos`, packs:c.packs || 0}))
     .sort((a, b) => a.k - b.k);
 }
 function renderCombos(){
@@ -1713,7 +1731,8 @@ function renderCombos(){
   $('combos').innerHTML = comboDefs().map(cb => {
     const save = cb.k*unit - cb.p;
     return `<div class="combo"><div class="ce">${cb.e}</div><h3>${esc(cb.n)}</h3>
-      <div class="cp">${esc(cb.t)} por ${money(cb.p)}</div>
+      <div class="cp">${cb.k} marcianitos por ${money(cb.p)}</div>
+      ${cb.t && cb.t !== `${cb.k} marcianitos` ? `<div class="cd">${esc(cb.t)}</div>` : ''}
       ${save>0?`<span class="cs">Ahorrás ${money(save)}</span>`:''}
       ${cb.packs > 0 && sb && state.config.albumOn !== false ? `<span class="cs" style="background:var(--cyan);margin-left:4px">+ 🎁 ${cb.packs} sobre${cb.packs > 1 ? 's' : ''} de figuritas</span>` : ''}</div>`;
   }).join('');
@@ -2319,6 +2338,7 @@ $('setSave').addEventListener('click', () => {
     social:{ig:$('sIg').value.trim().slice(0,100), fb:$('sFb').value.trim().slice(0,100), tt:$('sTt').value.trim().slice(0,100), web:$('sWeb').value.trim().slice(0,200)},
     raceOn:$('sRaceOn').checked, raceGoal:rg, racePrize:$('sRacePrize').value.trim().slice(0,80)
   });
+  syncCombos(); renderComboList();
   save(); pushConfig(); refreshShop(); renderRace(); renderAlbum(); renderArcade(); setTimeout(fetchComp, 800); toast(sb ? '✅ Guardado y publicado para los clientes' : '✅ Cambios guardados');
 });
 $('newGoal').addEventListener('click', () => {
@@ -2611,8 +2631,8 @@ $('ccSave').addEventListener('click', () => { readCosts(); save(); toast('💾 C
 $('ccRes').addEventListener('click', e => {
   if(!e.target.closest('#ccApply')) return;
   const sugg = Number(($('ccApply').textContent.match(/\$([\d.]+)/) || [])[1]?.replace(/\./g, '')) || 0;
-  if(!sugg || !confirm(`¿Cambiar el precio de venta a ${money(sugg)}? Revisá también los precios de los combos.`)) return;
-  state.config.price = sugg; $('sPrice').value = sugg; readCosts();
+  if(!sugg || !confirm(`¿Cambiar el precio de venta a ${money(sugg)}? Los combos se recalculan solos con su descuento.`)) return;
+  state.config.price = sugg; $('sPrice').value = sugg; readCosts(); syncCombos();
   save(); pushConfig(); refreshShop(); renderComboList(); calcCosts();
   toast(`💰 Precio actualizado a ${money(sugg)}`);
 });
@@ -2737,7 +2757,8 @@ const COMBO_IDEAS = [   // cada combo más grande sale más barato por unidad, a
   {e:'🌕', n:'Misión Luna Llena',         k:40, f:.7,  t:'Para eventos grandes', packs:3},
 ];
 let cbEdit = null, cbDraft = null;
-const ideaPrice = i => Math.max(50, Math.round(i.k * (state.config.price || 500) * i.f / 50) * 50);
+const ideaDisc = i => Math.round((1 - i.f) * 100);
+const ideaPrice = i => comboPrice({k:i.k, d:ideaDisc(i)});
 function renderComboList(){
   syncCombos();
   const list = [...state.config.combos].sort((a, b) => a.k - b.k);
@@ -2745,7 +2766,7 @@ function renderComboList(){
     const on = c.on !== false;
     return `<li class="frow">
       <button class="fedit" data-cedit="${esc(c.id)}"><span class="fdot" style="--c1:#B48CFF;--c2:#3B1E8F">${esc(c.e || '🍦')}</span>
-        <span class="fname">${esc(c.n)}<br><span style="font-weight:600;color:var(--muted);font-size:13px">${c.k} por ${money(c.p)}${c.packs ? ` · 🎁 ${c.packs}` : ''}</span>${on && costWithout(c.k, c.id) <= c.p ? '<br><span style="color:var(--yellow);font-size:12px;font-weight:800">⚠️ No se aplica: otros combos salen más baratos</span>' : ''}</span><span class="fpen" aria-hidden="true">✏️</span></button>
+        <span class="fname">${esc(c.n)}<br><span style="font-weight:600;color:var(--muted);font-size:13px">${c.k} por ${money(comboPrice(c))} · ${c.d || 0}% off${c.packs ? ` · 🎁 ${c.packs}` : ''}</span>${on && costWithout(c.k, c.id) <= comboPrice(c) ? '<br><span style="color:var(--yellow);font-size:12px;font-weight:800">⚠️ No se aplica: otros combos salen más baratos</span>' : ''}</span><span class="fpen" aria-hidden="true">✏️</span></button>
       <button class="switch ${on ? 'on' : ''}" data-ctoggle="${esc(c.id)}" role="switch" aria-checked="${on}" aria-label="Mostrar ${esc(c.n)} en la tienda"><i></i></button>
     </li>`;
   }).join('') || '<li class="empty">No hay combos. Creá uno o agregá una idea.</li>';
@@ -2763,16 +2784,16 @@ $('sCombos').addEventListener('click', e => {
 $('comboIdeas').addEventListener('click', e => {
   const b = e.target.closest('[data-idea]'); if(!b) return;
   const i = COMBO_IDEAS[Number(b.dataset.idea)];
-  openComboEditor(null, {n:i.n, e:i.e, k:i.k, p:ideaPrice(i), t:i.t || '', packs:i.packs || 0, on:true});
+  openComboEditor(null, {n:i.n, e:i.e, k:i.k, d:ideaDisc(i), t:i.t || '', packs:i.packs || 0, on:true});
 });
 $('comboNew').addEventListener('click', () => openComboEditor(null));
 function openComboEditor(id, preset){
   syncCombos();
   const c = id ? state.config.combos.find(x => x.id === id) : null;
   cbEdit = c ? c.id : null;
-  cbDraft = c ? {...c} : (preset || {n:'', e:'🛸', k:12, p:Math.round(12 * (state.config.price || 500) * .85 / 50) * 50, t:'', packs:0, on:true});
+  cbDraft = c ? {...c} : (preset || {n:'', e:'🛸', k:12, d:15, t:'', packs:0, on:true});
   $('t-combo').textContent = c ? 'Editar combo' : 'Nuevo combo';
-  $('cbName').value = cbDraft.n; $('cbQty').value = cbDraft.k; $('cbPrice').value = cbDraft.p; $('cbDesc').value = cbDraft.t || '';
+  $('cbName').value = cbDraft.n; $('cbQty').value = cbDraft.k; $('cbDisc').value = cbDraft.d ?? 10; $('cbDesc').value = cbDraft.t || '';
   $('cbPacks').value = String(cbDraft.packs || 0); $('cbOn').checked = cbDraft.on !== false; $('cbErr').textContent = '';
   $('cbDelete').classList.toggle('hidden', !c);
   drawComboEmojis(); comboHint(); open('comboOverlay');
@@ -2781,28 +2802,28 @@ function drawComboEmojis(){ $('cbEmojis').innerHTML = COMBO_EMOJIS.map(e => `<bu
 // ¿Cuánto salen k marcianitos usando los OTROS combos? (si es más barato, este combo nunca se aplica)
 function costWithout(k, excludeId){
   const unit = state.config.price || 0;
-  const opts = [{k:1, p:unit}, ...(state.config.combos || []).filter(c => c.id !== excludeId && c.on !== false && c.k >= 2 && c.p > 0).map(c => ({k:c.k, p:c.p}))];
+  const opts = [{k:1, p:unit}, ...(state.config.combos || []).filter(c => c.id !== excludeId && c.on !== false && c.k >= 2).map(c => ({k:c.k, p:comboPrice(c)}))];
   const best = [0];
   for(let i = 1; i <= k; i++){ let b = Infinity; for(const o of opts) if(i >= o.k) b = Math.min(b, best[i - o.k] + o.p); best[i] = b; }
   return best[k];
 }
 function comboHint(){
-  const k = Number($('cbQty').value), pr = Number($('cbPrice').value), normal = k * (state.config.price || 0);
+  const k = Number($('cbQty').value), d = Number($('cbDisc').value) || 0, pr = comboPrice({k, d}), normal = k * (state.config.price || 0);
   if(!(k >= 2 && pr > 0 && normal)){ $('cbHint').textContent = ''; return; }
   const other = costWithout(k, cbEdit);
-  let h = pr < normal ? `Precio normal ${money(normal)} → ahorran ${money(normal - pr)} (${Math.round((1 - pr / normal) * 100)}% de descuento). Sale ${money(Math.round(pr / k))} c/u.` : `⚠️ Sale igual o más caro que comprar ${k} sueltos (${money(normal)}).`;
+  let h = `💰 Precio del combo: ${money(pr)} (${money(Math.round(pr / k))} c/u). ` + (pr < normal ? `Ahorran ${money(normal - pr)} frente a ${money(normal)}. Se actualiza solo si cambia el precio del marcianito.` : `⚠️ Con ${d}% de descuento sale igual que comprar ${k} sueltos.`);
   if(other <= pr) h += ` ⚠️ Ojo: con los otros combos, ${k} marcianitos ya salen ${money(other)}, así que el carrito no va a usar este combo. Bajalo a menos de ${money(other)}.`;
   $('cbHint').textContent = h;
 }
 $('cbEmojis').addEventListener('click', e => { const b = e.target.closest('[data-cbe]'); if(b){ cbDraft.e = b.dataset.cbe; drawComboEmojis(); } });
-['cbQty','cbPrice'].forEach(id => $(id).addEventListener('input', comboHint));
+['cbQty','cbDisc'].forEach(id => $(id).addEventListener('input', comboHint));
 $('cbSave').addEventListener('click', () => {
-  const n = $('cbName').value.replace(/\+/g, ' ').trim().replace(/\s+/g, ' '), k = Math.round(Number($('cbQty').value)), pr = Math.round(Number($('cbPrice').value));
+  const n = $('cbName').value.replace(/\+/g, ' ').trim().replace(/\s+/g, ' '), k = Math.round(Number($('cbQty').value)), d = Math.round(Number($('cbDisc').value));
   if(n.length < 3){ $('cbErr').textContent = 'Ponele un nombre.'; return; }
   if(!(k >= 2 && k <= 200)){ $('cbErr').textContent = 'La cantidad tiene que ser entre 2 y 200.'; return; }
-  if(!(pr > 0)){ $('cbErr').textContent = 'Poné el precio del combo.'; return; }
+  if(!(d >= 0 && d <= 80)){ $('cbErr').textContent = 'El descuento tiene que ser entre 0 y 80%.'; return; }
   if(state.config.combos.some(x => x.id !== cbEdit && x.n.toLowerCase() === n.toLowerCase())){ $('cbErr').textContent = 'Ya hay un combo con ese nombre.'; return; }
-  const data = {n, e:cbDraft.e || '🍦', k, p:pr, t:$('cbDesc').value.trim().slice(0, 40), packs:Number($('cbPacks').value) || 0, on:$('cbOn').checked};
+  const data = {n, e:cbDraft.e || '🍦', k, d, p:comboPrice({k, d}), t:$('cbDesc').value.trim().slice(0, 40), packs:Number($('cbPacks').value) || 0, on:$('cbOn').checked};
   if(cbEdit) Object.assign(state.config.combos.find(x => x.id === cbEdit), data);
   else state.config.combos.push({id:'c' + Date.now().toString(36), ...data});
   close('comboOverlay');
