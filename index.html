@@ -714,6 +714,26 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
 @keyframes dcthread{from{height:2vh}to{height:var(--len)}}
 .theme-banner{margin:14px auto 0;max-width:460px;padding:10px 16px;border-radius:16px;font-family:var(--display);font-weight:600;font-size:16px;line-height:1.25;
   color:#fff;border:2px solid var(--tc,#FF4FD8);background:linear-gradient(135deg,color-mix(in srgb,var(--tc,#FF4FD8) 28%,transparent),rgba(11,8,32,.7));box-shadow:0 0 18px color-mix(in srgb,var(--tc,#FF4FD8) 45%,transparent)}
+/* ---------- Calculadora de costos ---------- */
+.cost-row{display:grid;grid-template-columns:1fr 34px;gap:6px;padding:10px;margin-bottom:8px;border-radius:14px;background:var(--deep);border:1px solid var(--line)}
+.cost-row .cr-top{grid-column:1/-1;display:flex;gap:6px}
+.cost-row .cr-top input{flex:1}
+.cost-row .cr-grid{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.cost-row label{margin:0 0 3px;font-size:12px}
+.cost-row input,.cost-row select{padding:9px;font-size:15px;border-radius:10px}
+.cost-row .pair{display:flex;gap:4px}
+.cost-row .pair input{flex:1;min-width:0}
+.cost-row .pair select{flex:0 0 62px;padding:9px 4px;border-radius:10px;border:1.5px solid var(--line);background:var(--deep);color:var(--text)}
+.cost-row .cr-sub{grid-column:1/-1;font-size:13px;color:var(--muted);text-align:right}
+.cost-row .cr-sub b{color:var(--text)}
+.cost-res{margin-top:14px;padding:14px;border-radius:18px;background:linear-gradient(160deg,rgba(57,255,136,.12),var(--deep));border:1.5px solid rgba(57,255,136,.45)}
+.cost-res .lr{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px dashed var(--line);font-size:15px}
+.cost-res .lr b{font-family:var(--display)}
+.cost-res .big{display:flex;justify-content:space-between;align-items:baseline;margin:10px 0 4px;font-family:var(--display);font-size:20px}
+.cost-res .big b{font-size:32px;color:var(--green)}
+.cost-warn{margin-top:8px;padding:10px 12px;border-radius:12px;font-size:14px;font-weight:700}
+.cost-warn.bad{background:rgba(255,59,92,.12);color:#FF8FA0;border:1px solid rgba(255,59,92,.5)}
+.cost-warn.ok{background:rgba(57,255,136,.1);color:var(--green);border:1px solid rgba(57,255,136,.4)}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 @media (max-width:360px){.grid{gap:10px}.planet{width:72px;height:72px;font-size:34px}.mission{grid-template-columns:80px 1fr}.pct{font-size:52px}}
 </style>
@@ -1027,6 +1047,30 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
       <h2>Precios</h2>
       <label for="sPrice">Precio de 1 marcianito</label>
       <input id="sPrice" type="number" inputmode="numeric" min="0">
+    </div>
+    <div class="panel">
+      <h2>🧮 Costos y precio sugerido</h2>
+      <p class="sub">Cargá lo que gastás por tanda y la app calcula cuánto te cuesta cada marcianito y a cuánto conviene venderlo. Solo lo ve Santi.</p>
+      <div class="two">
+        <div><label for="ccUnits">Marcianitos por tanda</label><input id="ccUnits" type="number" inputmode="numeric" min="1"></div>
+        <div><label for="ccEnergy">Gas o luz por tanda ($)</label><input id="ccEnergy" type="number" inputmode="numeric" min="0"></div>
+      </div>
+      <label style="margin-top:14px">Ingredientes de una tanda</label>
+      <div id="ccIngr"></div>
+      <button class="mini" id="ccAdd" style="width:100%">＋ Agregar ingrediente</button>
+      <p class="note">Ayuda: 1 cucharada de maizena ≈ 10 g · 1 taza de azúcar ≈ 200 g · 1 taza de agua ≈ 250 ml.</p>
+      <div class="two">
+        <div><label for="ccBagPrice">Paquete de bolsitas ($)</label><input id="ccBagPrice" type="number" inputmode="numeric" min="0"></div>
+        <div><label for="ccBagQty">Bolsitas que trae</label><input id="ccBagQty" type="number" inputmode="numeric" min="1"></div>
+        <div><label for="ccStkCost">Costo de cada sticker ($)</label><input id="ccStkCost" type="number" inputmode="numeric" min="0"></div>
+        <div><label for="ccStkPct">% de helados con sticker</label><input id="ccStkPct" type="number" inputmode="numeric" min="0" max="100"></div>
+        <div><label for="ccLoss">% que se pierde</label><input id="ccLoss" type="number" inputmode="numeric" min="0" max="50"></div>
+        <div><label for="ccMargin">% de ganancia que querés</label><input id="ccMargin" type="number" inputmode="numeric" min="0" max="90"></div>
+        <div><label for="ccLabMin">Tu tiempo por tanda (min, opcional)</label><input id="ccLabMin" type="number" inputmode="numeric" min="0"></div>
+        <div><label for="ccLabHour">Valor de tu hora ($, opcional)</label><input id="ccLabHour" type="number" inputmode="numeric" min="0"></div>
+      </div>
+      <div class="cost-res" id="ccRes"></div>
+      <button class="btn ghost" id="ccSave" style="margin-top:10px">💾 Guardar costos</button>
     </div>
     <div class="panel">
       <div class="ohead"><h2>Combos</h2><button class="mini" id="comboNew">＋ Nuevo combo</button></div>
@@ -1526,7 +1570,17 @@ const DEFAULT = {
     flavors: DEFAULT_FLAVORS,
     available:{limon:true,frutilla:true,naranja:true,uva:true,choco:true,ddl:true,anana:false,durazno:false,coco:false,sandia:false,banana:false,menta:false}
   },
-  log:[], crew:[], medals:{}, goalOffset:0, goalsDone:[]
+  log:[], crew:[], medals:{}, goalOffset:0, goalsDone:[],
+  costs:{
+    units:7, margin:70, loss:10,
+    ingredients:[
+      {id:'i1', n:'Jugo en sobre (15 g)', price:500,  buy:1, bu:'u',  use:1,   uu:'u'},
+      {id:'i2', n:'Maizena',              price:3000, buy:1, bu:'kg', use:30,  uu:'g'},
+      {id:'i3', n:'Azúcar',               price:1500, buy:1, bu:'kg', use:100, uu:'g'},
+      {id:'i4', n:'Agua',                 price:0,    buy:1, bu:'l',  use:1,   uu:'l'},
+    ],
+    bagPrice:3000, bagQty:200, energy:50, stickerCost:800, stickerPct:30, laborMin:0, laborHour:0
+  }
 };
 
 /* =================== ESTADO =================== */
@@ -1554,7 +1608,7 @@ function saveLocal(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }ca
 function save(){ saveLocal(); clearTimeout(save.t); save.t = setTimeout(pushPrivate, 600); }
 
 /* =================== NUBE (SUPABASE) =================== */
-const PRIVATE_KEYS = ['log','crew','medals','goalOffset','goalsDone'];
+const PRIVATE_KEYS = ['log','crew','medals','goalOffset','goalsDone','costs'];
 function publicConfig(){ const {pin, ...rest} = state.config; return rest; }
 async function pullConfig(){
   if(!sb) return;
@@ -2202,7 +2256,7 @@ let pickEmoji = null;
 function renderSettings(){
   const c = state.config;
   $('sStart').value = c.start; $('sEnd').value = c.end;
-  $('sPrice').value = c.price; renderComboList(); renderLineList();
+  $('sPrice').value = c.price; renderComboList(); renderLineList(); renderCosts();
   $('sGoalName').value = c.goalName; $('sGoalAmount').value = c.goalAmount;
   $('sPhone').value = c.phone; $('sPin').value = c.pin;
   $('sInvites').value = Number.isInteger(c.invitesPerMember) ? c.invitesPerMember : 2;
@@ -2469,6 +2523,99 @@ $('sFlavors').addEventListener('click', e => {
   else if(ed) openFlavorEditor(ed.dataset.fedit);
 });
 $('flavorNew').addEventListener('click', () => openFlavorEditor(null));
+
+/* =================== CALCULADORA DE COSTOS =================== */
+const UNIT_BASE = {kg:['g', 1000], g:['g', 1], l:['ml', 1000], ml:['ml', 1], u:['u', 1]};
+function ccData(){
+  if(!state.costs) state.costs = clone(DEFAULT.costs);
+  if(!Array.isArray(state.costs.ingredients)) state.costs.ingredients = [];
+  return state.costs;
+}
+function ingCost(i){
+  const b = UNIT_BASE[i.bu] || UNIT_BASE.u, u = UNIT_BASE[i.uu] || UNIT_BASE.u;
+  if(b[0] !== u[0]) return null;                         // unidades que no se pueden comparar (ej. kg con litros)
+  const bought = (Number(i.buy) || 0) * b[1], used = (Number(i.use) || 0) * u[1];
+  return bought > 0 ? (Number(i.price) || 0) * used / bought : 0;
+}
+const unitOpts = sel => ['kg','g','l','ml','u'].map(x => `<option value="${x}" ${x === sel ? 'selected' : ''}>${x === 'u' ? 'unid.' : x}</option>`).join('');
+function renderCosts(){
+  const c = ccData();
+  $('ccUnits').value = c.units; $('ccEnergy').value = c.energy; $('ccBagPrice').value = c.bagPrice; $('ccBagQty').value = c.bagQty;
+  $('ccStkCost').value = c.stickerCost; $('ccStkPct').value = c.stickerPct; $('ccLoss').value = c.loss; $('ccMargin').value = c.margin;
+  $('ccLabMin').value = c.laborMin || 0; $('ccLabHour').value = c.laborHour || 0;
+  $('ccIngr').innerHTML = c.ingredients.map(i => `<div class="cost-row" data-ing="${esc(i.id)}">
+      <div class="cr-top"><input data-k="n" type="text" maxlength="40" value="${esc(i.n)}" aria-label="Ingrediente"><button class="x" data-ccdel="${esc(i.id)}" aria-label="Quitar ${esc(i.n)}" style="width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:none;color:var(--muted)">✕</button></div>
+      <div class="cr-grid">
+        <div><label>Precio de compra ($)</label><input data-k="price" type="number" inputmode="decimal" min="0" value="${i.price}"></div>
+        <div><label>Por (cantidad comprada)</label><div class="pair"><input data-k="buy" type="number" inputmode="decimal" min="0" value="${i.buy}"><select data-k="bu">${unitOpts(i.bu)}</select></div></div>
+        <div><label>Uso por tanda</label><div class="pair"><input data-k="use" type="number" inputmode="decimal" min="0" value="${i.use}"><select data-k="uu">${unitOpts(i.uu)}</select></div></div>
+        <div class="cr-sub" style="align-self:end">Cuesta <b data-out="${esc(i.id)}"></b> por tanda</div>
+      </div></div>`).join('') || '<p class="empty">Sin ingredientes. Agregá el primero.</p>';
+  calcCosts();
+}
+function readCosts(){
+  const c = ccData(), num = id => Number($(id).value) || 0;
+  Object.assign(c, {units:Math.max(1, num('ccUnits')), energy:num('ccEnergy'), bagPrice:num('ccBagPrice'), bagQty:Math.max(1, num('ccBagQty')),
+    stickerCost:num('ccStkCost'), stickerPct:Math.min(100, num('ccStkPct')), loss:Math.min(50, num('ccLoss')), margin:Math.min(90, num('ccMargin')),
+    laborMin:num('ccLabMin'), laborHour:num('ccLabHour')});
+  document.querySelectorAll('#ccIngr [data-ing]').forEach(row => {
+    const i = c.ingredients.find(x => x.id === row.dataset.ing); if(!i) return;
+    row.querySelectorAll('[data-k]').forEach(el => { const k = el.dataset.k; i[k] = (k === 'n' || k === 'bu' || k === 'uu') ? el.value : (Number(el.value) || 0); });
+  });
+  return c;
+}
+function calcCosts(){
+  const c = readCosts();
+  let ingTotal = 0, bad = [];
+  c.ingredients.forEach(i => {
+    const v = ingCost(i), out = document.querySelector(`[data-out="${CSS.escape(i.id)}"]`);
+    if(v === null){ bad.push(i.n); if(out) out.textContent = '⚠️ unidades'; return; }
+    ingTotal += v; if(out) out.textContent = money(v);
+  });
+  const bags = c.bagPrice / c.bagQty * c.units;
+  const labor = c.laborHour * c.laborMin / 60;
+  const batch = ingTotal + bags + c.energy + labor;
+  const good = c.units * (1 - c.loss / 100);
+  const perUnit = good > 0 ? batch / good : 0;
+  const stk = c.stickerCost * c.stickerPct / 100;
+  const cost = perUnit + stk;
+  const sugg = Math.ceil(cost / Math.max(.05, 1 - c.margin / 100) / 50) * 50;
+  const price = state.config.price || 0, gain = price - cost, gp = price ? Math.round(gain / price * 100) : 0;
+  const combos = comboDefs();
+  $('ccRes').innerHTML = `
+    <div class="lr"><span>Ingredientes por tanda</span><b>${money(ingTotal)}</b></div>
+    <div class="lr"><span>Bolsitas (${c.units} × ${money(c.bagPrice / c.bagQty)})</span><b>${money(bags)}</b></div>
+    <div class="lr"><span>Gas o luz</span><b>${money(c.energy)}</b></div>
+    ${labor ? `<div class="lr"><span>Tu tiempo (${c.laborMin} min)</span><b>${money(labor)}</b></div>` : ''}
+    <div class="lr"><span>Costo de la tanda (${c.units} marcianitos)</span><b>${money(batch)}</b></div>
+    <div class="lr"><span>Costo por marcianito ${c.loss ? `(con ${c.loss}% de pérdida)` : ''}</span><b>${money(perUnit)}</b></div>
+    <div class="lr"><span>Sticker promedio (${c.stickerPct}% × ${money(c.stickerCost)})</span><b>${money(stk)}</b></div>
+    <div class="big"><span>Te cuesta cada uno</span><b style="color:var(--yellow)">${money(cost)}</b></div>
+    <div class="big"><span>Precio sugerido (${c.margin}% de ganancia)</span><b>${money(sugg)}</b></div>
+    <div class="cost-warn ${gain > 0 ? 'ok' : 'bad'}">${price ? (gain > 0 ? `Con tu precio actual (${money(price)}) ganás ${money(gain)} por marcianito (${gp}%).` : `⚠️ Con tu precio actual (${money(price)}) perdés ${money(-gain)} por marcianito.`) : 'Todavía no cargaste un precio de venta.'}</div>
+    ${combos.length ? `<div style="margin-top:10px;font-weight:800;font-size:14px">Combos</div>` + combos.map(cb => { const pu = cb.p / cb.k, g = pu - cost;
+      return `<div class="lr"><span>${esc(cb.e)} ${esc(cb.n)} (${money(pu)} c/u)</span><b style="color:${g > 0 ? 'var(--green)' : '#FF8FA0'}">${g > 0 ? '+' : ''}${money(g)} c/u</b></div>`; }).join('') : ''}
+    ${bad.length ? `<div class="cost-warn bad">⚠️ Revisá las unidades de: ${esc(bad.join(', '))} (no se puede comparar kilos con litros o unidades).</div>` : ''}
+    ${c.stickerPct >= 50 && c.stickerCost > perUnit * 2 ? `<div class="cost-warn bad">💡 El sticker cuesta más que el helado: ponelo solo en una parte (ferias, clientes nuevos, uno por bolsa).</div>` : ''}
+    <button class="btn primary" id="ccApply" style="margin-top:12px" ${sugg === price ? 'disabled' : ''}>${sugg === price ? '✅ Ya estás usando el precio sugerido' : `Usar ${money(sugg)} como precio de venta`}</button>`;
+}
+$('ccIngr').addEventListener('input', calcCosts);
+$('ccIngr').addEventListener('change', calcCosts);
+['ccUnits','ccEnergy','ccBagPrice','ccBagQty','ccStkCost','ccStkPct','ccLoss','ccMargin','ccLabMin','ccLabHour'].forEach(id => $(id).addEventListener('input', calcCosts));
+$('ccIngr').addEventListener('click', e => {
+  const b = e.target.closest('[data-ccdel]'); if(!b) return;
+  const c = readCosts(); c.ingredients = c.ingredients.filter(x => x.id !== b.dataset.ccdel); renderCosts();
+});
+$('ccAdd').addEventListener('click', () => { const c = readCosts(); c.ingredients.push({id:'i' + Date.now().toString(36), n:'Ingrediente nuevo', price:0, buy:1, bu:'kg', use:0, uu:'g'}); renderCosts(); });
+$('ccSave').addEventListener('click', () => { readCosts(); save(); toast('💾 Costos guardados'); });
+$('ccRes').addEventListener('click', e => {
+  if(!e.target.closest('#ccApply')) return;
+  const sugg = Number(($('ccApply').textContent.match(/\$([\d.]+)/) || [])[1]?.replace(/\./g, '')) || 0;
+  if(!sugg || !confirm(`¿Cambiar el precio de venta a ${money(sugg)}? Revisá también los precios de los combos.`)) return;
+  state.config.price = sugg; $('sPrice').value = sugg; readCosts();
+  save(); pushConfig(); refreshShop(); renderComboList(); calcCosts();
+  toast(`💰 Precio actualizado a ${money(sugg)}`);
+});
 
 /* =================== OTRAS LÍNEAS DE HELADOS =================== */
 const LINE_SEP = '~';
