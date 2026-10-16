@@ -765,6 +765,11 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
 .pv-rw div{flex:1;min-width:0;font-weight:700}
 .pv-rw span{color:var(--yellow);font-weight:800;font-size:14px;white-space:nowrap}
 .badge-soc.pv{background:rgba(255,154,61,.2);color:#FF9A3D}
+.crew-tabs{display:flex;gap:6px;margin:16px 0 4px;padding:4px;border-radius:16px;background:var(--deep);border:1px solid var(--line)}
+.crew-tabs button{flex:1;position:relative;padding:10px 6px;border:none;border-radius:12px;background:none;color:var(--muted);font-family:var(--display);font-weight:700;font-size:15px}
+.crew-tabs button.on{background:var(--violet);color:#fff}
+.crew-tabs .nbadge{position:static;display:inline-block;margin-left:6px;vertical-align:middle}
+.crew-tabs .nbadge.hidden{display:none}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 @media (max-width:360px){.grid{gap:10px}.planet{width:72px;height:72px;font-size:34px}.mission{grid-template-columns:80px 1fr}.pct{font-size:52px}}
 </style>
@@ -979,6 +984,7 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
       </div>
     </div>
     <button class="alert-orders hidden" id="ordersAlert" data-go="orders"></button>
+    <button class="alert-orders hidden" id="pvAlert" data-go="crew" style="border-color:#FF9A3D;color:#FF9A3D"></button>
     <button class="btn ghost" id="liveHostBtn" style="margin-top:14px;border-color:var(--pink);color:var(--pink)">🔴 Abrir Gran Premio en Vivo</button>
     <div class="stats" id="stats"></div>
     <button class="btn primary" style="margin-top:18px" data-go="log">📝 Registrar una venta en persona</button>
@@ -1015,7 +1021,23 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
 
   <!-- Tripulantes -->
   <div data-view="crew" class="hidden">
-    <div class="panel">
+    <div class="crew-tabs" role="tablist">
+      <button class="on" data-crewtab="cl" role="tab">👽 Clientes y socios</button>
+      <button data-crewtab="pv" role="tab">🏪 Puntos de venta<b class="nbadge hidden" id="pvTabBadge">0</b></button>
+    </div>
+    <div id="crewTabPv" class="hidden">
+      <div class="panel hidden" id="pvReqPanel">
+        <h2>📩 Solicitudes nuevas</h2>
+        <p class="sub">Comercios que pidieron ser punto de venta desde el folleto.</p>
+        <ul class="crew" id="pvReqList"></ul>
+      </div>
+      <div class="panel">
+        <div class="ohead"><h2>🏪 Puntos de venta</h2><button class="mini" id="pvNew">＋ Nuevo</button></div>
+        <p class="sub">Cada comercio tiene su <b>portal mayorista</b> (link o QR secreto) para hacer pedidos, juntar puntos y canjear premios. Los precios, packs y premios se configuran en Ajustes → Reglas mayoristas.</p>
+        <ul class="crew" id="pvList"></ul>
+      </div>
+    </div>
+    <div class="panel" id="crewTabCl">
       <h2>Socios del club</h2>
       <p class="sub">El club es solo por invitación. Creá un socio con su nombre o mandale una invitación para que se anote solo.</p>
       <button class="btn ghost" id="santiInvite" style="margin:0 0 12px;border-color:var(--cyan);color:var(--cyan)">🔗 Crear invitación para un amigo</button>
@@ -1115,11 +1137,6 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
       <ul class="flist" id="sCombos"></ul>
       <label>💡 Ideas para agregar con un toque</label>
       <div class="chips" id="comboIdeas"></div>
-    </div>
-    <div class="panel">
-      <div class="ohead"><h2>🏪 Puntos de venta</h2><button class="mini" id="pvNew">＋ Nuevo</button></div>
-      <p class="sub">Comercios que revenden AREA 51. Cada uno tiene su <b>portal mayorista</b> (link o QR secreto) donde arma pedidos con precio mayorista, junta puntos y canjea premios.</p>
-      <ul class="crew" id="pvList"></ul>
     </div>
     <div class="panel">
       <h2>📦 Reglas mayoristas</h2>
@@ -1334,7 +1351,7 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
     <button data-go="home" class="on"><span>🏠</span>Despegue</button>
     <button data-go="orders"><span>🛸</span>Pedidos<b class="nbadge hidden" id="ordersBadge">0</b></button>
     <button data-go="log"><span>📝</span>Bitácora</button>
-    <button data-go="crew"><span>👽</span>Tripulantes</button>
+    <button data-go="crew"><span>👽</span>Tripulantes<b class="nbadge hidden" id="crewBadge">0</b></button>
     <button data-go="medals"><span>🏅</span>Medallas</button>
     <button data-go="settings"><span>⚙️</span>Ajustes</button>
   </div>
@@ -1389,7 +1406,7 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
     </div>
     <label for="pvAddress">Dirección</label><input id="pvAddress" type="text" maxlength="100">
     <label for="pvHours">Horario</label><input id="pvHours" type="text" maxlength="60" placeholder="Ej: Lun a Sáb de 9 a 21 hs">
-    <label for="pvMaps">Link de Google Maps (opcional)</label><input id="pvMaps" type="url" maxlength="300">
+    <label for="pvMaps">Link de Google Maps (opcional)</label><input id="pvMaps" type="text" inputmode="url" maxlength="300" placeholder="https://maps.app.goo.gl/...">
     <label class="checkrow"><input type="checkbox" id="pvPublic"> Mostrar en "Puntos de venta" de la tienda</label>
     <label class="checkrow"><input type="checkbox" id="pvActive"> Activo (puede usar su portal)</label>
     <div class="err" id="pvErr" role="alert"></div>
@@ -2408,7 +2425,7 @@ let pickEmoji = null;
 function renderSettings(){
   const c = state.config;
   $('sStart').value = c.start; $('sEnd').value = c.end;
-  $('sPrice').value = c.price; renderComboList(); renderLineList(); renderCosts(); renderWholesale(); fetchResellers();
+  $('sPrice').value = c.price; renderComboList(); renderLineList(); renderCosts(); renderWholesale();
   $('sGoalName').value = c.goalName; $('sGoalAmount').value = c.goalAmount;
   $('sPhone').value = c.phone; $('sPin').value = c.pin;
   $('sInvites').value = Number.isInteger(c.invitesPerMember) ? c.invitesPerMember : 2;
@@ -2494,6 +2511,7 @@ function showShopUI(){
   refreshShop();
 }
 function showAdminUI(){
+  setTimeout(fetchResellers, 900);
   $('pvChip').classList.add('hidden');
   $('decoLayer').classList.add('hidden');
   $('packChip').classList.add('hidden');
@@ -2864,7 +2882,10 @@ $('pvBody').addEventListener('click', async e => {
     const d = Number(cb.dataset.pvcard);
     if(d > 0 && !confirm('¿Anotar un cartón completo canjeado? Guardalo para entregárselo a Santi.')) return;
     const {data, error} = await sb.rpc('reseller_card', {p_code: pvCode(), p_delta: d});
-    if(error){ toast(/TOPE/.test(error.message || '') ? '⚠️ Llegaste al tope de cartones por reponer. Hablá con Santi.' : '⚠️ No se pudo anotar'); return; }
+    if(error){ console.warn(error); const m = error.message || '';
+      toast(/TOPE/.test(m) ? '⚠️ Llegaste al tope de cartones por reponer. Hablá con Santi.'
+        : /reseller_card|function|schema cache/i.test(m) ? '⚠️ Falta activar los cartones: Santi tiene que correr supabase-cartones.sql'
+        : '⚠️ No se pudo anotar: ' + m.slice(0, 60)); return; }
     pv = {...data, ws:wsCfg(data.wholesale)}; renderPortal(); if(d > 0) toast('🎫 ¡Cartón anotado!');
     return;
   }
@@ -2897,6 +2918,7 @@ $('wlSend').addEventListener('click', () => {
   const shop = $('wlShop').value.trim(), name = $('wlName').value.trim(), phone = $('wlPhone').value.trim(), addr = $('wlAddr').value.trim();
   if(shop.length < 2 || name.length < 2){ $('wlErr').textContent = 'Completá el nombre del comercio y tu nombre.'; return; }
   $('wlErr').textContent = '';
+  if(sb) sb.rpc('request_reseller', {p_shop:shop, p_contact:name, p_phone:phone, p_address:addr}).then(({error}) => { if(error) console.warn(error); });
   const text = `🏪 ¡Hola Santi! Quiero ser punto de venta de ${brandName()}.\n\nComercio: ${shop}\nContacto: ${name}${phone ? `\nWhatsApp: ${phone}` : ''}${addr ? `\nDirección: ${addr}` : ''}\n\n¿Me pasás la lista de precios mayoristas?`;
   openUrl(`https://wa.me/${(state.config.phone || '').replace(/\D/g, '')}?text=${encodeURIComponent(text)}`);
   toast('📤 ¡Listo! Santi te va a contestar por WhatsApp');
@@ -2925,27 +2947,87 @@ function printStampCards(kiosk, sheets = 1){
 }
 
 /* --- Santi: lista y edición de puntos de venta --- */
-let resellers = [], pvEdit = null;
+let resellers = [], pvEdit = null, pvFromReq = null;
 const pvLink = code => location.origin + location.pathname + '?pv=' + code;
+let pvReqs = [];
+setInterval(() => { if(loggedIn && !$('admin').classList.contains('hidden')) fetchResellers(); }, 120000);
 async function fetchResellers(){
   if(!sb || !loggedIn) return;
+  sb.from('reseller_requests').select('*').in('status', ['nueva','vista']).order('created_at', {ascending:false}).limit(30)
+    .then(({data, error}) => { if(!error){ pvReqs = data || []; renderPvReqs(); updatePvAlerts(); } });
   const {data, error} = await sb.from('resellers').select('*,reseller_redemptions(id,reward,cost,status,created_at)').order('created_at');
   if(error){ $('pvList').innerHTML = '<li class="empty" style="border:none;background:none">Falta correr supabase-puntos-de-venta.sql en Supabase.</li>'; return; }
-  resellers = data || []; renderResellers();
+  resellers = data || []; renderResellers(); updatePvAlerts();
 }
+function renderPvReqs(){
+  $('pvReqPanel').classList.toggle('hidden', !pvReqs.length);
+  $('pvReqList').innerHTML = pvReqs.map(q => `<li><div class="top"><span class="name">📩 ${esc(q.shop)}${q.status === 'nueva' ? ' <span class="badge-soc pv">NUEVA</span>' : ''}</span><span class="note">${prettyDate(dstr(new Date(q.created_at)))}</span></div>
+      <p class="note" style="margin:4px 0">${q.contact ? `👤 ${esc(q.contact)} · ` : ''}${q.phone ? `📱 ${esc(q.phone)} · ` : ''}${q.address ? `📍 ${esc(q.address)}` : ''}</p>
+      <div class="row">
+        <button class="mini gift" data-rqok="${q.id}">✅ Dar de alta</button>
+        ${q.phone ? `<button class="mini" data-rqwa="${q.id}">💬 WhatsApp</button>` : ''}
+        <button class="mini" data-rqno="${q.id}">✕ Descartar</button>
+      </div></li>`).join('');
+}
+function updatePvAlerts(){
+  const nNew = pvReqs.filter(q => q.status === 'nueva').length;
+  const nRw = resellers.reduce((a, r) => a + (r.reseller_redemptions || []).filter(x => x.status === 'pendiente').length, 0);
+  const nCards = resellers.reduce((a, r) => a + (r.cards_pending || 0), 0);
+  const total = nNew + nRw + (nCards ? 1 : 0);
+  ['crewBadge','pvTabBadge'].forEach(id => { $(id).textContent = total; $(id).classList.toggle('hidden', !total); });
+  const parts = [];
+  if(nNew) parts.push(`📩 ${nNew} comercio${nNew === 1 ? '' : 's'} quiere${nNew === 1 ? '' : 'n'} ser punto de venta`);
+  if(nRw) parts.push(`🎁 ${nRw} premio${nRw === 1 ? '' : 's'} para entregar`);
+  if(nCards) parts.push(`🎫 ${nCards} ${nCards === 1 ? 'cartón' : 'cartones'} para reponer`);
+  $('pvAlert').classList.toggle('hidden', !parts.length);
+  $('pvAlert').textContent = parts.join(' · ');
+  // aviso al entrar: solo las solicitudes que todavía no vio
+  let seen = []; try{ seen = JSON.parse(localStorage.getItem('area51-pvreq-vistas') || '[]'); }catch(e){}
+  const fresh = pvReqs.filter(q => q.status === 'nueva' && !seen.includes(q.id));
+  if(fresh.length){
+    toast(fresh.length === 1 ? `📩 ¡${fresh[0].shop} quiere ser punto de venta!` : `📩 ¡${fresh.length} comercios quieren ser punto de venta!`);
+    try{ localStorage.setItem('area51-pvreq-vistas', JSON.stringify([...seen, ...fresh.map(q => q.id)].slice(-200))); }catch(e){}
+  }
+}
+function crewTab(tab){
+  document.querySelectorAll('[data-crewtab]').forEach(b => b.classList.toggle('on', b.dataset.crewtab === tab));
+  $('crewTabPv').classList.toggle('hidden', tab !== 'pv'); $('crewTabCl').classList.toggle('hidden', tab !== 'cl');
+  if(tab === 'pv'){
+    fetchResellers();
+    const nuevas = pvReqs.filter(q => q.status === 'nueva').map(q => q.id);
+    if(nuevas.length) sb.from('reseller_requests').update({status:'vista'}).in('id', nuevas).then(() => {});
+  }
+}
+document.querySelectorAll('[data-crewtab]').forEach(b => b.addEventListener('click', () => crewTab(b.dataset.crewtab)));
+$('pvAlert').addEventListener('click', () => setTimeout(() => crewTab('pv'), 50));
+$('pvReqList').addEventListener('click', async e => {
+  const t = e.target.closest('button'); if(!t) return;
+  const id = Number(t.dataset.rqok || t.dataset.rqwa || t.dataset.rqno), q = pvReqs.find(x => x.id === id); if(!q) return;
+  if(t.dataset.rqwa){ openUrl(`https://wa.me/${q.phone.replace(/\D/g, '')}?text=${encodeURIComponent(`¡Hola ${q.contact || ''}! Soy Santi de ${brandName()} 👽 Recibí tu pedido para que ${q.shop} sea punto de venta.`)}`); return; }
+  if(t.dataset.rqno){
+    if(!confirm(`¿Descartar la solicitud de ${q.shop}?`)) return;
+    await sb.from('reseller_requests').update({status:'descartada'}).eq('id', id); fetchResellers(); return;
+  }
+  // dar de alta: abre el editor con los datos ya cargados
+  openPvEdit(null);
+  $('pvName').value = q.shop; $('pvContact').value = q.contact || ''; $('pvPhone').value = (q.phone || '').replace(/\D/g, ''); $('pvAddress').value = q.address || '';
+  pvFromReq = id;
+});
 function renderResellers(){
   const ws = wsCfg(state.wholesale);
   $('pvList').innerHTML = resellers.length ? resellers.map(r => {
     const lvl = wsLevel(ws, r.total_units), pend = (r.reseller_redemptions || []).filter(x => x.status === 'pendiente');
-    return `<li><div class="top"><span class="name">🏪 ${esc(r.name)}${r.active ? '' : ' <span class="badge-soc no">INACTIVO</span>'}</span></div>
+    return `<li style="${r.active ? '' : 'opacity:.6'}"><div class="top"><span class="name">🏪 ${esc(r.name)}${r.active ? '' : ' <span class="badge-soc no">⏸️ EN PAUSA</span>'}</span></div>
       <p class="note" style="margin:4px 0">${esc(lvl.e || '')} ${esc(lvl.n)} · ⭐ ${r.points} puntos · ${r.total_units} marcianitos comprados${r.address ? ` · 📍 ${esc(r.address)}` : ''}</p>
       ${pend.map(x => `<div class="pv-rw"><div>🎁 ${esc(x.reward)}</div><button class="mini gift" data-pvdeliv="${x.id}">✅ Entregado</button></div>`).join('')}
-      ${r.cards_pending ? `<div class="pv-rw"><div>🎫 ${r.cards_pending} cartón${r.cards_pending === 1 ? '' : 'es'} canjeado${r.cards_pending === 1 ? '' : 's'}: reponé ${r.cards_pending} marcianito${r.cards_pending === 1 ? '' : 's'} (retirá los cartones)</div><button class="mini gift" data-pvcards="${esc(r.code)}">✅ Repuestos</button></div>` : ''}
+      ${r.cards_pending ? `<div class="pv-rw"><div>🎫 ${r.cards_pending} ${r.cards_pending === 1 ? 'cartón' : 'cartones'} canjeado${r.cards_pending === 1 ? '' : 's'}: reponé ${r.cards_pending} marcianito${r.cards_pending === 1 ? '' : 's'} (retirá los cartones)</div><button class="mini gift" data-pvcards="${esc(r.code)}">✅ Repuestos</button></div>` : ''}
       <div class="row">
         <button class="mini" data-pvsend="${esc(r.code)}">📤 Mandar acceso</button>
         <button class="mini" data-pvqr="${esc(r.code)}">🔳 QR</button>
         <button class="mini" data-pvedit="${esc(r.code)}">✏️ Editar</button>
         <button class="mini" data-pvprint="${esc(r.code)}">🎫 Cartones</button>
+        <button class="mini" data-pvpause="${esc(r.code)}">${r.active ? '⏸️ Pausar' : '▶️ Reactivar'}</button>
+        <button class="mini" data-pvdel="${esc(r.code)}" style="color:#FF8FA0;border-color:rgba(255,59,92,.5)">🗑️ Eliminar</button>
       </div></li>`;
   }).join('') : '<li class="empty" style="border:none;background:none">Todavía no hay puntos de venta. Tocá "＋ Nuevo".</li>';
 }
@@ -2957,7 +3039,7 @@ function openPvEdit(code){
   $('pvPublic').checked = r ? r.is_public : true; $('pvActive').checked = r ? r.active : true; $('pvErr').textContent = '';
   open('pvEditOverlay');
 }
-$('pvNew').addEventListener('click', () => openPvEdit(null));
+$('pvNew').addEventListener('click', () => { pvFromReq = null; openPvEdit(null); });
 $('pvSave').addEventListener('click', async () => {
   const name = $('pvName').value.trim();
   if(name.length < 2){ $('pvErr').textContent = 'Poné el nombre del comercio.'; return; }
@@ -2967,6 +3049,8 @@ $('pvSave').addEventListener('click', async () => {
                maps:/^https?:\/\//i.test(maps) ? maps.slice(0, 300) : null, is_public:$('pvPublic').checked, active:$('pvActive').checked};
   const {error} = pvEdit ? await sb.from('resellers').update(row).eq('code', pvEdit) : await sb.from('resellers').insert({code:newCode(), ...row});
   if(error){ $('pvErr').textContent = 'No se pudo guardar.'; console.warn(error); return; }
+  if(pvFromReq && !pvEdit){ await sb.from('reseller_requests').update({status:'alta'}).eq('id', pvFromReq); }
+  pvFromReq = null;
   close('pvEditOverlay'); toast(pvEdit ? '✅ Punto de venta actualizado' : '🏪 ¡Punto de venta creado! Mandale su acceso'); fetchResellers(); fetchPOS();
 });
 $('pvList').addEventListener('click', async e => {
@@ -2982,6 +3066,19 @@ $('pvList').addEventListener('click', async e => {
     $('pvQrImg').src = 'https://api.qrserver.com/v1/create-qr-code/?size=600x600&margin=12&data=' + encodeURIComponent(link);
     $('pvQrTxt').textContent = `Portal de ${r.name}. Es secreto: solo para el comercio (no lo pegues en el mostrador).`;
     $('pvQrPrint').dataset.name = r.name; open('pvQrOverlay'); return;
+  }
+  if(t.dataset.pvpause){
+    const r = resellers.find(x => x.code === t.dataset.pvpause);
+    if(r.active && !confirm(`¿Pausar ${r.name}?\n\nNo va a poder usar su portal ni aparecer en la tienda, pero conserva sus puntos. Lo podés reactivar cuando quieras.`)) return;
+    const {error} = await sb.from('resellers').update({active:!r.active}).eq('code', r.code);
+    toast(error ? '⚠️ No se pudo cambiar' : r.active ? `⏸️ ${r.name} en pausa` : `▶️ ${r.name} activo de nuevo`); fetchResellers(); fetchPOS(); return;
+  }
+  if(t.dataset.pvdel){
+    const r = resellers.find(x => x.code === t.dataset.pvdel);
+    if(!confirm(`¿Eliminar ${r.name} para siempre?\n\nSe borran sus puntos y canjes, y su link deja de funcionar. Si solo querés frenarlo un tiempo, usá "Pausar".`)) return;
+    if(prompt(`Para confirmar, escribí ELIMINAR`) !== 'ELIMINAR') return;
+    const {error} = await sb.from('resellers').delete().eq('code', r.code);
+    toast(error ? '⚠️ No se pudo eliminar' : `🗑️ ${r.name} eliminado`); fetchResellers(); fetchPOS(); return;
   }
   if(t.dataset.pvprint){
     const r = resellers.find(x => x.code === t.dataset.pvprint);
