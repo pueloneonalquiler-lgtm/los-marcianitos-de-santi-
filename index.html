@@ -735,6 +735,36 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
 .cost-warn{margin-top:8px;padding:10px 12px;border-radius:12px;font-size:14px;font-weight:700}
 .cost-warn.bad{background:rgba(255,59,92,.12);color:#FF8FA0;border:1px solid rgba(255,59,92,.5)}
 .cost-warn.ok{background:rgba(57,255,136,.1);color:var(--green);border:1px solid rgba(57,255,136,.4)}
+/* ---------- Puntos de venta ---------- */
+.pos-sec{margin-top:34px}
+.pos-card{display:flex;align-items:center;gap:12px;padding:14px;margin-top:10px;border-radius:20px;background:var(--surface);border:1px solid var(--line)}
+.pos-card .pe{font-size:30px}
+.pos-card div{flex:1;min-width:0}
+.pos-card b{display:block;font-family:var(--display);font-size:17px}
+.pos-card span{display:block;font-size:13px;color:var(--muted)}
+.pvchip{position:fixed;top:calc(124px + env(safe-area-inset-top,0px));right:12px;z-index:25;padding:10px 14px;border-radius:999px;border:2px solid #FF9A3D;
+  background:rgba(11,8,32,.92);color:#FF9A3D;font-family:var(--display);font-weight:700;font-size:15px;box-shadow:0 0 16px rgba(255,154,61,.35)}
+.pv-head{text-align:center;margin-bottom:12px}
+.pv-head .pn{font-family:var(--display);font-size:24px;font-weight:700}
+.pv-lvl{display:flex;align-items:center;gap:12px;padding:14px;border-radius:20px;background:linear-gradient(135deg,rgba(255,154,61,.18),var(--deep));border:1.5px solid rgba(255,154,61,.55)}
+.pv-lvl .le{font-size:44px}
+.pv-lvl b{font-family:var(--display);font-size:20px}
+.pv-pts{font-family:var(--display);font-size:28px;color:var(--yellow);margin-left:auto;text-align:right;line-height:1}
+.pv-pts small{display:block;font-size:12px;color:var(--muted);font-family:var(--body)}
+.pv-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px dashed var(--line)}
+.pv-row .fe{font-size:24px;flex:none}
+.pv-row .fn{flex:1;min-width:0;font-weight:700;font-size:15px}
+.pv-row button{width:40px;height:40px;border-radius:12px;border:1.5px solid var(--violet);background:var(--deep);color:var(--text);font-weight:800;font-size:18px}
+.pv-row button.p6{width:auto;padding:0 10px;font-size:13px;border-color:#FF9A3D;color:#FF9A3D}
+.pv-row .q{min-width:34px;text-align:center;font-family:var(--display);font-size:18px}
+.pv-sum{margin-top:14px;padding:14px;border-radius:18px;background:var(--deep);border:1.5px solid rgba(57,255,136,.45)}
+.pv-sum .lr{display:flex;justify-content:space-between;gap:10px;padding:5px 0;font-size:15px}
+.pv-sum .tot{font-family:var(--display);font-size:22px;margin-top:6px}
+.pv-sum .tot b{color:var(--green);font-size:28px}
+.pv-rw{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px dashed var(--line)}
+.pv-rw div{flex:1;min-width:0;font-weight:700}
+.pv-rw span{color:var(--yellow);font-weight:800;font-size:14px;white-space:nowrap}
+.badge-soc.pv{background:rgba(255,154,61,.2);color:#FF9A3D}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 @media (max-width:360px){.grid{gap:10px}.planet{width:72px;height:72px;font-size:34px}.mission{grid-template-columns:80px 1fr}.pct{font-size:52px}}
 </style>
@@ -743,6 +773,7 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
 
 <!-- ================= CLIENTE: MISIÓN MARCIANA ================= -->
 <main id="shop" class="wrap">
+  <button class="pvchip hidden" id="pvChip" aria-label="Abrir portal mayorista">🏪 Mi portal</button>
   <button class="packchip hidden" id="packChip" aria-label="Abrir sobre de figuritas">🎁 <span id="packChipN">1</span></button>
   <button class="cardchip hidden" id="cardChip" aria-label="Ver mi tarjeta galáctica">⭐ <span id="cardChipText">Mi tarjeta</span></button>
   <header class="hero">
@@ -772,6 +803,11 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
     <div class="grid" id="grid"></div>
   </section>
   <div id="lines"></div>
+  <section class="pos-sec hidden" id="posSec" aria-labelledby="t-pos">
+    <h2 id="t-pos">📍 Puntos de venta</h2>
+    <p class="sub">También encontrás nuestros marcianitos en estos comercios:</p>
+    <div id="posList"></div>
+  </section>
 
   <section class="comp hidden" id="comp" aria-labelledby="t-comp">
     <div class="race-head"><h2 id="t-comp">⭐ Competencia de Stickers</h2></div>
@@ -1081,6 +1117,29 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
       <div class="chips" id="comboIdeas"></div>
     </div>
     <div class="panel">
+      <div class="ohead"><h2>🏪 Puntos de venta</h2><button class="mini" id="pvNew">＋ Nuevo</button></div>
+      <p class="sub">Comercios que revenden AREA 51. Cada uno tiene su <b>portal mayorista</b> (link o QR secreto) donde arma pedidos con precio mayorista, junta puntos y canjea premios.</p>
+      <ul class="crew" id="pvList"></ul>
+    </div>
+    <div class="panel">
+      <h2>📦 Reglas mayoristas</h2>
+      <div class="two">
+        <div><label for="wsUnit">Precio mayorista x marcianito ($)</label><input id="wsUnit" type="number" inputmode="numeric" min="1"></div>
+        <div><label for="wsMin">Pedido mínimo (marcianitos)</label><input id="wsMin" type="number" inputmode="numeric" min="1"></div>
+        <div><label for="wsPts">Puntos por marcianito</label><input id="wsPts" type="number" inputmode="decimal" min="0" step="0.5"></div>
+      </div>
+      <p class="note" id="wsHint"></p>
+      <label style="margin-top:12px">Packs mayoristas (cantidad y % de descuento)</label>
+      <div id="wsPacks"></div>
+      <button class="mini" id="wsAddPack" style="width:100%">＋ Pack</button>
+      <label style="margin-top:12px">Premios por puntos</label>
+      <div id="wsRewards"></div>
+      <button class="mini" id="wsAddReward" style="width:100%">＋ Premio</button>
+      <label style="margin-top:12px">Niveles (según marcianitos comprados en total)</label>
+      <div id="wsLevels"></div>
+      <button class="btn ghost" id="wsSave" style="margin-top:12px">💾 Guardar reglas mayoristas</button>
+    </div>
+    <div class="panel">
       <h2>🖨️ Mini stickers de sabores</h2>
       <p class="sub">Para pegar en cada helado, al lado de la etiqueta con el QR. Se imprimen redondos con el color y el nombre de cada sabor.</p>
       <div class="two">
@@ -1103,6 +1162,8 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
         <option value="etiquetas">Etiquetas 7 × 4 cm</option>
         <option value="grandes">Etiquetas grandes 9 × 5 cm (para bolsas o cajas)</option>
         <option value="cartel">Cartel A4 para el puesto</option>
+        <option value="mayorista">🏪 Folleto para comercios ("Vendé AREA 51")</option>
+        <option value="cartones">🎫 Cartones de stickers (para completar a mano)</option>
       </select>
       <label for="qlCopies">Cantidad de hojas A4</label>
       <select class="inp" id="qlCopies"><option value="1">1 hoja</option><option value="2">2 hojas</option><option value="3">3 hojas</option><option value="5">5 hojas</option></select>
@@ -1284,6 +1345,67 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
     <button class="btn primary" data-close="celebrate">¡Seguir volando!</button></div>
 </div>
 <div class="toast hidden" id="toast" role="status"></div>
+
+<!-- Página para comercios: "Vendé AREA 51" -->
+<div class="overlay hidden" id="wsLandOverlay" role="dialog" aria-modal="true" aria-labelledby="t-wsl">
+  <div class="sheet">
+    <div class="sheet-head"><h2 id="t-wsl">🏪 Vendé AREA 51 en tu comercio</h2><button class="close" data-close="wsLandOverlay" aria-label="Cerrar">✕</button></div>
+    <p class="sub">Marcianitos caseros que los chicos buscan, con stickers, figuritas y premios. Sumate como <b>punto de venta oficial</b>:</p>
+    <div class="pv-rw"><div>💵 Precio mayorista y <b>buena ganancia</b> en cada marcianito</div></div>
+    <div class="pv-rw"><div>📦 Cajas con más descuento cuanto más pedís</div></div>
+    <div class="pv-rw"><div>🥉🥈🥇 Niveles con <b>descuento extra</b> según lo que comprás</div></div>
+    <div class="pv-rw"><div>⭐ Puntos por cada compra para canjear por <b>helados sin cargo y premios</b></div></div>
+    <div class="pv-rw"><div>📍 Tu comercio aparece en nuestra web como punto de venta</div></div>
+    <div class="pv-rw"><div>📱 Hacés tus pedidos desde tu propio portal, en un minuto</div></div>
+    <h3 style="margin:18px 0 6px;font-size:18px">Pedí tu alta</h3>
+    <label for="wlShop">Nombre del comercio</label><input id="wlShop" type="text" maxlength="60" placeholder="Ej: Kiosco La Esquina">
+    <div class="two">
+      <div><label for="wlName">Tu nombre</label><input id="wlName" type="text" maxlength="60" autocomplete="name"></div>
+      <div><label for="wlPhone">Tu WhatsApp</label><input id="wlPhone" type="tel" maxlength="20" autocomplete="tel"></div>
+    </div>
+    <label for="wlAddr">Dirección del comercio</label><input id="wlAddr" type="text" maxlength="100">
+    <div class="err" id="wlErr" role="alert"></div>
+    <button class="btn wa" id="wlSend">📤 Quiero ser punto de venta</button>
+    <p class="note" style="text-align:center">Santi te contesta con la lista de precios y el link a tu portal mayorista.</p>
+  </div>
+</div>
+
+<!-- Portal mayorista (punto de venta) -->
+<div class="overlay hidden" id="pvOverlay" role="dialog" aria-modal="true" aria-labelledby="t-pv">
+  <div class="sheet">
+    <div class="sheet-head"><h2 id="t-pv">Portal mayorista</h2><button class="close" data-close="pvOverlay" aria-label="Cerrar">✕</button></div>
+    <div id="pvBody"><p class="sub">Cargando…</p></div>
+  </div>
+</div>
+
+<!-- Editor de punto de venta (Santi) -->
+<div class="overlay hidden" id="pvEditOverlay" role="dialog" aria-modal="true" aria-labelledby="t-pve">
+  <div class="sheet">
+    <div class="sheet-head"><h2 id="t-pve">Punto de venta</h2><button class="close" data-close="pvEditOverlay" aria-label="Cerrar">✕</button></div>
+    <label for="pvName">Nombre del comercio</label><input id="pvName" type="text" maxlength="60" placeholder="Ej: Kiosco La Esquina">
+    <div class="two">
+      <div><label for="pvContact">Contacto</label><input id="pvContact" type="text" maxlength="60" placeholder="Nombre del dueño"></div>
+      <div><label for="pvPhone">WhatsApp</label><input id="pvPhone" type="tel" maxlength="20" placeholder="549294..."></div>
+    </div>
+    <label for="pvAddress">Dirección</label><input id="pvAddress" type="text" maxlength="100">
+    <label for="pvHours">Horario</label><input id="pvHours" type="text" maxlength="60" placeholder="Ej: Lun a Sáb de 9 a 21 hs">
+    <label for="pvMaps">Link de Google Maps (opcional)</label><input id="pvMaps" type="url" maxlength="300">
+    <label class="checkrow"><input type="checkbox" id="pvPublic"> Mostrar en "Puntos de venta" de la tienda</label>
+    <label class="checkrow"><input type="checkbox" id="pvActive"> Activo (puede usar su portal)</label>
+    <div class="err" id="pvErr" role="alert"></div>
+    <button class="btn primary" id="pvSave">Guardar</button>
+  </div>
+</div>
+
+<!-- QR del portal (Santi) -->
+<div class="overlay hidden" id="pvQrOverlay" role="dialog" aria-modal="true" aria-labelledby="t-pvq">
+  <div class="sheet" style="text-align:center">
+    <div class="sheet-head"><h2 id="t-pvq">QR del portal</h2><button class="close" data-close="pvQrOverlay" aria-label="Cerrar">✕</button></div>
+    <img id="pvQrImg" alt="QR del portal mayorista" style="width:min(80vw,300px);height:auto;background:#fff;border-radius:16px;padding:8px">
+    <p class="sub" id="pvQrTxt"></p>
+    <button class="btn primary" id="pvQrPrint">🖨️ Imprimir o guardar PDF</button>
+  </div>
+</div>
 
 <!-- Editor de líneas de helados -->
 <div class="overlay hidden" id="lineOverlay" role="dialog" aria-modal="true" aria-labelledby="t-line">
@@ -1524,6 +1646,10 @@ const SUPABASE_KEY = 'sb_publishable_AeDABM9nlbBM1DZd3hXT8A_wFrXnezc';   // la c
 const sb = (SUPABASE_URL && SUPABASE_KEY && window.supabase) ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 let loggedIn = false;
 
+function openUrl(url){
+  const a = document.createElement('a'); a.href = url; a.target = '_blank'; a.rel = 'noopener';
+  document.body.appendChild(a); a.click(); a.remove();
+}
 /* =================== DATOS BASE =================== */
 const DEFAULT_FLAVORS = [
   {id:'limon',   name:'Rayo de Limón',               e:'🍋', c:['#FFF59D','#9ACD00']},
@@ -1581,6 +1707,13 @@ const DEFAULT = {
       {id:'i4', n:'Agua',                 price:0,    buy:1, bu:'l',  use:1,   uu:'l'},
     ],
     bagPrice:3000, bagQty:200, energy:50, stickerCost:800, stickerPct:30, laborMin:0, laborHour:0
+  },
+  wholesale:{
+    unit:1000, min:12, pointsPer:1,
+    packs:[{id:'w1', n:'Docena', k:12, d:0}, {id:'w2', n:'Caja x 24', k:24, d:5}, {id:'w3', n:'Caja x 48', k:48, d:10}],
+    rewards:[{id:'r1', n:'6 marcianitos sin cargo', cost:60}, {id:'r2', n:'12 marcianitos sin cargo', cost:110},
+             {id:'r3', n:'Cartel AREA 51 para el local', cost:80}, {id:'r4', n:'20% extra en tu próxima caja', cost:150}],
+    levels:[{n:'Bronce', e:'🥉', min:0, d:0}, {n:'Plata', e:'🥈', min:300, d:5}, {n:'Oro', e:'🥇', min:800, d:10}]
   }
 };
 
@@ -1609,7 +1742,7 @@ function saveLocal(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }ca
 function save(){ saveLocal(); clearTimeout(save.t); save.t = setTimeout(pushPrivate, 600); }
 
 /* =================== NUBE (SUPABASE) =================== */
-const PRIVATE_KEYS = ['log','crew','medals','goalOffset','goalsDone','costs'];
+const PRIVATE_KEYS = ['log','crew','medals','goalOffset','goalsDone','costs','wholesale'];
 function publicConfig(){ const {pin, ...rest} = state.config; return rest; }
 async function pullConfig(){
   if(!sb) return;
@@ -1654,7 +1787,7 @@ function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.remove('
    Cada pantalla y ventana abierta crea una entrada en el historial del navegador.
    Así, la flecha "atrás" cierra la ventana abierta o vuelve a la pantalla anterior
    en lugar de salir del sitio. */
-const OVERLAYS = ['cartOverlay','pinOverlay','celebrate','flavorOverlay','cardOverlay','envOverlay','installOverlay','avatarOverlay','welcomeOverlay','welcomeSend','joinOverlay','packOverlay','gameOverlay','liveOverlay','regOverlay','comboOverlay','lineOverlay'];
+const OVERLAYS = ['cartOverlay','pinOverlay','celebrate','flavorOverlay','cardOverlay','envOverlay','installOverlay','avatarOverlay','welcomeOverlay','welcomeSend','joinOverlay','packOverlay','gameOverlay','liveOverlay','regOverlay','comboOverlay','lineOverlay','pvOverlay','pvEditOverlay','pvQrOverlay','wsLandOverlay'];
 const HOME_NAV = {screen:'shop', view:'home', ov:null};
 let navState = {...HOME_NAV};
 let adminUnlocked = false;
@@ -2275,7 +2408,7 @@ let pickEmoji = null;
 function renderSettings(){
   const c = state.config;
   $('sStart').value = c.start; $('sEnd').value = c.end;
-  $('sPrice').value = c.price; renderComboList(); renderLineList(); renderCosts();
+  $('sPrice').value = c.price; renderComboList(); renderLineList(); renderCosts(); renderWholesale(); fetchResellers();
   $('sGoalName').value = c.goalName; $('sGoalAmount').value = c.goalAmount;
   $('sPhone').value = c.phone; $('sPin').value = c.pin;
   $('sInvites').value = Number.isInteger(c.invitesPerMember) ? c.invitesPerMember : 2;
@@ -2353,6 +2486,7 @@ $('wipe').addEventListener('click', () => {
   state = clone(DEFAULT); syncFlavors(); save(); pushConfig(); refreshShop(); renderSettings(); toast('Datos borrados');
 });
 function showShopUI(){
+  if(pvCode()) setTimeout(() => $('pvChip').classList.remove('hidden'), 0);
   setTimeout(applyTheme, 0);
   setTimeout(renderAlbum, 0);
   setTimeout(renderLiveBanner, 0);
@@ -2360,6 +2494,7 @@ function showShopUI(){
   refreshShop();
 }
 function showAdminUI(){
+  $('pvChip').classList.add('hidden');
   $('decoLayer').classList.add('hidden');
   $('packChip').classList.add('hidden');
   $('liveBanner').classList.add('hidden');
@@ -2436,7 +2571,7 @@ function unsubscribeOrders(){
 }
 function stickerHint(o){
   const c0 = state.config, lim = c0.stickerLimit || 'dia', minQ = Number(c0.stickerMinQty) || 1;
-  if(!o.card_code || o.status !== 'pendiente') return '';
+  if(o.pv_code || !o.card_code || o.status !== 'pendiente') return '';
   if(o.qty < minQ) return `ℹ️ No suma sticker: menos de ${minQ} marcianitos`;
   if(lim === 'libre') return '';
   const day = d => dstr(new Date(d));
@@ -2449,7 +2584,7 @@ function orderCard(o){
   const t = today(), day = isoDay(o.created_at);
   const map = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(o.address)}`;
   return `<li class="order ${esc(o.status)}">
-    <div class="otop"><span class="oname">${avHTML(o.avatar,'sm') || '👽 '}${esc(o.customer_name)}${isMemberCode(o.card_code) ? '<span class="badge-soc si">🪪 SOCIO</span>' : '<span class="badge-soc no">CLIENTE</span>'}</span><span class="otime">${day === t ? 'Hoy' : prettyDate(day)} ${hhmm(o.created_at)}</span></div>
+    <div class="otop"><span class="oname">${avHTML(o.avatar,'sm') || '👽 '}${esc(o.customer_name)}${o.pv_code ? '<span class="badge-soc pv">🏪 MAYORISTA</span>' : isMemberCode(o.card_code) ? '<span class="badge-soc si">🪪 SOCIO</span>' : '<span class="badge-soc no">CLIENTE</span>'}</span><span class="otime">${day === t ? 'Hoy' : prettyDate(day)} ${hhmm(o.created_at)}</span></div>
     <div class="oaddr">📍 ${esc(o.address)}${o.reference ? `<br><span class="oref">🗺️ ${esc(o.reference)}</span>` : ''}</div>
     <div class="oitems">🍧 ${esc(orderItems(o))}${o.combo ? `<br><span class="ocombo">🎁 ${esc(o.combo)}</span>` : ''}</div>
     ${stickerHint(o) ? `<div class="note" style="margin-top:6px;color:var(--yellow);font-weight:800">${stickerHint(o)}</div>` : ''}
@@ -2498,6 +2633,7 @@ async function deliverOrder(id){
     flavor: top && FLAVORS.some(f => f.id === top.id) ? top.id : null, orderId:o.id, source:'web'});
   save(); refreshOrderViews();
   const r = res || {}, nm = o.customer_name;
+  if(r.pv){ toast(`🏪 Entregado · +${r.points} puntos para ${nm}`); fetchResellers(); return; }
   if(r.voucher_requested && !r.voucher_used) alert(`⚠️ ${nm} pidió usar un vale que ya estaba usado. Cobrale el marcianito completo (${money(state.config.price)}).`);
   toast(r.skip === 'limite' ? `✅ Entregado · sin sticker: ${nm} ya sumó ${r.rule === 'semana' ? 'esta semana' : 'hoy'}`
       : r.skip === 'minimo' ? `✅ Entregado · sin sticker: el pedido tiene menos de ${r.min} marcianitos`
@@ -2636,6 +2772,290 @@ $('ccRes').addEventListener('click', e => {
   save(); pushConfig(); refreshShop(); renderComboList(); calcCosts();
   toast(`💰 Precio actualizado a ${money(sugg)}`);
 });
+
+/* =================== PUNTOS DE VENTA =================== */
+function wsCfg(w){
+  const d = DEFAULT.wholesale, x = w || {};
+  const arr = (v, def) => Array.isArray(v) && v.length ? v : def;
+  return {...d, ...x, packs:arr(x.packs, d.packs), rewards:arr(x.rewards, d.rewards), levels:arr(x.levels, d.levels).slice().sort((a, b) => a.min - b.min)};
+}
+function wsLevel(ws, units){ let lv = ws.levels[0]; ws.levels.forEach(l => { if(units >= l.min) lv = l; }); return lv; }
+function wsNext(ws, units){ return ws.levels.find(l => l.min > units) || null; }
+function wsPackPrice(ws, pk){ return Math.max(100, Math.round(pk.k * ws.unit * (1 - (Number(pk.d) || 0) / 100) / 100) * 100); }
+function wsQuote(ws, n, lvl){
+  const opts = [{k:1, p:ws.unit, n:null}, ...ws.packs.filter(pk => pk.k >= 2).map(pk => ({k:pk.k, p:wsPackPrice(ws, pk), n:pk.n}))];
+  const best = [{c:0, u:[]}];
+  for(let i = 1; i <= n; i++){ let b = null; for(const o of opts) if(i >= o.k){ const pv = best[i - o.k], c = pv.c + o.p; if(!b || c < b.c) b = {c, u:o.n ? [...pv.u, o.n] : pv.u}; } best[i] = b; }
+  const sub = best[n].c, ld = lvl ? Number(lvl.d) || 0 : 0, total = Math.round(sub * (1 - ld / 100) / 100) * 100;
+  const cnt = {}; best[n].u.forEach(x => cnt[x] = (cnt[x] || 0) + 1);
+  return {sub, total, disc:sub - total, ld, packs:Object.entries(cnt).map(([k, v]) => (v > 1 ? v + 'x ' : '') + k)};
+}
+/* --- Lista pública en la tienda --- */
+async function fetchPOS(){
+  if(!sb) return;
+  const {data, error} = await sb.rpc('get_points_of_sale');
+  if(error || !Array.isArray(data)) return;
+  $('posSec').classList.toggle('hidden', !data.length);
+  $('posList').innerHTML = data.map(x => {
+    const maps = x.maps && /^https?:\/\//i.test(x.maps) ? x.maps : (x.address ? 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(x.address) : '');
+    return `<div class="pos-card"><span class="pe" aria-hidden="true">🏪</span><div><b>${esc(x.name)}</b>${x.address ? `<span>📍 ${esc(x.address)}</span>` : ''}${x.hours ? `<span>🕐 ${esc(x.hours)}</span>` : ''}</div>
+      ${maps ? `<a class="mini" href="${esc(maps)}" target="_blank" rel="noopener" style="text-decoration:none;color:var(--text)">🗺️ Mapa</a>` : ''}</div>`;
+  }).join('');
+}
+/* --- Portal del comercio --- */
+let pv = null, pvCart = {};
+const pvCode = () => { try{ return localStorage.getItem('area51-pv'); }catch(e){ return null; } };
+async function openPortal(){
+  const code = pvCode(); if(!sb || !code) return;
+  open('pvOverlay'); $('pvBody').innerHTML = '<p class="sub">Cargando…</p>';
+  const {data, error} = await sb.rpc('get_reseller', {p_code: code});
+  if(error || !data){ $('pvBody').innerHTML = '<p class="sub">No encontramos tu punto de venta. Pedile a Santi que te reenvíe tu link.</p>'; return; }
+  pv = data; pv.ws = wsCfg(data.wholesale); renderPortal();
+  $('pvChip').classList.remove('hidden');
+}
+function renderPortal(){
+  const ws = pv.ws, lvl = wsLevel(ws, pv.total_units), nx = wsNext(ws, pv.total_units);
+  const flav = FLAVORS.filter(f => state.config.available[f.id]);
+  const n = Object.values(pvCart).reduce((a, b) => a + b, 0), q = wsQuote(ws, n, lvl), pts = Math.floor(n * (Number(ws.pointsPer) || 0));
+  const pend = (pv.redemptions || []).filter(r => r.status === 'pendiente');
+  $('t-pv').textContent = 'Portal mayorista';
+  $('pvBody').innerHTML = `
+    <div class="pv-head"><div class="pn">🏪 ${esc(pv.name)}</div><span class="sub">Punto de venta oficial de ${esc(brand())}</span></div>
+    <div class="pv-lvl"><span class="le">${esc(lvl.e || '🏅')}</span><div><b>Nivel ${esc(lvl.n)}</b><div class="sub" style="margin:0">${lvl.d ? `${lvl.d}% de descuento extra en tus pedidos` : 'Comprá más para subir de nivel'}${nx ? `<br>Te faltan ${nx.min - pv.total_units} marcianitos para ${esc(nx.e || '')} ${esc(nx.n)} (${nx.d}%)` : ''}</div></div>
+      <div class="pv-pts">${pv.points}<small>puntos</small></div></div>
+    <h3 style="margin:18px 0 6px;font-size:18px">🎁 Canjeá tus puntos</h3>
+    ${ws.rewards.map(r => `<div class="pv-rw"><div>${esc(r.n)}</div><span>${r.cost} pts</span><button class="mini" data-pvrw="${esc(r.id)}" ${pv.points < r.cost ? 'disabled' : ''}>Canjear</button></div>`).join('')}
+    ${pend.length ? `<p class="note" style="color:var(--yellow);font-weight:800;margin-top:8px">⏳ Premios por recibir: ${pend.map(r => esc(r.reward)).join(', ')}. Te los lleva Santi con el próximo pedido.</p>` : ''}
+    <h3 style="margin:18px 0 6px;font-size:18px">🎫 Cartones de stickers</h3>
+    <p class="sub" style="margin:0 0 8px">Cuando un cliente completa su cartón con 5 stickers, dale su marcianito gratis, <b>guardá el cartón</b> y anotalo acá. Santi te repone 1 marcianito por cada cartón en tu próximo pedido.</p>
+    <div class="pv-rw"><div>Cartones por reponer: <b style="font-family:var(--display);font-size:20px;color:var(--yellow)">${pv.cards_pending || 0}</b></div>
+      <button class="mini" data-pvcard="-1" ${pv.cards_pending ? '' : 'disabled'} aria-label="Quitar uno">−</button>
+      <button class="mini gift" data-pvcard="1">＋ Anotar cartón</button></div>
+    <h3 style="margin:18px 0 4px;font-size:18px">📦 Armá tu pedido</h3>
+    ${(() => {
+      const retail = Number(state.config.price) || 0, ld = Number(lvl.d) || 0;
+      const row = (name, k, price) => { const cu = price * (1 - ld / 100) / k, g = retail - cu;
+        return `<div class="pv-rw"><div>${esc(name)}<span style="display:block;white-space:normal;color:var(--muted);font-weight:600;font-size:13px">${k > 1 ? `${k} por ${money(price)} · ` : ''}te sale ${money(Math.round(cu))} c/u${ld ? ` (con tu ${ld}% ${esc(lvl.n)})` : ''}</span></div>
+          <span style="color:${g > 0 ? 'var(--green)' : '#FF8FA0'};text-align:right;flex:0 0 auto">${g > 0 ? 'ganás' : 'perdés'} ${money(Math.abs(Math.round(g)))} c/u<small style="display:block;color:var(--muted)">${g > 0 && retail ? Math.round(g / retail * 100) + '% de ganancia' : 'revisá los precios'}</small></span></div>`; };
+      return `<p class="sub" style="margin:0 0 4px">💵 Vendiendo cada marcianito a <b>${money(retail)}</b> (precio al público):</p>
+        ${row('Suelto', 1, ws.unit)}${ws.packs.filter(pk => pk.k >= 2).sort((a, b) => a.k - b.k).map(pk => row(pk.n, pk.k, wsPackPrice(ws, pk))).join('')}`;
+    })()}
+    ${flav.map(f => { const qn = pvCart[f.id] || 0; return `<div class="pv-row"><span class="fe">${esc(f.e)}</span><span class="fn">${esc(f.name)}</span>
+      <button data-pvq="${f.id}" data-d="-1" aria-label="Quitar">−</button><span class="q">${qn}</span><button data-pvq="${f.id}" data-d="1" aria-label="Sumar">+</button><button class="p6" data-pvq="${f.id}" data-d="6">+6</button></div>`; }).join('')}
+    <div class="pv-sum">
+      <div class="lr"><span>Marcianitos</span><b>${n}</b></div>
+      ${q.packs.length ? `<div class="lr"><span>📦 ${esc(q.packs.join(' + '))}</span></div>` : ''}
+      <div class="lr"><span>Subtotal</span><b>${money(q.sub)}</b></div>
+      ${q.disc ? `<div class="lr" style="color:var(--green)"><span>${esc(lvl.e || '')} Descuento nivel ${esc(lvl.n)} (${q.ld}%)</span><b>−${money(q.disc)}</b></div>` : ''}
+      <div class="lr tot"><span>Total</span><b>${money(q.total)}</b></div>
+      <div class="lr" style="color:var(--yellow)"><span>⭐ Sumás con este pedido</span><b>${pts} puntos</b></div>
+      ${n ? (() => { const retail = Number(state.config.price) || 0, venta = n * retail, gan = venta - q.total;
+        return `<div class="lr" style="border-top:1px dashed var(--line);margin-top:6px;padding-top:8px"><span>💵 Vendiéndolos a ${money(retail)} sacás</span><b>${money(venta)}</b></div>
+          <div class="lr" style="color:${gan > 0 ? 'var(--green)' : '#FF8FA0'};font-family:var(--display);font-size:18px"><span>${gan > 0 ? 'Tu ganancia con este pedido' : 'Ojo: con estos precios perdés'}</span><b>${money(Math.abs(gan))}${gan > 0 && venta ? ` (${Math.round(gan / venta * 100)}%)` : ''}</b></div>`; })() : ''}
+    </div>
+    <div class="err" id="pvOrdErr" role="alert">${n && n < ws.min ? `El pedido mínimo es de ${ws.min} marcianitos (te faltan ${ws.min - n}).` : ''}</div>
+    <button class="btn wa" id="pvSend" ${!n || n < ws.min ? 'disabled' : ''}>📤 Enviar pedido mayorista por WhatsApp</button>`;
+}
+$('pvBody').addEventListener('click', async e => {
+  const b = e.target.closest('[data-pvq]');
+  if(b){ const id = b.dataset.pvq; pvCart[id] = Math.max(0, (pvCart[id] || 0) + Number(b.dataset.d)); if(!pvCart[id]) delete pvCart[id]; renderPortal(); return; }
+  const cb = e.target.closest('[data-pvcard]');
+  if(cb){
+    const d = Number(cb.dataset.pvcard);
+    if(d > 0 && !confirm('¿Anotar un cartón completo canjeado? Guardalo para entregárselo a Santi.')) return;
+    const {data, error} = await sb.rpc('reseller_card', {p_code: pvCode(), p_delta: d});
+    if(error){ toast(/TOPE/.test(error.message || '') ? '⚠️ Llegaste al tope de cartones por reponer. Hablá con Santi.' : '⚠️ No se pudo anotar'); return; }
+    pv = {...data, ws:wsCfg(data.wholesale)}; renderPortal(); if(d > 0) toast('🎫 ¡Cartón anotado!');
+    return;
+  }
+  const rw = e.target.closest('[data-pvrw]');
+  if(rw){
+    const r = pv.ws.rewards.find(x => x.id === rw.dataset.pvrw); if(!r || !confirm(`¿Canjear ${r.cost} puntos por "${r.n}"?`)) return;
+    const {data, error} = await sb.rpc('redeem_reseller', {p_code: pvCode(), p_reward: r.id});
+    if(error || !data){ toast('⚠️ No se pudo canjear'); return; }
+    pv = {...data, ws:wsCfg(data.wholesale)}; renderPortal(); confetti(); toast('🎁 ¡Premio canjeado! Santi te lo lleva con el próximo pedido');
+    return;
+  }
+  if(e.target.closest('#pvSend')){
+    const ws = pv.ws, lvl = wsLevel(ws, pv.total_units), n = Object.values(pvCart).reduce((a, x) => a + x, 0);
+    if(n < ws.min) return;
+    const q = wsQuote(ws, n, lvl), items = FLAVORS.filter(f => pvCart[f.id]).map(f => ({id:f.id, name:f.name, qty:pvCart[f.id]}));
+    const L = [`🏪 PEDIDO MAYORISTA - ${brandName()}`, `Comercio: ${pv.name}`, '', '🍧 Carga:', ...items.map(i => `• ${i.qty}x ${i.name}`)];
+    if(q.packs.length) L.push(`📦 Packs: ${q.packs.join(' + ')}`);
+    if(q.disc) L.push(`${lvl.e || ''} Nivel ${lvl.n}: ${q.ld}% de descuento`);
+    L.push('', `💰 Total: ${money(q.total)}`, `⭐ Suma ${Math.floor(n * (Number(ws.pointsPer) || 0))} puntos`);
+    if(pv.cards_pending) L.push(`🎫 Cartones canjeados para reponer: ${pv.cards_pending}`);
+    const row = {customer_name:pv.name.slice(0, 60), address:(pv.address || 'Punto de venta').slice(0, 160), reference:null, items,
+                 combo:q.packs.join(' + ').slice(0, 200) || null, qty:n, total:q.total, delivery:deliveryText().slice(0, 80), pv_code:pvCode(), card_code:null};
+    try{ const {error} = await sb.from('orders').insert(row); if(error) console.warn(error); }catch(err){ console.warn(err); }
+    openUrl(`https://wa.me/${(state.config.phone || '').replace(/\D/g, '')}?text=${encodeURIComponent(L.join('\n'))}`, '_blank', 'noopener');
+    pvCart = {}; renderPortal(); toast('📤 ¡Pedido enviado! Los puntos se suman cuando Santi lo entrega');
+  }
+});
+$('pvChip').addEventListener('click', openPortal);
+$('wlSend').addEventListener('click', () => {
+  const shop = $('wlShop').value.trim(), name = $('wlName').value.trim(), phone = $('wlPhone').value.trim(), addr = $('wlAddr').value.trim();
+  if(shop.length < 2 || name.length < 2){ $('wlErr').textContent = 'Completá el nombre del comercio y tu nombre.'; return; }
+  $('wlErr').textContent = '';
+  const text = `🏪 ¡Hola Santi! Quiero ser punto de venta de ${brandName()}.\n\nComercio: ${shop}\nContacto: ${name}${phone ? `\nWhatsApp: ${phone}` : ''}${addr ? `\nDirección: ${addr}` : ''}\n\n¿Me pasás la lista de precios mayoristas?`;
+  openUrl(`https://wa.me/${(state.config.phone || '').replace(/\D/g, '')}?text=${encodeURIComponent(text)}`);
+  toast('📤 ¡Listo! Santi te va a contestar por WhatsApp');
+});
+
+/* --- Cartón de stickers del kiosco (para imprimir) --- */
+function stampCardHTML(kiosk){
+  const circ = i => `<div style="width:25mm;height:25mm;border-radius:50%;border:.5mm dashed rgba(255,255,255,.75);display:flex;align-items:center;justify-content:center;font-size:15pt;font-weight:700;color:rgba(255,255,255,.3)">${i}</div>`;
+  const gift = `<div style="width:25mm;height:25mm;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FFF3A8,#FFD23F 55%,#FF9A3D);color:#3B0A2A;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;font-size:7.5pt;line-height:1.1;text-align:center"><span style="font-size:15pt">🎁</span>GRATIS</div>`;
+  return `<div style="width:92mm;height:85mm;box-sizing:border-box;border-radius:5mm;border:.8mm solid #39FF88;background:radial-gradient(circle at 25% 0%,#3B1E8F,#0B0820 70%);color:#fff;padding:4mm 5mm 3mm;display:flex;flex-direction:column;font-family:Fredoka,Nunito,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact;flex:none">
+    <div style="display:flex;align-items:center;gap:2.5mm">
+      <img src="icons/icon-512.png" alt="" style="width:11mm;height:11mm;border-radius:2.5mm">
+      <div><div style="font-weight:700;font-size:13pt;line-height:1">${esc(brandName())}</div><div style="font-size:6.5pt;letter-spacing:.5mm;color:#39FF88;font-weight:700">TARJETA DE STICKERS</div></div>
+      <div style="margin-left:auto;text-align:right;font-size:7.5pt;color:#FFD23F;font-weight:700;line-height:1.15">Juntá 5 y llevate<br>1 marcianito GRATIS</div>
+    </div>
+    <div style="display:flex;gap:3mm;font-size:7.5pt;margin:2mm 0 2.5mm;padding-bottom:1mm;border-bottom:.3mm dashed #A8A2C8">
+      <span style="flex:1;white-space:nowrap;overflow:hidden">🏪 ${kiosk ? `<b>${esc(kiosk)}</b>` : 'Comercio: ____________'}</span><span>Nombre: ____________</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,25mm);justify-content:space-between;row-gap:3mm">${[1,2,3,4,5].map(circ).join('')}${gift}</div>
+    <div style="margin-top:auto;font-size:6pt;color:#A8A2C8;text-align:center">Pegá el sticker de cada marcianito · 1 por compra · Canjeable solo en este comercio</div>
+  </div>`;
+}
+function printStampCards(kiosk, sheets = 1){
+  printSheet(`<div class="ms-head">${esc(brand())} · Cartones de stickers${kiosk ? ' · ' + esc(kiosk) : ''} — 6 por hoja, imprimir en tamaño real (100%) y recortar</div>` +
+    Array.from({length:6 * sheets}, () => stampCardHTML(kiosk)).join(''));
+}
+
+/* --- Santi: lista y edición de puntos de venta --- */
+let resellers = [], pvEdit = null;
+const pvLink = code => location.origin + location.pathname + '?pv=' + code;
+async function fetchResellers(){
+  if(!sb || !loggedIn) return;
+  const {data, error} = await sb.from('resellers').select('*,reseller_redemptions(id,reward,cost,status,created_at)').order('created_at');
+  if(error){ $('pvList').innerHTML = '<li class="empty" style="border:none;background:none">Falta correr supabase-puntos-de-venta.sql en Supabase.</li>'; return; }
+  resellers = data || []; renderResellers();
+}
+function renderResellers(){
+  const ws = wsCfg(state.wholesale);
+  $('pvList').innerHTML = resellers.length ? resellers.map(r => {
+    const lvl = wsLevel(ws, r.total_units), pend = (r.reseller_redemptions || []).filter(x => x.status === 'pendiente');
+    return `<li><div class="top"><span class="name">🏪 ${esc(r.name)}${r.active ? '' : ' <span class="badge-soc no">INACTIVO</span>'}</span></div>
+      <p class="note" style="margin:4px 0">${esc(lvl.e || '')} ${esc(lvl.n)} · ⭐ ${r.points} puntos · ${r.total_units} marcianitos comprados${r.address ? ` · 📍 ${esc(r.address)}` : ''}</p>
+      ${pend.map(x => `<div class="pv-rw"><div>🎁 ${esc(x.reward)}</div><button class="mini gift" data-pvdeliv="${x.id}">✅ Entregado</button></div>`).join('')}
+      ${r.cards_pending ? `<div class="pv-rw"><div>🎫 ${r.cards_pending} cartón${r.cards_pending === 1 ? '' : 'es'} canjeado${r.cards_pending === 1 ? '' : 's'}: reponé ${r.cards_pending} marcianito${r.cards_pending === 1 ? '' : 's'} (retirá los cartones)</div><button class="mini gift" data-pvcards="${esc(r.code)}">✅ Repuestos</button></div>` : ''}
+      <div class="row">
+        <button class="mini" data-pvsend="${esc(r.code)}">📤 Mandar acceso</button>
+        <button class="mini" data-pvqr="${esc(r.code)}">🔳 QR</button>
+        <button class="mini" data-pvedit="${esc(r.code)}">✏️ Editar</button>
+        <button class="mini" data-pvprint="${esc(r.code)}">🎫 Cartones</button>
+      </div></li>`;
+  }).join('') : '<li class="empty" style="border:none;background:none">Todavía no hay puntos de venta. Tocá "＋ Nuevo".</li>';
+}
+function openPvEdit(code){
+  const r = code ? resellers.find(x => x.code === code) : null; pvEdit = r ? r.code : null;
+  $('t-pve').textContent = r ? 'Editar punto de venta' : 'Nuevo punto de venta';
+  $('pvName').value = r ? r.name : ''; $('pvContact').value = r ? r.contact || '' : ''; $('pvPhone').value = r ? r.phone || '' : '';
+  $('pvAddress').value = r ? r.address || '' : ''; $('pvHours').value = r ? r.hours || '' : ''; $('pvMaps').value = r ? r.maps || '' : '';
+  $('pvPublic').checked = r ? r.is_public : true; $('pvActive').checked = r ? r.active : true; $('pvErr').textContent = '';
+  open('pvEditOverlay');
+}
+$('pvNew').addEventListener('click', () => openPvEdit(null));
+$('pvSave').addEventListener('click', async () => {
+  const name = $('pvName').value.trim();
+  if(name.length < 2){ $('pvErr').textContent = 'Poné el nombre del comercio.'; return; }
+  const maps = $('pvMaps').value.trim();
+  const row = {name:name.slice(0, 60), contact:$('pvContact').value.trim().slice(0, 60) || null, phone:$('pvPhone').value.replace(/\D/g, '').slice(0, 20) || null,
+               address:$('pvAddress').value.trim().slice(0, 100) || null, hours:$('pvHours').value.trim().slice(0, 60) || null,
+               maps:/^https?:\/\//i.test(maps) ? maps.slice(0, 300) : null, is_public:$('pvPublic').checked, active:$('pvActive').checked};
+  const {error} = pvEdit ? await sb.from('resellers').update(row).eq('code', pvEdit) : await sb.from('resellers').insert({code:newCode(), ...row});
+  if(error){ $('pvErr').textContent = 'No se pudo guardar.'; console.warn(error); return; }
+  close('pvEditOverlay'); toast(pvEdit ? '✅ Punto de venta actualizado' : '🏪 ¡Punto de venta creado! Mandale su acceso'); fetchResellers(); fetchPOS();
+});
+$('pvList').addEventListener('click', async e => {
+  const t = e.target.closest('button'); if(!t) return;
+  if(t.dataset.pvedit) return openPvEdit(t.dataset.pvedit);
+  if(t.dataset.pvsend){
+    const r = resellers.find(x => x.code === t.dataset.pvsend);
+    const text = `🏪 ¡Hola ${r.contact || r.name}! Este es el portal mayorista de ${brandName()} para ${r.name}.\n\n👇 Tocá acá para hacer tus pedidos, ver tus puntos y canjear premios:\n${pvLink(r.code)}\n\nGuardalo: es solo para tu comercio.`;
+    openUrl(`https://wa.me/${(r.phone || '').replace(/\D/g, '')}?text=${encodeURIComponent(text)}`, '_blank', 'noopener'); return;
+  }
+  if(t.dataset.pvqr){
+    const r = resellers.find(x => x.code === t.dataset.pvqr), link = pvLink(r.code);
+    $('pvQrImg').src = 'https://api.qrserver.com/v1/create-qr-code/?size=600x600&margin=12&data=' + encodeURIComponent(link);
+    $('pvQrTxt').textContent = `Portal de ${r.name}. Es secreto: solo para el comercio (no lo pegues en el mostrador).`;
+    $('pvQrPrint').dataset.name = r.name; open('pvQrOverlay'); return;
+  }
+  if(t.dataset.pvprint){
+    const r = resellers.find(x => x.code === t.dataset.pvprint);
+    const n = Number(prompt(`¿Cuántas hojas de cartones para ${r.name}? (6 cartones por hoja)`, '1')) || 0;
+    if(n > 0) printStampCards(r.name, Math.min(10, Math.round(n)));
+    return;
+  }
+  if(t.dataset.pvcards){
+    const r = resellers.find(x => x.code === t.dataset.pvcards);
+    if(!r || !confirm(`¿Ya le repusiste ${r.cards_pending} marcianito${r.cards_pending === 1 ? '' : 's'} a ${r.name} y retiraste los cartones?`)) return;
+    const {error} = await sb.from('resellers').update({cards_pending:0, cards_total:(r.cards_total || 0) + r.cards_pending}).eq('code', r.code);
+    toast(error ? '⚠️ No se pudo guardar' : '🎫 ¡Reposición registrada!'); fetchResellers(); return;
+  }
+  if(t.dataset.pvdeliv){
+    const {error} = await sb.from('reseller_redemptions').update({status:'entregado', delivered_at:new Date().toISOString()}).eq('id', Number(t.dataset.pvdeliv));
+    toast(error ? '⚠️ No se pudo marcar' : '🎁 Premio entregado'); fetchResellers();
+  }
+});
+$('pvQrPrint').addEventListener('click', () => {
+  const nm = esc($('pvQrPrint').dataset.name || '');
+  printSheet(`<div style="width:120mm;margin:12mm auto 0;padding:10mm;box-sizing:border-box;border-radius:8mm;border:1.2mm solid #39FF88;
+      background:radial-gradient(circle at 50% 20%,#3B1E8F,#0B0820 75%);color:#fff;text-align:center;font-family:Fredoka,Nunito,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact">
+    <img src="icons/icon-512.png" alt="" style="width:30mm;height:30mm;border-radius:6mm">
+    <div style="font-size:22pt;font-weight:700;margin-top:3mm;letter-spacing:.5mm">${esc(brandName())}</div>
+    <div style="font-size:10pt;letter-spacing:1.2mm;color:#39FF88;font-weight:700">PORTAL MAYORISTA</div>
+    <div style="font-size:16pt;font-weight:700;margin:5mm 0 4mm;color:#FFD23F">🏪 ${nm}</div>
+    <div style="background:#fff;border-radius:5mm;padding:3mm;display:inline-block"><img src="${$('pvQrImg').src}" style="width:70mm;height:70mm;display:block" alt=""></div>
+    <div style="font-size:12pt;font-weight:700;margin-top:4mm">📱 Escaneá para hacer tu pedido,<br>ver tus puntos y canjear premios</div>
+    <div style="font-size:8.5pt;color:#A8A2C8;margin-top:3mm">Este QR es solo para el comercio · no lo dejes a la vista del público</div></div>`);
+});
+/* --- Santi: reglas mayoristas --- */
+function renderWholesale(){
+  const ws = wsCfg(state.wholesale); state.wholesale = ws;
+  $('wsUnit').value = ws.unit; $('wsMin').value = ws.min; $('wsPts').value = ws.pointsPer;
+  $('wsPacks').innerHTML = ws.packs.map(pk => `<div class="row" data-wspack="${esc(pk.id)}" style="margin-bottom:6px;align-items:center">
+    <input data-k="n" type="text" maxlength="30" value="${esc(pk.n)}" aria-label="Nombre del pack" style="flex:2">
+    <input data-k="k" type="number" min="2" value="${pk.k}" aria-label="Cantidad" style="flex:1">
+    <input data-k="d" type="number" min="0" max="60" value="${pk.d}" aria-label="% de descuento" style="flex:1">
+    <button class="x" data-wsdelpack="${esc(pk.id)}" aria-label="Quitar" style="flex:0 0 36px;height:36px;border-radius:50%;border:1px solid var(--line);background:none;color:var(--muted)">✕</button></div>`).join('')
+    + '<p class="note" style="margin:0 0 6px">Nombre · cantidad · % de descuento</p>';
+  $('wsRewards').innerHTML = ws.rewards.map(r => `<div class="row" data-wsrw="${esc(r.id)}" style="margin-bottom:6px;align-items:center">
+    <input data-k="n" type="text" maxlength="60" value="${esc(r.n)}" aria-label="Premio" style="flex:3">
+    <input data-k="cost" type="number" min="1" value="${r.cost}" aria-label="Puntos" style="flex:1">
+    <button class="x" data-wsdelrw="${esc(r.id)}" aria-label="Quitar" style="flex:0 0 36px;height:36px;border-radius:50%;border:1px solid var(--line);background:none;color:var(--muted)">✕</button></div>`).join('')
+    + '<p class="note" style="margin:0 0 6px">Premio · puntos que cuesta</p>';
+  $('wsLevels').innerHTML = ws.levels.map((l, i) => `<div class="row" data-wslv="${i}" style="margin-bottom:6px;align-items:center">
+    <span style="flex:0 0 30px;font-size:22px">${esc(l.e || '🏅')}</span>
+    <input data-k="n" type="text" maxlength="20" value="${esc(l.n)}" aria-label="Nivel" style="flex:2">
+    <input data-k="min" type="number" min="0" value="${l.min}" aria-label="Desde marcianitos" style="flex:1" ${i === 0 ? 'disabled' : ''}>
+    <input data-k="d" type="number" min="0" max="40" value="${l.d}" aria-label="% extra" style="flex:1"></div>`).join('')
+    + '<p class="note" style="margin:0">Nivel · desde cuántos marcianitos comprados · % de descuento extra</p>';
+  wsHint();
+}
+function readWholesale(){
+  const ws = state.wholesale, num = id => Number($(id).value) || 0;
+  ws.unit = Math.max(1, num('wsUnit')); ws.min = Math.max(1, Math.round(num('wsMin'))); ws.pointsPer = Math.max(0, num('wsPts'));
+  document.querySelectorAll('#wsPacks [data-wspack]').forEach(row => { const pk = ws.packs.find(x => x.id === row.dataset.wspack); if(!pk) return;
+    pk.n = row.querySelector('[data-k="n"]').value.replace(/\+/g, ' ').trim() || 'Pack'; pk.k = Math.max(2, Math.round(Number(row.querySelector('[data-k="k"]').value) || 2)); pk.d = Math.max(0, Math.min(60, Number(row.querySelector('[data-k="d"]').value) || 0)); });
+  document.querySelectorAll('#wsRewards [data-wsrw]').forEach(row => { const r = ws.rewards.find(x => x.id === row.dataset.wsrw); if(!r) return;
+    r.n = row.querySelector('[data-k="n"]').value.trim() || 'Premio'; r.cost = Math.max(1, Math.round(Number(row.querySelector('[data-k="cost"]').value) || 1)); });
+  document.querySelectorAll('#wsLevels [data-wslv]').forEach(row => { const l = ws.levels[Number(row.dataset.wslv)]; if(!l) return;
+    l.n = row.querySelector('[data-k="n"]').value.trim() || l.n; l.min = Number(row.dataset.wslv) === 0 ? 0 : Math.max(0, Math.round(Number(row.querySelector('[data-k="min"]').value) || 0)); l.d = Math.max(0, Math.min(40, Number(row.querySelector('[data-k="d"]').value) || 0)); });
+}
+function wsHint(){
+  const ws = state.wholesale, retail = Number(state.config.price) || 0, unitCost = (() => { try{ const c = ccData(); return null; }catch(e){ return null; } })();
+  $('wsHint').textContent = retail ? `El comercio compra a ${money(ws.unit)} y vende a ${money(retail)}: gana ${money(retail - ws.unit)} por marcianito (${Math.round((retail - ws.unit) / retail * 100)}%).` : '';
+}
+['wsPacks','wsRewards','wsLevels'].forEach(id => $(id).addEventListener('input', () => { readWholesale(); wsHint(); }));
+['wsUnit','wsMin','wsPts'].forEach(id => $(id).addEventListener('input', () => { readWholesale(); wsHint(); }));
+$('wsAddPack').addEventListener('click', () => { readWholesale(); state.wholesale.packs.push({id:'w' + Date.now().toString(36), n:'Caja nueva', k:36, d:8}); renderWholesale(); });
+$('wsAddReward').addEventListener('click', () => { readWholesale(); state.wholesale.rewards.push({id:'r' + Date.now().toString(36), n:'Premio nuevo', cost:100}); renderWholesale(); });
+$('wsPacks').addEventListener('click', e => { const b = e.target.closest('[data-wsdelpack]'); if(b){ readWholesale(); state.wholesale.packs = state.wholesale.packs.filter(x => x.id !== b.dataset.wsdelpack); renderWholesale(); } });
+$('wsRewards').addEventListener('click', e => { const b = e.target.closest('[data-wsdelrw]'); if(b){ readWholesale(); state.wholesale.rewards = state.wholesale.rewards.filter(x => x.id !== b.dataset.wsdelrw); renderWholesale(); } });
+$('wsSave').addEventListener('click', () => { readWholesale(); save(); renderResellers(); toast('💾 Reglas mayoristas guardadas'); });
 
 /* =================== OTRAS LÍNEAS DE HELADOS =================== */
 const LINE_SEP = '~';
@@ -2858,13 +3278,16 @@ const QL_TYPES = {
 };
 function qlInfo(){
   const t = QL_TYPES[$('qlWhat').value], hojas = Number($('qlCopies').value) || 1;
-  $('qlInfo').textContent = t ? `${t.per * hojas} ${t.name.toLowerCase()} de ${cm(t.w)} × ${cm(t.h)} cm (${t.per} por hoja).` : 'El cartel sale en una hoja A4 completa.';
-  $('qlCopies').disabled = !t;
+  $('qlInfo').textContent = t ? `${t.per * hojas} ${t.name.toLowerCase()} de ${cm(t.w)} × ${cm(t.h)} cm (${t.per} por hoja).` : $('qlWhat').value === 'mayorista' ? 'El folleto para comercios sale en una hoja A4 completa. Su QR lleva a la página "Vendé AREA 51".' : 'El cartel sale en una hoja A4 completa.';
+  $('qlCopies').disabled = !t && $('qlWhat').value !== 'cartones';
+  if($('qlWhat').value === 'cartones') $('qlInfo').textContent = `${6 * hojas} cartones de 9,2 × 8,5 cm (6 por hoja), con una línea para escribir el comercio. Para que salgan con el nombre del kiosco, imprimilos desde Puntos de venta → 🎫 Cartones.`;
 }
 ['qlWhat','qlCopies'].forEach(id => $(id).addEventListener('change', qlInfo)); qlInfo();
 $('qlPrint').addEventListener('click', () => {
   const what = $('qlWhat').value, hojas = Number($('qlCopies').value) || 1;
   if(what === 'cartel'){ printSheet('<img class="qposter" src="print/cartel-qr.jpg" alt="Cartel con QR">'); return; }
+  if(what === 'cartones'){ printStampCards('', hojas); return; }
+  if(what === 'mayorista'){ printSheet('<img class="qposter" src="print/folleto-mayorista.jpg" alt="Folleto para comercios">'); return; }
   const t = QL_TYPES[what], total = t.per * hojas;
   printSheet(`<div class="ms-head">${esc(brand())} · ${t.name} ${cm(t.w)} × ${cm(t.h)} cm — imprimir en tamaño real (100%) y recortar por el borde gris</div>` +
     Array.from({length:total}, (_, i) => `<img class="qlbl" src="${t.img2 && i % 2 ? t.img2 : t.img}" alt="" style="width:${t.w}mm;height:${t.h}mm">`).join(''));
@@ -2960,10 +3383,13 @@ try{ cardCode = localStorage.getItem(TKEY) || null; }catch(e){}
     }
     if(u.searchParams.get('tarjeta') === '1') openCardOnLoad = true;   // atajo "Mi tarjeta" del ícono
     if(u.searchParams.get('qr') === '1') qrArrive = true;              // vino escaneando el QR impreso
+    const pvq = (u.searchParams.get('pv') || '').toUpperCase();
+    if(/^[A-Z0-9]{10}$/.test(pvq)){ try{ localStorage.setItem('area51-pv', pvq); }catch(e){} window.__pvOpen = true; }
     const inv = (u.searchParams.get('inv') || '').toUpperCase();
     const invN = inv.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^A-Z0-9]+/g, '-').replace(/^-+|-+$/g, '');
     if(/^[A-Z0-9-]{6,30}$/.test(invN)) pendingInvite = invN;
-    ['t','tarjeta','source','inv','qr'].forEach(k => u.searchParams.delete(k));
+    if(u.searchParams.get('mayorista') === '1') window.__wsLand = true;
+    ['t','tarjeta','source','inv','qr','pv','mayorista'].forEach(k => u.searchParams.delete(k));
     history.replaceState(history.state, '', u.pathname + u.search + u.hash);
   }catch(e){}
 })();
@@ -4377,7 +4803,7 @@ function inviteText(code, from){
 async function shareInvite(code, from){
   const text = inviteText(code, from);
   if(navigator.share){ try{ await navigator.share({text}); return; }catch(e){ if(e && e.name === 'AbortError') return; } }
-  window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank', 'noopener');
+  openUrl('https://wa.me/?text=' + encodeURIComponent(text), '_blank', 'noopener');
 }
 /* --- Santi crea invitaciones --- */
 $('santiInvite').addEventListener('click', async () => {
@@ -4501,7 +4927,7 @@ $('wsShare').addEventListener('click', async () => {
   }
   // Compu o navegador sin "compartir": se descarga la imagen y se abre WhatsApp con el texto
   if(wsFile){ const a = document.createElement('a'); a.href = wsUrl; a.download = wsFile.name; document.body.appendChild(a); a.click(); a.remove(); }
-  window.open('https://wa.me/?text=' + encodeURIComponent(wsText), '_blank', 'noopener');
+  openUrl('https://wa.me/?text=' + encodeURIComponent(wsText), '_blank', 'noopener');
   toast(wsFile ? '📥 Se descargó la credencial: adjuntala en el chat' : '💬 Abriendo WhatsApp');
 });
 $('wsCopy').addEventListener('click', async () => {
@@ -4592,7 +5018,10 @@ $('loginPass').addEventListener('keydown', e => { if(e.key === 'Enter') tryPin()
 function refreshShop(){ applyTheme(); renderHero(); renderStatus(); renderCombos(); renderGrid(); renderCart(); }
 refreshShop();
 pullConfig();
-renderCardChip(); renderClubLock(); renderArcade(); renderLiveBanner(); fetchCard(); renderInstallBanner(); fetchRace(); fetchComp();
+renderCardChip(); renderClubLock(); renderArcade(); renderLiveBanner(); fetchPOS();
+if(pvCode()){ $('pvChip').classList.remove('hidden'); if(window.__pvOpen || window.__wsLand) setTimeout(openPortal, 600); }
+else if(window.__wsLand) setTimeout(() => open('wsLandOverlay'), 600);
+fetchCard(); renderInstallBanner(); fetchRace(); fetchComp();
 setInterval(() => { renderStatus(); updateWaLink(); }, 60000);
 </script>
 </body>
