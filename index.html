@@ -1363,6 +1363,21 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
 </div>
 <div class="toast hidden" id="toast" role="status"></div>
 
+<!-- Aviso: solicitud nueva de punto de venta -->
+<div class="overlay hidden" id="reqOverlay" role="dialog" aria-modal="true" aria-labelledby="t-req">
+  <div class="sheet" style="text-align:center">
+    <div class="sheet-head"><h2 id="t-req">📩 ¡Tenés una solicitud nueva!</h2><button class="close" data-close="reqOverlay" aria-label="Ver después">✕</button></div>
+    <div style="font-size:64px;line-height:1;margin:4px 0 8px" aria-hidden="true">🏪</div>
+    <p class="sub" style="margin:0 0 4px">Un comercio quiere ser punto de venta de AREA 51:</p>
+    <div class="pv-head"><div class="pn" id="reqShop"></div><span class="sub" id="reqData"></span></div>
+    <p class="note" id="reqMore" style="margin:0 0 12px"></p>
+    <button class="btn primary" id="reqOk">✅ Aceptar y darlo de alta</button>
+    <button class="btn wa hidden" id="reqWa">💬 Escribirle por WhatsApp</button>
+    <button class="btn ghost" id="reqLater">Ver después</button>
+    <button class="btn danger" id="reqNo">✕ Descartar</button>
+  </div>
+</div>
+
 <!-- Página para comercios: "Vendé AREA 51" -->
 <div class="overlay hidden" id="wsLandOverlay" role="dialog" aria-modal="true" aria-labelledby="t-wsl">
   <div class="sheet">
@@ -1804,7 +1819,7 @@ function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.remove('
    Cada pantalla y ventana abierta crea una entrada en el historial del navegador.
    Así, la flecha "atrás" cierra la ventana abierta o vuelve a la pantalla anterior
    en lugar de salir del sitio. */
-const OVERLAYS = ['cartOverlay','pinOverlay','celebrate','flavorOverlay','cardOverlay','envOverlay','installOverlay','avatarOverlay','welcomeOverlay','welcomeSend','joinOverlay','packOverlay','gameOverlay','liveOverlay','regOverlay','comboOverlay','lineOverlay','pvOverlay','pvEditOverlay','pvQrOverlay','wsLandOverlay'];
+const OVERLAYS = ['cartOverlay','pinOverlay','celebrate','flavorOverlay','cardOverlay','envOverlay','installOverlay','avatarOverlay','welcomeOverlay','welcomeSend','joinOverlay','packOverlay','gameOverlay','liveOverlay','regOverlay','comboOverlay','lineOverlay','pvOverlay','pvEditOverlay','pvQrOverlay','wsLandOverlay','reqOverlay'];
 const HOME_NAV = {screen:'shop', view:'home', ov:null};
 let navState = {...HOME_NAV};
 let adminUnlocked = false;
@@ -2511,7 +2526,7 @@ function showShopUI(){
   refreshShop();
 }
 function showAdminUI(){
-  setTimeout(fetchResellers, 900);
+  setTimeout(() => { fetchResellers(); listenRequests(); }, 900);
   $('pvChip').classList.add('hidden');
   $('decoLayer').classList.add('hidden');
   $('packChip').classList.add('hidden');
@@ -2950,7 +2965,8 @@ function printStampCards(kiosk, sheets = 1){
 let resellers = [], pvEdit = null, pvFromReq = null;
 const pvLink = code => location.origin + location.pathname + '?pv=' + code;
 let pvReqs = [];
-setInterval(() => { if(loggedIn && !$('admin').classList.contains('hidden')) fetchResellers(); }, 120000);
+setInterval(() => { if(loggedIn && !$('admin').classList.contains('hidden')) fetchResellers(); }, 60000);
+document.addEventListener('visibilitychange', () => { if(!document.hidden && loggedIn && !$('admin').classList.contains('hidden')) fetchResellers(); });
 async function fetchResellers(){
   if(!sb || !loggedIn) return;
   sb.from('reseller_requests').select('*').in('status', ['nueva','vista']).order('created_at', {ascending:false}).limit(30)
@@ -2984,10 +3000,44 @@ function updatePvAlerts(){
   // aviso al entrar: solo las solicitudes que todavía no vio
   let seen = []; try{ seen = JSON.parse(localStorage.getItem('area51-pvreq-vistas') || '[]'); }catch(e){}
   const fresh = pvReqs.filter(q => q.status === 'nueva' && !seen.includes(q.id));
-  if(fresh.length){
-    toast(fresh.length === 1 ? `📩 ¡${fresh[0].shop} quiere ser punto de venta!` : `📩 ¡${fresh.length} comercios quieren ser punto de venta!`);
-    try{ localStorage.setItem('area51-pvreq-vistas', JSON.stringify([...seen, ...fresh.map(q => q.id)].slice(-200))); }catch(e){}
+  if(fresh.length && $('reqOverlay').classList.contains('hidden') && !$('admin').classList.contains('hidden')){
+    showReqNotice(fresh[0], fresh.length);
+    try{ localStorage.setItem('area51-pvreq-vistas', JSON.stringify([...seen, fresh[0].id].slice(-200))); }catch(e){}
   }
+}
+let reqShown = null;
+function showReqNotice(q, n){
+  reqShown = q;
+  $('reqShop').textContent = q.shop;
+  $('reqData').textContent = [q.contact && `👤 ${q.contact}`, q.phone && `📱 ${q.phone}`].filter(Boolean).join(' · ');
+  $('reqMore').textContent = (q.address ? `📍 ${q.address}` : '') + (n > 1 ? `${q.address ? ' · ' : ''}Hay ${n - 1} solicitud${n - 1 === 1 ? '' : 'es'} más` : '');
+  $('reqWa').classList.toggle('hidden', !q.phone);
+  open('reqOverlay'); sfx('bright');
+  try{ if(navigator.vibrate) navigator.vibrate([120, 60, 120]); }catch(e){}
+}
+$('reqOk').addEventListener('click', () => {
+  const q = reqShown; if(!q) return;
+  go('crew'); crewTab('pv');
+  openPvEdit(null);
+  $('pvName').value = q.shop; $('pvContact').value = q.contact || ''; $('pvPhone').value = (q.phone || '').replace(/\D/g, ''); $('pvAddress').value = q.address || '';
+  pvFromReq = q.id;
+});
+$('reqWa').addEventListener('click', () => { const q = reqShown; if(q && q.phone) openUrl(`https://wa.me/${q.phone.replace(/\D/g, '')}?text=${encodeURIComponent(`¡Hola ${q.contact || ''}! Soy Santi de ${brandName()} 👽 Recibí tu pedido para que ${q.shop} sea punto de venta.`)}`); });
+$('reqLater').addEventListener('click', () => { close('reqOverlay'); setTimeout(updatePvAlerts, 400); });
+$('reqNo').addEventListener('click', async () => {
+  const q = reqShown; if(!q || !confirm(`¿Descartar la solicitud de ${q.shop}?`)) return;
+  await sb.from('reseller_requests').update({status:'descartada'}).eq('id', q.id);
+  close('reqOverlay'); fetchResellers();
+});
+// Aviso al instante: escucha las solicitudes nuevas mientras Santi tiene abierto el Centro de Control
+let reqChannel = null;
+function listenRequests(){
+  if(!sb || !loggedIn || reqChannel) return;
+  try{
+    reqChannel = sb.channel('pv-requests')
+      .on('postgres_changes', {event:'INSERT', schema:'public', table:'reseller_requests'}, () => fetchResellers())
+      .subscribe();
+  }catch(e){ reqChannel = null; }
 }
 function crewTab(tab){
   document.querySelectorAll('[data-crewtab]').forEach(b => b.classList.toggle('on', b.dataset.crewtab === tab));
