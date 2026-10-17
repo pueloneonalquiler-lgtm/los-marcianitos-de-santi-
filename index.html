@@ -1069,6 +1069,7 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
       <input id="sThemeMsg" type="text" maxlength="90" placeholder="Si lo dejás vacío se usa el del tema">
       <label for="sThemeAmount">Cantidad de decoración</label>
       <select class="inp" id="sThemeAmount"><option value="poca">Poca</option><option value="normal">Normal</option><option value="mucha">Mucha</option></select>
+      <label class="checkrow"><input type="checkbox" id="sLaunchSound"> 🔊 Despegue con sonido: cuenta regresiva en inglés (5, 4, 3, 2, 1… Lift off!) y rugido del cohete</label>
       <details style="margin-top:12px"><summary style="cursor:pointer;font-weight:800">📅 Calendario automático</summary><ul class="loglist" id="themeCal" style="margin-top:8px"></ul></details>
     </div>
     <div class="panel">
@@ -1722,7 +1723,7 @@ const DEFAULT = {
     storeName:'AREA 51', storePill:'CLUB', storeTagline:'Club de helados de Santi', storeLine:'Comarca Andina del Paralelo 42',
     deliveryArea:'', logoImg:'', logoOnly:false, compPrizeImg:'', raceFor:'socios',
     social:{ig:'', fb:'', tt:'', web:''},
-    lines:[], theme:'auto', themeMsg:'', themeAmount:'normal',
+    lines:[], launchSound:true, theme:'auto', themeMsg:'', themeAmount:'normal',
     welcomeSticker:true, qrRegister:true, stickerLimit:'dia', stickerMinQty:1,
     compOn:true, compFor:'todos', compPrize:'¡Un Pack Cohete Apolo gratis!', compStart:'', compEnd:'',
     raceOn:true, raceGoal:100, racePrize:'¡Un Pack Galaxia gratis! (5 + 1)', raceStart:'',
@@ -2106,6 +2107,51 @@ try{
   if(mem.n) $('cName').value = mem.n; if(mem.a) $('cAddr').value = mem.a; if(mem.r) $('cRef').value = mem.r;
 }catch(e){}
 
+/* --- Sonido del despegue: voz en inglés + bips + rugido del cohete (todo generado, sin archivos) --- */
+let launchCtx = null, enVoice = null;
+function audioCtx(){ try{ launchCtx = launchCtx || new (window.AudioContext || window.webkitAudioContext)(); if(launchCtx.state === 'suspended') launchCtx.resume(); }catch(e){ launchCtx = null; } return launchCtx; }
+function pickVoice(){
+  try{
+    const vs = speechSynthesis.getVoices();
+    enVoice = vs.find(v => /en[-_]US/i.test(v.lang) && /male|david|alex|daniel|google us/i.test(v.name)) || vs.find(v => /en[-_](US|GB)/i.test(v.lang)) || vs.find(v => /^en/i.test(v.lang)) || null;
+  }catch(e){}
+}
+if('speechSynthesis' in window){ pickVoice(); try{ speechSynthesis.onvoiceschanged = pickVoice; }catch(e){} }
+function say(text, opts = {}){
+  if(!('speechSynthesis' in window)) return;
+  try{
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-US'; if(enVoice) u.voice = enVoice;
+    u.rate = opts.rate || 1; u.pitch = opts.pitch || .75; u.volume = 1;
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+function beep(final){
+  const ctx = audioCtx(); if(!ctx) return;
+  const t = ctx.currentTime, o = ctx.createOscillator(), g = ctx.createGain();
+  o.type = 'square'; o.frequency.value = final ? 1320 : 880;
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(.06, t + .01); g.gain.exponentialRampToValueAtTime(0.0001, t + (final ? .45 : .14));
+  o.connect(g); g.connect(ctx.destination); o.start(t); o.stop(t + .5);
+}
+function rocketRumble(){
+  const ctx = audioCtx(); if(!ctx) return;
+  const t = ctx.currentTime, dur = 3.4;
+  // ruido (el fuego del motor) filtrado, que sube y después se aleja
+  const buf = ctx.createBuffer(1, ctx.sampleRate * dur, ctx.sampleRate), d = buf.getChannelData(0);
+  let last = 0; for(let i = 0; i < d.length; i++){ last = (last + .04 * (Math.random() * 2 - 1)) / 1.04; d[i] = last * 3.2; }
+  const src = ctx.createBufferSource(); src.buffer = buf;
+  const lp = ctx.createBiquadFilter(); lp.type = 'lowpass';
+  lp.frequency.setValueAtTime(180, t); lp.frequency.exponentialRampToValueAtTime(1400, t + 1.2); lp.frequency.exponentialRampToValueAtTime(260, t + dur);
+  const g = ctx.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(.9, t + .35); g.gain.setValueAtTime(.9, t + 1.4); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  src.connect(lp); lp.connect(g); g.connect(ctx.destination); src.start(t); src.stop(t + dur);
+  // graves que hacen temblar
+  const o = ctx.createOscillator(), og = ctx.createGain(); o.type = 'sawtooth';
+  o.frequency.setValueAtTime(42, t); o.frequency.exponentialRampToValueAtTime(90, t + 1.6); o.frequency.exponentialRampToValueAtTime(30, t + dur);
+  const olp = ctx.createBiquadFilter(); olp.type = 'lowpass'; olp.frequency.value = 160;
+  og.gain.setValueAtTime(0.0001, t); og.gain.exponentialRampToValueAtTime(.25, t + .3); og.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(olp); olp.connect(og); og.connect(ctx.destination); o.start(t); o.stop(t + dur);
+}
+
 function launchShip(url){
   const s = cartSummary();
   saveOrder(s); markVoucherPending(s);
@@ -2116,12 +2162,17 @@ function launchShip(url){
   $('launchFallback').classList.add('hidden'); $('launchBack').classList.add('hidden'); $('launchInstall').classList.add('hidden');
   $('launchText').textContent = `${s.count} marcianito${s.count===1?'':'s'} a bordo, rumbo a Santi`;
   $('launch').classList.remove('hidden');
-  let n = 3; $('launchTitle').textContent = 'Despegue en 3…';
+  const sound = state.config.launchSound !== false;
+  const WORDS = ['', 'One', 'Two', 'Three', 'Four', 'Five'];
+  let n = sound ? 5 : 3;
+  $('launchTitle').textContent = `Despegue en ${n}…`;
+  if(sound){ audioCtx(); try{ speechSynthesis.cancel(); }catch(e){} beep(false); say(WORDS[n]); }   // el primero sale en el mismo toque (así el celular deja sonar)
   const tick = setInterval(() => {
     n--;
-    if(n > 0){ $('launchTitle').textContent = `Despegue en ${n}…`; return; }
+    if(n > 0){ $('launchTitle').textContent = `Despegue en ${n}…`; if(sound){ beep(false); say(WORDS[n]); } return; }
     clearInterval(tick);
     $('launchTitle').textContent = '¡Despegue! 🚀';
+    if(sound){ beep(true); say('Lift off!', {rate:.95, pitch:.9}); rocketRumble(); try{ if(navigator.vibrate) navigator.vibrate([400, 100, 300]); }catch(e){} }
     void ship.offsetWidth; ship.classList.add('go');
     setTimeout(() => {
       $('launchTitle').textContent = '¡Pedido en camino!';
@@ -2129,8 +2180,8 @@ function launchShip(url){
       $('launchFallback').classList.remove('hidden'); $('launchBack').classList.remove('hidden');
       $('launchInstall').classList.toggle('hidden', isStandalone());
       window.location.href = url;
-    }, 1300);
-  }, 700);
+    }, sound ? 2200 : 1300);
+  }, sound ? 1000 : 700);
 }
 $('launchBack').addEventListener('click', () => {
   Object.keys(cart).forEach(k => delete cart[k]);
@@ -2446,6 +2497,7 @@ function renderSettings(){
   $('sInvites').value = Number.isInteger(c.invitesPerMember) ? c.invitesPerMember : 2;
   $('sTheme').innerHTML = `<option value="auto">📅 Automático por fecha</option><option value="none">Sin tema</option>` +
     Object.entries(THEMES).map(([k, t]) => `<option value="${k}">${t.e} ${t.n}</option>`).join('');
+  $('sLaunchSound').checked = c.launchSound !== false;
   $('sTheme').value = c.theme || 'auto'; $('sThemeMsg').value = c.themeMsg || ''; $('sThemeAmount').value = c.themeAmount || 'normal';
   renderThemeInfo();
   $('sStickerLimit').value = c.stickerLimit || 'dia'; $('sStickerMin').value = String(c.stickerMinQty || 1);
@@ -2490,7 +2542,7 @@ $('setSave').addEventListener('click', () => {
     goalName:$('sGoalName').value.trim() || 'Mi meta', goalAmount:num('sGoalAmount'), goalEmoji:pickEmoji,
     phone:$('sPhone').value.replace(/\D/g,'') || DEFAULT.config.phone, pin: sb ? state.config.pin : pin,
     invitesPerMember: Math.max(0, Math.min(10, Math.round(num('sInvites')) || 0)),
-    theme:$('sTheme').value, themeMsg:$('sThemeMsg').value.trim().slice(0, 90), themeAmount:$('sThemeAmount').value,
+    launchSound:$('sLaunchSound').checked, theme:$('sTheme').value, themeMsg:$('sThemeMsg').value.trim().slice(0, 90), themeAmount:$('sThemeAmount').value,
     stickerLimit:$('sStickerLimit').value, stickerMinQty:Number($('sStickerMin').value) || 1,
     welcomeSticker:$('sWelcomeSticker').checked, qrRegister:$('sQrRegister').checked,
     compOn:$('sCompOn').checked, compFor:$('sCompFor').value, compPrize:$('sCompPrize').value.trim().slice(0,80), compEnd:$('sCompEnd').value || '',
