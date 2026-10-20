@@ -1125,7 +1125,7 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
         <div><label for="ccStkCost">Costo de cada sticker ($)</label><input id="ccStkCost" type="number" inputmode="numeric" min="0"></div>
         <div><label for="ccStkPct">% de helados con sticker</label><input id="ccStkPct" type="number" inputmode="numeric" min="0" max="100"></div>
         <div><label for="ccLoss">% que se pierde</label><input id="ccLoss" type="number" inputmode="numeric" min="0" max="50"></div>
-        <div><label for="ccMargin">% de ganancia que querés</label><input id="ccMargin" type="number" inputmode="numeric" min="0" max="90"></div>
+        <div><label for="ccMargin">% de ganancia sobre el precio de venta</label><input id="ccMargin" type="number" inputmode="numeric" min="0" max="90"></div>
         <div><label for="ccLabMin">Tu tiempo por tanda (min, opcional)</label><input id="ccLabMin" type="number" inputmode="numeric" min="0"></div>
         <div><label for="ccLabHour">Valor de tu hora ($, opcional)</label><input id="ccLabHour" type="number" inputmode="numeric" min="0"></div>
       </div>
@@ -2805,6 +2805,19 @@ function readCosts(){
   });
   return c;
 }
+function unitCost(c){
+  let ing = 0; (c.ingredients || []).forEach(i => { const v = ingCost(i); if(v !== null) ing += v; });
+  const bags = (c.bagPrice || 0) / Math.max(1, c.bagQty || 1) * (c.units || 1), labor = (c.laborHour || 0) * (c.laborMin || 0) / 60;
+  const good = (c.units || 1) * (1 - (c.loss || 0) / 100);
+  return (good > 0 ? (ing + bags + (c.energy || 0) + labor) / good : 0) + (c.stickerCost || 0) * (c.stickerPct || 0) / 100;
+}
+// Fila de ganancia: precio por unidad, cuánto ganás, % sobre el precio (margen) y % sobre el costo (recargo)
+function gainRow(label, detail, pu, cost){
+  const g = pu - cost, ok = g > 0;
+  return `<div class="lr" style="align-items:flex-start"><span>${label}${detail ? `<small style="display:block;color:var(--muted)">${detail}</small>` : ''}</span>
+    <b style="text-align:right;color:${ok ? 'var(--green)' : '#FF8FA0'}">${ok ? 'ganás' : 'perdés'} ${money(Math.abs(Math.round(g)))} c/u
+    <small style="display:block;color:var(--muted);font-family:var(--body);font-weight:700">${ok ? `${Math.round(g / pu * 100)}% del precio · +${Math.round(g / cost * 100)}% sobre costo` : 'revisá el precio'}</small></b></div>`;
+}
 function calcCosts(){
   const c = readCosts();
   let ingTotal = 0, bad = [];
@@ -2832,10 +2845,18 @@ function calcCosts(){
     <div class="lr"><span>Costo por marcianito ${c.loss ? `(con ${c.loss}% de pérdida)` : ''}</span><b>${money(perUnit)}</b></div>
     <div class="lr"><span>Sticker promedio (${c.stickerPct}% × ${money(c.stickerCost)})</span><b>${money(stk)}</b></div>
     <div class="big"><span>Te cuesta cada uno</span><b style="color:var(--yellow)">${money(cost)}</b></div>
-    <div class="big"><span>Precio sugerido (${c.margin}% de ganancia)</span><b>${money(sugg)}</b></div>
-    <div class="cost-warn ${gain > 0 ? 'ok' : 'bad'}">${price ? (gain > 0 ? `Con tu precio actual (${money(price)}) ganás ${money(gain)} por marcianito (${gp}%).` : `⚠️ Con tu precio actual (${money(price)}) perdés ${money(-gain)} por marcianito.`) : 'Todavía no cargaste un precio de venta.'}</div>
-    ${combos.length ? `<div style="margin-top:10px;font-weight:800;font-size:14px">Combos</div>` + combos.map(cb => { const pu = cb.p / cb.k, g = pu - cost;
-      return `<div class="lr"><span>${esc(cb.e)} ${esc(cb.n)} (${money(pu)} c/u)</span><b style="color:${g > 0 ? 'var(--green)' : '#FF8FA0'}">${g > 0 ? '+' : ''}${money(g)} c/u</b></div>`; }).join('') : ''}
+    <div class="big"><span>Precio sugerido (${c.margin}% del precio de venta)</span><b>${money(sugg)}</b></div>
+    <div class="cost-warn ${gain > 0 ? 'ok' : 'bad'}">${price ? (gain > 0 ? `Con tu precio actual (${money(price)}) ganás ${money(gain)} por marcianito: el ${gp}% de lo que cobrás, o sea +${Math.round(gain / cost * 100)}% sobre lo que te cuesta.` : `⚠️ Con tu precio actual (${money(price)}) perdés ${money(-gain)} por marcianito.`) : 'Todavía no cargaste un precio de venta.'}</div>
+    <p class="note" style="margin:8px 0 0">💡 <b>% del precio</b> = de cada peso que cobrás, cuánto es ganancia. <b>% sobre costo</b> = cuánto le sumás a lo que te cuesta. Las dos son correctas, miden distinto.</p>
+    <div style="margin-top:14px;font-weight:800;font-size:15px">🛍️ Venta al público</div>
+    ${gainRow('Marcianito suelto', '', price, cost)}
+    ${combos.map(cb => gainRow(`${esc(cb.e)} ${esc(cb.n)}`, `${cb.k} por ${money(cb.p)} · ${money(Math.round(cb.p / cb.k))} c/u`, cb.p / cb.k, cost)).join('')}
+    ${(() => { const ws = wsCfg(state.wholesale); const top = ws.levels[ws.levels.length - 1];
+      const rows = [gainRow('Mayorista suelto', `${money(ws.unit)} c/u`, ws.unit, cost),
+        ...ws.packs.filter(pk => pk.k >= 2).sort((a, b) => a.k - b.k).map(pk => { const pp = wsPackPrice(ws, pk); return gainRow(`📦 ${esc(pk.n)}`, `${pk.k} por ${money(pp)} · ${money(Math.round(pp / pk.k))} c/u`, pp / pk.k, cost); })];
+      const biggest = ws.packs.filter(pk => pk.k >= 2).sort((a, b) => b.k - a.k)[0];
+      if(top && top.d && biggest){ const pp = wsPackPrice(ws, biggest) * (1 - top.d / 100); rows.push(gainRow(`${esc(top.e || '')} Peor caso: ${esc(biggest.n)} a un comercio ${esc(top.n)}`, `con su ${top.d}% extra · ${money(Math.round(pp / biggest.k))} c/u`, pp / biggest.k, cost)); }
+      return `<div style="margin-top:14px;font-weight:800;font-size:15px">🏪 Venta a comercios (mayorista)</div>` + rows.join(''); })()}
     ${bad.length ? `<div class="cost-warn bad">⚠️ Revisá las unidades de: ${esc(bad.join(', '))} (no se puede comparar kilos con litros o unidades).</div>` : ''}
     ${c.stickerPct >= 50 && c.stickerCost > perUnit * 2 ? `<div class="cost-warn bad">💡 El sticker cuesta más que el helado: ponelo solo en una parte (ferias, clientes nuevos, uno por bolsa).</div>` : ''}
     <button class="btn primary" id="ccApply" style="margin-top:12px" ${sugg === price ? 'disabled' : ''}>${sugg === price ? '✅ Ya estás usando el precio sugerido' : `Usar ${money(sugg)} como precio de venta`}</button>`;
@@ -3245,8 +3266,9 @@ function readWholesale(){
     l.n = row.querySelector('[data-k="n"]').value.trim() || l.n; l.min = Number(row.dataset.wslv) === 0 ? 0 : Math.max(0, Math.round(Number(row.querySelector('[data-k="min"]').value) || 0)); l.d = Math.max(0, Math.min(40, Number(row.querySelector('[data-k="d"]').value) || 0)); });
 }
 function wsHint(){
-  const ws = state.wholesale, retail = Number(state.config.price) || 0, unitCost = (() => { try{ const c = ccData(); return null; }catch(e){ return null; } })();
-  $('wsHint').textContent = retail ? `El comercio compra a ${money(ws.unit)} y vende a ${money(retail)}: gana ${money(retail - ws.unit)} por marcianito (${Math.round((retail - ws.unit) / retail * 100)}%).` : '';
+  const ws = state.wholesale, retail = Number(state.config.price) || 0, cost = unitCost(ccData()), mine = ws.unit - cost;
+  $('wsHint').textContent = (retail ? `El comercio compra a ${money(ws.unit)} y vende a ${money(retail)}: gana ${money(retail - ws.unit)} por marcianito (${Math.round((retail - ws.unit) / retail * 100)}% del precio). ` : '')
+    + (cost ? (mine > 0 ? `Vos ganás ${money(Math.round(mine))} por marcianito (${Math.round(mine / ws.unit * 100)}% del precio · +${Math.round(mine / cost * 100)}% sobre tu costo de ${money(Math.round(cost))}).` : `⚠️ Con tu costo de ${money(Math.round(cost))}, a ese precio perdés plata.`) : '');
 }
 ['wsPacks','wsRewards','wsLevels'].forEach(id => $(id).addEventListener('input', () => { readWholesale(); wsHint(); }));
 ['wsUnit','wsMin','wsPts'].forEach(id => $(id).addEventListener('input', () => { readWholesale(); wsHint(); }));
