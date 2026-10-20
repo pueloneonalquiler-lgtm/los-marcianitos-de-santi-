@@ -771,6 +771,12 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
 .crew-tabs .nbadge{position:static;display:inline-block;margin-left:6px;vertical-align:middle}
 .crew-tabs .nbadge.hidden{display:none}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+/* aunque el celular tenga "Quitar animaciones", la nave despega igual con una salida suave */
+@media (prefers-reduced-motion: reduce){
+  .launch .ship.go{animation:softoff 1.6s ease-in forwards!important}
+  .launch .ship.go .flame{height:70px}
+  @keyframes softoff{0%{transform:translateY(0);opacity:1}100%{transform:translateY(-60vh);opacity:0}}
+}
 @media (max-width:360px){.grid{gap:10px}.planet{width:72px;height:72px;font-size:34px}.mission{grid-template-columns:80px 1fr}.pct{font-size:52px}}
 </style>
 </head>
@@ -1176,6 +1182,8 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
       <select class="inp" id="qlWhat">
         <option value="tira">⭐ Tira para marcianito CON QR 2,8 × 8 cm</option>
         <option value="tirasin">Tira para marcianito SIN QR 2,8 × 8 cm</option>
+        <option value="redondos">🟢 Stickers redondos AREA 51 (5 cm)</option>
+        <option value="base">⚪ Base "Despegá y pegá en tu cartón" (3,5 cm, va abajo del sticker de sabor)</option>
         <option value="tiramix">Tiras mitad y mitad (9 con QR + 9 sin QR por hoja)</option>
         <option value="etiquetas">Etiquetas 7 × 4 cm</option>
         <option value="grandes">Etiquetas grandes 9 × 5 cm (para bolsas o cajas)</option>
@@ -2074,7 +2082,7 @@ $('sendWa').addEventListener('click', e => {
   if(miss){ e.preventDefault(); $('cartErr').textContent = miss; return; }
   updateWaLink();
   rememberCustomer();
-  if(reduceMotion()){ const s0 = cartSummary(); saveOrder(s0); markVoucherPending(s0); return; }   // sin animaciones: abre WhatsApp directo
+  // la cuenta regresiva se muestra siempre (también en celulares con "Quitar animaciones"): ahí la nave sale con un movimiento más suave
   e.preventDefault();
   launchShip($('sendWa').href);
 });
@@ -3493,6 +3501,8 @@ const cm = mm => String(mm / 10).replace('.', ',');
 const QL_TYPES = {
   tira:      {img:'print/tira-qr.jpg',     w:28, h:80, per:18, name:'Tiras para marcianito'},
   tirasin:   {img:'print/tira-sin-qr.jpg', w:28, h:80, per:18, name:'Tiras sin QR'},
+  redondos:  {img:'print/sticker-redondo.jpg', w:50, h:50, per:15, name:'Stickers redondos', round:true, mx:4},
+  base:      {img:'print/base-sticker.jpg', w:35, h:35, per:35, name:'Bases para mini stickers', round:true, mx:0},
   tiramix:   {img:'print/tira-qr.jpg', img2:'print/tira-sin-qr.jpg', w:28, h:80, per:18, name:'Tiras (mitad con QR y mitad sin QR)'},
   etiquetas: {img:'print/etiqueta-qr.jpg', w:70, h:40, per:12, name:'Etiquetas'},
   grandes:   {img:'print/etiqueta-qr.jpg', w:90, h:50, per:10, name:'Etiquetas grandes'},
@@ -3501,6 +3511,7 @@ function qlInfo(){
   const t = QL_TYPES[$('qlWhat').value], hojas = Number($('qlCopies').value) || 1;
   $('qlInfo').textContent = t ? `${t.per * hojas} ${t.name.toLowerCase()} de ${cm(t.w)} × ${cm(t.h)} cm (${t.per} por hoja).` : $('qlWhat').value === 'mayorista' ? 'El folleto para comercios sale en una hoja A4 completa. Su QR lleva a la página "Vendé AREA 51".' : 'El cartel sale en una hoja A4 completa.';
   $('qlCopies').disabled = !t && $('qlWhat').value !== 'cartones';
+  if($('qlWhat').value === 'base') $('qlInfo').textContent += ' Antes de recortar, cubrí la hoja con cinta de embalar o contact transparente: así el sticker de sabor se despega fácil y se puede volver a pegar en el cartón. Imprimí los mini stickers de sabor en 2,5 cm.';
   if($('qlWhat').value === 'cartones') $('qlInfo').textContent = `${6 * hojas} cartones de 9,2 × 8,5 cm (6 por hoja), con una línea para escribir el comercio. Para que salgan con el nombre del kiosco, imprimilos desde Puntos de venta → 🎫 Cartones.`;
 }
 ['qlWhat','qlCopies'].forEach(id => $(id).addEventListener('change', qlInfo)); qlInfo();
@@ -3511,7 +3522,7 @@ $('qlPrint').addEventListener('click', () => {
   if(what === 'mayorista'){ printSheet('<img class="qposter" src="print/folleto-mayorista.jpg" alt="Folleto para comercios">'); return; }
   const t = QL_TYPES[what], total = t.per * hojas;
   printSheet(`<div class="ms-head">${esc(brand())} · ${t.name} ${cm(t.w)} × ${cm(t.h)} cm — imprimir en tamaño real (100%) y recortar por el borde gris</div>` +
-    Array.from({length:total}, (_, i) => `<img class="qlbl" src="${t.img2 && i % 2 ? t.img2 : t.img}" alt="" style="width:${t.w}mm;height:${t.h}mm">`).join(''));
+    Array.from({length:total}, (_, i) => `<img class="qlbl" src="${t.img2 && i % 2 ? t.img2 : t.img}" alt="" style="width:${t.w}mm;height:${t.h}mm${t.round ? ';border-radius:50%;margin:0 ${t.mx ?? 4}mm' : ''}">`).join(''));
 });
 $('mkPrint').addEventListener('click', () => {
   const d = Number($('mkSize').value) || 30, copies = Math.max(1, Math.min(80, Math.round(Number($('mkCopies').value)) || 1));
