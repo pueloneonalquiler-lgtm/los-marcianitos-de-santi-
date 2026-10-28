@@ -1196,6 +1196,8 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
       <select class="inp" id="qlWhat">
         <option value="tira">⭐ Tira para marcianito CON QR 2,8 × 8 cm</option>
         <option value="tirasin">Tira para marcianito SIN QR 2,8 × 8 cm</option>
+        <option value="redondos3">🟢 Logo redondo 3 cm (para pegar en los marcianitos)</option>
+        <option value="redondos4">🟢 Logo redondo 4 cm (para pegar en los marcianitos)</option>
         <option value="redondos">🟢 Stickers redondos AREA 51 (5 cm)</option>
         <option value="base">⚪ Base "Despegá y pegá en tu cartón" (3,5 cm, va abajo del sticker de sabor)</option>
         <option value="tiramix">Tiras mitad y mitad (9 con QR + 9 sin QR por hoja)</option>
@@ -3651,6 +3653,8 @@ const QL_TYPES = {
   tira:      {img:'print/tira-qr.jpg',     w:28, h:80, per:18, name:'Tiras para marcianito'},
   tirasin:   {img:'print/tira-sin-qr.jpg', w:28, h:80, per:18, name:'Tiras sin QR'},
   redondos:  {img:'print/sticker-redondo.jpg', w:50, h:50, per:15, name:'Stickers redondos', round:true, mx:4},
+  redondos3: {img:'print/sticker-redondo.jpg', w:30, h:30, per:40, name:'Logos redondos', round:true, mx:0},
+  redondos4: {img:'print/sticker-redondo.jpg', w:40, h:40, per:24, name:'Logos redondos', round:true, mx:0},
   base:      {img:'print/base-sticker.jpg', w:35, h:35, per:35, name:'Bases para mini stickers', round:true, mx:0},
   tiramix:   {img:'print/tira-qr.jpg', img2:'print/tira-sin-qr.jpg', w:28, h:80, per:18, name:'Tiras (mitad con QR y mitad sin QR)'},
   etiquetas: {img:'print/etiqueta-qr.jpg', w:70, h:40, per:12, name:'Etiquetas'},
