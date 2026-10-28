@@ -1108,6 +1108,19 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
         <div><label for="sStart">Desde</label><input id="sStart" type="time"></div>
         <div><label for="sEnd">Hasta</label><input id="sEnd" type="time"></div>
       </div>
+      <label>Días de reparto</label>
+      <div class="chips" id="sShipDays"></div>
+      <p class="note">Si no marcás ninguno, se reparte todos los días.</p>
+      <label for="sShipMode">Pedidos chicos a domicilio</label>
+      <select class="inp" id="sShipMode">
+        <option value="fee">Se cobra envío si no llega al mínimo</option>
+        <option value="block">No se aceptan si no llega al mínimo</option>
+        <option value="none">Envío gratis siempre</option>
+      </select>
+      <div class="two">
+        <div><label for="sShipMin">Mínimo para envío gratis (marcianitos)</label><input id="sShipMin" type="number" inputmode="numeric" min="1"></div>
+        <div><label for="sShipFee">Costo de envío ($)</label><input id="sShipFee" type="number" inputmode="numeric" min="0"></div>
+      </div>
     </div>
     <div class="panel">
       <h2>Precios</h2>
@@ -1137,6 +1150,7 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
       </div>
       <div class="cost-res" id="ccRes"></div>
       <button class="btn ghost" id="ccSave" style="margin-top:10px">💾 Guardar costos</button>
+      <button class="btn ghost" id="ccPanel" style="margin-top:6px;border-color:var(--yellow);color:var(--yellow)">✨ Aplicar precios recomendados por el panel</button>
     </div>
     <div class="panel">
       <div class="ohead"><h2>Combos</h2><button class="mini" id="comboNew">＋ Nuevo combo</button></div>
@@ -1189,6 +1203,8 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
         <option value="grandes">Etiquetas grandes 9 × 5 cm (para bolsas o cajas)</option>
         <option value="cartel">Cartel A4 para el puesto</option>
         <option value="mayorista">🏪 Folleto para comercios ("Vendé AREA 51")</option>
+        <option value="pasaporte">📕 Pasaporte Galáctico (2 por hoja, doble faz)</option>
+        <option value="mostrador">🏪 Cartel de mostrador "Juntá stickers acá"</option>
         <option value="cartones">🎫 Cartones de stickers (para completar a mano)</option>
       </select>
       <label for="qlCopies">Cantidad de hojas A4</label>
@@ -1731,7 +1747,7 @@ const DEFAULT = {
     storeName:'AREA 51', storePill:'CLUB', storeTagline:'Club de helados de Santi', storeLine:'Comarca Andina del Paralelo 42',
     deliveryArea:'', logoImg:'', logoOnly:false, compPrizeImg:'', raceFor:'socios',
     social:{ig:'', fb:'', tt:'', web:''},
-    lines:[], launchSound:true, theme:'auto', themeMsg:'', themeAmount:'normal',
+    lines:[], launchSound:true, shipMin:3, shipFee:500, shipMode:'fee', shipDays:[], theme:'auto', themeMsg:'', themeAmount:'normal',
     welcomeSticker:true, qrRegister:true, stickerLimit:'dia', stickerMinQty:1,
     compOn:true, compFor:'todos', compPrize:'¡Un Pack Cohete Apolo gratis!', compStart:'', compEnd:'',
     raceOn:true, raceGoal:100, racePrize:'¡Un Pack Galaxia gratis! (5 + 1)', raceStart:'',
@@ -1852,10 +1868,24 @@ function hideAllOverlays(){ OVERLAYS.forEach(o => $(o).classList.add('hidden'));
 document.addEventListener('click', e => { const c = e.target.closest('[data-close]'); if(c) close(c.dataset.close); });
 document.querySelectorAll('.overlay').forEach(o => o.addEventListener('click', e => { if(e.target === o) close(o.id); }));
 
+const DAY_NAMES = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+const shipDays = () => Array.isArray(state.config.shipDays) ? state.config.shipDays : [];
+const isShipDay = d => !shipDays().length || shipDays().includes(d.getDay());
 function windowState(){
   const c = state.config, now = new Date(), m = now.getHours()*60 + now.getMinutes();
   const s = toMin(c.start), e = toMin(c.end);
+  if(!isShipDay(now)) return 'after';                       // hoy no se reparte
   return m < s ? 'before' : (m >= e ? 'after' : 'on');
+}
+// Próximo día de reparto (cuando hoy ya terminó o no se reparte)
+function nextShipLabel(){
+  const now = new Date();
+  for(let i = 1; i <= 7; i++){ const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i); if(isShipDay(d)) return i === 1 ? 'mañana' : 'el ' + DAY_NAMES[d.getDay()]; }
+  return 'mañana';
+}
+function shipDaysText(){
+  const d = shipDays(); if(!d.length || d.length === 7) return '';
+  const n = d.map(i => DAY_NAMES[i]); return n.length === 1 ? n[0] : n.slice(0, -1).join(', ') + ' y ' + n[n.length - 1];
 }
 
 /* =================== TIENDA =================== */
@@ -1865,7 +1895,9 @@ function renderStatus(){
   $('statusText').textContent = w === 'on'
     ? `Nave de reparto activa de ${c.start} a ${c.end} hs`
     : w === 'before' ? `Nave en el hangar. Despega hoy a las ${c.start} hs`
-    : `Nave en el hangar. Vuelve mañana a las ${c.start} hs`;
+    : `Nave en el hangar. Vuelve ${nextShipLabel()} a las ${c.start} hs`;
+  const dt = shipDaysText();
+  if(dt) $('statusText').textContent += ` · Repartos: ${dt}`;
 }
 // Precio del combo = cantidad × precio del marcianito − descuento, redondeado ($100 si el marcianito sale $1.000 o más; si no, $50)
 function comboPrice(cb){
@@ -2026,11 +2058,15 @@ function cartSummary(){
   const comboText = Object.entries(combos).map(([n,k]) => (k>1?k+'x ':'') + n);
   const v = (count && useVoucher) ? usableVoucher() : null;
   const disc = v ? Math.min(state.config.price, bp.cost) : 0;
-  return {items, count, mainCount, sub:bp.cost, total:bp.cost - disc, full:mainCount*price + extra, comboText, voucher:v, disc};
+  const c0 = state.config, mode = c0.shipMode || 'fee', min = Number(c0.shipMin) || 1;
+  const short = count > 0 && mode !== 'none' && count < min;
+  const ship = short && mode === 'fee' ? Math.max(0, Number(c0.shipFee) || 0) : 0;
+  return {items, count, mainCount, sub:bp.cost, total:bp.cost - disc + ship, full:mainCount*price + extra, comboText, voucher:v, disc,
+          ship, shipBlock:short && mode === 'block', shipMissing:short ? min - count : 0};
 }
 function deliveryText(){
   const c = state.config, w = windowState();
-  return w === 'on' ? `hoy entre ${c.start} y ${c.end} hs` : w === 'before' ? `hoy desde las ${c.start} hs` : `mañana entre ${c.start} y ${c.end} hs`;
+  return w === 'on' ? `hoy entre ${c.start} y ${c.end} hs` : w === 'before' ? `hoy desde las ${c.start} hs` : `${nextShipLabel()} entre ${c.start} y ${c.end} hs`;
 }
 function buildMessage(s){
   const name = $('cName').value.trim(), addr = $('cAddr').value.trim(), ref = $('cRef').value.trim();
@@ -2040,6 +2076,7 @@ function buildMessage(s){
   if(s.voucher) L.push(`🎟️ Vale de canje #V${s.voucher.id}: 1 marcianito gratis (−${money(s.disc)})`);
   L.push('', `📍 Destino: ${addr}`);
   if(ref) L.push(`🗺️ Referencia: ${ref}`);
+  if(s.ship) L.push(`🛵 Envío: ${money(s.ship)}`);
   L.push(`🕔 Entrega: ${deliveryText()}`, `💰 Total: ${money(s.total)}`);
   if(sb && !isMember()){
     ensureCardCode(); L.push('', '⭐ Con esta compra sumo 1 sticker galáctico.', `Mi tarjeta de stickers: ${cardLink(cardCode)}`);
@@ -2065,10 +2102,12 @@ function renderCart(bump){
   const av = s.count ? usableVoucher() : null;
   if(av && s.voucher) html += `<div class="line voucher-line"><span>🎟️ Vale #V${av.id}: 1 gratis <button class="vtoggle" data-vt="0">Guardar para otro día</button></span><span>−${money(s.disc)}</span></div>`;
   else if(av) html += `<div class="line voucher-line"><span>🎟️ Tenés un vale de canje</span><button class="vtoggle" data-vt="1">Usarlo</button></div>`;
+  if(s.ship) html += `<div class="line"><span>🛵 Envío (pedido de menos de ${state.config.shipMin})</span><span>${money(s.ship)}</span></div>`;
+  if(s.shipMissing) html += `<p class="note" style="color:var(--yellow);font-weight:800;margin:6px 0 0">${s.shipBlock ? `🛵 El envío a domicilio es desde ${state.config.shipMin} marcianitos: sumá ${s.shipMissing} más.` : `🛵 Sumá ${s.shipMissing} marcianito${s.shipMissing === 1 ? '' : 's'} más y el envío es gratis.`}</p>`;
   $('cartLines').innerHTML = html || '<p class="empty">Tu bodega está vacía.</p>';
   $('cartTotal').textContent = money(s.total);
   renderCartAvatar();
-  $('deliveryNote').textContent = `Entrega a domicilio ${deliveryText()}. Pagás al recibir.`;
+  $('deliveryNote').textContent = `Entrega a domicilio ${deliveryText()}. Pagás al recibir.` + (shipDaysText() ? ` Repartos: ${shipDaysText()}.` : '');
   updateWaLink();
   if(!s.count) close('cartOverlay');
 }
@@ -2078,7 +2117,8 @@ function updateWaLink(){
 }
 ['cName','cAddr','cRef'].forEach(id => $(id).addEventListener('input', () => { $('cartErr').textContent=''; updateWaLink(); }));
 $('sendWa').addEventListener('click', e => {
-  const miss = !$('cName').value.trim() ? 'Escribí tu nombre de tripulante.' : !$('cAddr').value.trim() ? 'Falta la dirección de aterrizaje.' : '';
+  const sc = cartSummary();
+  const miss = sc.shipBlock ? `El envío a domicilio es desde ${state.config.shipMin} marcianitos: sumá ${sc.shipMissing} más.` : !$('cName').value.trim() ? 'Escribí tu nombre de tripulante.' : !$('cAddr').value.trim() ? 'Falta la dirección de aterrizaje.' : '';
   if(miss){ e.preventDefault(); $('cartErr').textContent = miss; return; }
   updateWaLink();
   rememberCustomer();
@@ -2506,6 +2546,8 @@ function renderSettings(){
   $('sTheme').innerHTML = `<option value="auto">📅 Automático por fecha</option><option value="none">Sin tema</option>` +
     Object.entries(THEMES).map(([k, t]) => `<option value="${k}">${t.e} ${t.n}</option>`).join('');
   $('sLaunchSound').checked = c.launchSound !== false;
+  $('sShipDays').innerHTML = DAY_NAMES.map((d, i) => `<button class="chip ${(c.shipDays || []).includes(i) ? 'on' : ''}" data-sday="${i}">${d.slice(0, 3)}</button>`).join('');
+  $('sShipMode').value = c.shipMode || 'fee'; $('sShipMin').value = c.shipMin || 3; $('sShipFee').value = c.shipFee ?? 500;
   $('sTheme').value = c.theme || 'auto'; $('sThemeMsg').value = c.themeMsg || ''; $('sThemeAmount').value = c.themeAmount || 'normal';
   renderThemeInfo();
   $('sStickerLimit').value = c.stickerLimit || 'dia'; $('sStickerMin').value = String(c.stickerMinQty || 1);
@@ -2550,7 +2592,9 @@ $('setSave').addEventListener('click', () => {
     goalName:$('sGoalName').value.trim() || 'Mi meta', goalAmount:num('sGoalAmount'), goalEmoji:pickEmoji,
     phone:$('sPhone').value.replace(/\D/g,'') || DEFAULT.config.phone, pin: sb ? state.config.pin : pin,
     invitesPerMember: Math.max(0, Math.min(10, Math.round(num('sInvites')) || 0)),
-    launchSound:$('sLaunchSound').checked, theme:$('sTheme').value, themeMsg:$('sThemeMsg').value.trim().slice(0, 90), themeAmount:$('sThemeAmount').value,
+    launchSound:$('sLaunchSound').checked,
+    shipDays:[...document.querySelectorAll('#sShipDays .chip.on')].map(b => Number(b.dataset.sday)).sort(),
+    shipMode:$('sShipMode').value, shipMin:Math.max(1, Math.round(Number($('sShipMin').value) || 1)), shipFee:Math.max(0, Math.round(Number($('sShipFee').value) || 0)), theme:$('sTheme').value, themeMsg:$('sThemeMsg').value.trim().slice(0, 90), themeAmount:$('sThemeAmount').value,
     stickerLimit:$('sStickerLimit').value, stickerMinQty:Number($('sStickerMin').value) || 1,
     welcomeSticker:$('sWelcomeSticker').checked, qrRegister:$('sQrRegister').checked,
     compOn:$('sCompOn').checked, compFor:$('sCompFor').value, compPrize:$('sCompPrize').value.trim().slice(0,80), compEnd:$('sCompEnd').value || '',
@@ -2878,6 +2922,17 @@ $('ccIngr').addEventListener('click', e => {
 });
 $('ccAdd').addEventListener('click', () => { const c = readCosts(); c.ingredients.push({id:'i' + Date.now().toString(36), n:'Ingrediente nuevo', price:0, buy:1, bu:'kg', use:0, uu:'g'}); renderCosts(); });
 $('ccSave').addEventListener('click', () => { readCosts(); save(); toast('💾 Costos guardados'); });
+$('sShipDays').addEventListener('click', e => { const b = e.target.closest('[data-sday]'); if(b) b.classList.toggle('on'); });
+$('ccPanel').addEventListener('click', () => {
+  if(!confirm('Se aplica:\n\n• Marcianito al público: $2.000\n• Precio mayorista: $1.300\n• Pack Familiar: 10% de descuento\n• Combo de Cumpleaños: 15% de descuento\n• Sticker: $78 en el 100% de los helados\n\nLos ingredientes que cargaste no cambian. ¿Aplicar?')) return;
+  const c = state.config; c.price = 2000; syncCombos();
+  (c.combos || []).forEach(cb => { if(/familiar/i.test(cb.n)) cb.d = 10; if(/cumplea/i.test(cb.n)) cb.d = 15; });
+  syncCombos();
+  state.wholesale = wsCfg(state.wholesale); state.wholesale.unit = 1300;
+  const cc = ccData(); cc.stickerCost = 78; cc.stickerPct = 100;
+  save(); pushConfig(); refreshShop(); renderSettings();
+  toast('✨ Precios del panel aplicados');
+});
 $('ccRes').addEventListener('click', e => {
   if(!e.target.closest('#ccApply')) return;
   const sugg = Number(($('ccApply').textContent.match(/\$([\d.]+)/) || [])[1]?.replace(/\./g, '')) || 0;
@@ -3037,6 +3092,91 @@ function stampCardHTML(kiosk){
     <div style="margin-top:auto;font-size:6pt;color:#A8A2C8;text-align:center">Pegá el sticker de cada marcianito · 1 por compra · Canjeable solo en este comercio</div>
   </div>`;
 }
+/* --- Pasaporte Galáctico: tira de 27 × 8,5 cm que se dobla en 3 (2 por hoja A4 apaisada, doble faz) --- */
+const PASS_BG = 'background:radial-gradient(circle at 30% 0%,#3B1E8F,#0B0820 72%);color:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact';
+const PASS_P = 'width:90mm;height:85mm;box-sizing:border-box;position:relative;overflow:hidden;flex:none;font-family:Fredoka,Nunito,sans-serif';
+function passMission(n, name, color){
+  const circ = i => `<div style="width:24mm;height:24mm;border-radius:50%;border:.45mm dashed rgba(255,255,255,.75);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14pt;color:rgba(255,255,255,.3)">${i}</div>`;
+  return `<div style="${PASS_P};${PASS_BG};padding:3.5mm 5mm 0;border-right:.25mm dashed rgba(255,255,255,.3)">
+    <div style="display:flex;align-items:baseline;justify-content:space-between"><b style="font-size:12pt;letter-spacing:.4mm;color:${color}">MISIÓN ${n}</b><span style="font-size:7.5pt;color:#A8A2C8">${name}</span></div>
+    <div style="display:grid;grid-template-columns:repeat(3,24mm);justify-content:space-between;row-gap:2.5mm;margin-top:2.5mm">${[1,2,3,4,5].map(circ).join('')}
+      <div style="width:24mm;height:24mm;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FFF3A8,#FFD23F 55%,#FF9A3D);color:#3B0A2A;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;font-size:7pt;line-height:1.15;text-align:center"><span style="font-size:14pt">🎁</span>¡LO<br>LOGRASTE!</div></div>
+    <div style="position:absolute;left:0;right:0;bottom:0;height:13mm;border-top:.5mm dashed #FFD23F;background:rgba(255,210,63,.12);display:flex;align-items:center;gap:3mm;padding:0 5mm">
+      <span style="font-size:13pt">✂️</span><div style="line-height:1.15"><b style="font-size:9pt;color:#FFD23F">1 MARCIANITO GRATIS</b><div style="font-size:6.2pt;color:#E0DCF5">Talón de la misión ${n} · lo corta y lo guarda el comercio</div></div></div>
+  </div>`;
+}
+function passOutside(kiosk){
+  const cover = `<div style="${PASS_P};${PASS_BG};display:flex;flex-direction:column;align-items:center;padding-top:5mm;text-align:center">
+    <img src="icons/icon-512.png" alt="" style="width:30mm;height:30mm;border-radius:6mm">
+    <div style="font-weight:800;font-size:18pt;letter-spacing:.6mm;margin-top:2.5mm;line-height:1">PASAPORTE</div>
+    <div style="font-weight:800;font-size:13pt;letter-spacing:1.2mm;color:#39FF88;line-height:1.3">GALÁCTICO</div>
+    <div style="font-size:8pt;color:#FFD23F;font-weight:700;margin-top:1mm">${esc(brandName())}</div>
+    <div style="margin-top:3mm;width:78mm;text-align:left;font-size:8pt;color:#E0DCF5;line-height:2.1">Explorador/a: ____________________________<br>
+      🏪 ${kiosk ? `<b>${esc(kiosk)}</b>` : 'Comercio: ______________________'}</div></div>`;
+  const back = `<div style="${PASS_P};${PASS_BG};padding:5mm 6mm;border-right:.25mm dashed rgba(255,255,255,.3)">
+    <b style="font-size:11pt;color:#39FF88;letter-spacing:.3mm">CÓMO FUNCIONA</b>
+    <div style="font-size:8pt;line-height:1.45;margin-top:2.5mm">
+      <div style="margin-bottom:2mm">🍦 <b>1.</b> Comprá marcianitos ${esc(brandName())} en el comercio.</div>
+      <div style="margin-bottom:2mm">🪐 <b>2.</b> Te dan un sticker de sabor: pegalo en tu misión.</div>
+      <div style="margin-bottom:2mm">🎁 <b>3.</b> Con 5 stickers, el comercio corta el talón y te da <b>1 marcianito gratis</b>.</div></div>
+    <div style="margin-top:2mm;padding:2.5mm 3mm;border-radius:3mm;background:linear-gradient(135deg,rgba(255,210,63,.25),rgba(255,154,61,.15));border:.3mm solid #FFD23F;font-size:7.6pt;line-height:1.35">
+      🏆 <b style="color:#FFD23F">¡Completá las 3 misiones!</b><br>Mostrá tu pasaporte y ganá un <b>sobre dorado de figuritas</b> + invitación al <b>club</b>.</div></div>`;
+  const flv = FLAVORS.slice(0, 12);
+  const flap = `<div style="${PASS_P};${PASS_BG};padding:5mm 6mm;border-right:.25mm dashed rgba(255,255,255,.3)">
+    <b style="font-size:11pt;color:#FF7FE3;letter-spacing:.3mm">MISIÓN ESPECIAL</b>
+    <div style="font-size:7.5pt;color:#E0DCF5;margin:1mm 0 2.5mm">Marcá cada sabor que probaste. ¡Probá los ${flv.length}!</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:2mm 1.5mm">${flv.map(f => `<div style="text-align:center"><div style="width:11mm;height:11mm;margin:0 auto;border-radius:50%;background:radial-gradient(circle at 34% 28%,${f.c[0]},${f.c[1]} 75%);display:grid;place-items:center;font-size:14pt">${esc(f.e)}</div><div style="font-size:5.4pt;margin-top:.6mm;color:#E0DCF5;white-space:nowrap;overflow:hidden">☐ ${esc(f.name.split(' ').slice(-1)[0])}</div></div>`).join('')}</div></div>`;
+  return `<div style="display:flex;border-radius:3mm;overflow:hidden;outline:.2mm solid #bbb;outline-offset:.5mm">${flap}${back}${cover}</div>`;
+}
+function passInside(){
+  return `<div style="display:flex;border-radius:3mm;overflow:hidden;outline:.2mm solid #bbb;outline-offset:.5mm">${passMission(1, 'Planeta Rojo', '#FF7A85')}${passMission(2, 'Planeta Verde', '#39FF88')}${passMission(3, 'Planeta Dorado', '#FFD23F')}</div>`;
+}
+const PAGE = (inner, row, last) => `<div style="width:100%;display:flex;${row ? 'flex-wrap:wrap;justify-content:center;gap:2mm 8mm' : 'flex-direction:column;align-items:center;gap:8mm'};${last ? '' : 'break-after:page;page-break-after:always'}">${inner}</div>`;
+// tira del pasaporte girada 90° para que entren 2 por hoja A4 vertical
+const ROT = strip => `<div style="position:relative;width:86mm;height:271mm;flex:none"><div style="position:absolute;left:0;top:0;width:271mm;height:86mm;transform-origin:0 0;transform:translateX(86mm) rotate(90deg)">${strip}</div></div>`;
+function passportPages(kiosk, sheets = 1){
+  const head = t => `<div style="width:100%;text-align:center;font:7pt Nunito,sans-serif;color:#777">${esc(brand())} · Pasaporte Galáctico — ${t}</div>`;
+  let h = '';
+  for(let i = 0; i < sheets; i++){
+    h += PAGE(head('AFUERA (cara 1)') + ROT(passOutside(kiosk)) + ROT(passOutside(kiosk)), true);
+    h += PAGE(head('ADENTRO (cara 2, del otro lado de la misma hoja)') + ROT(passInside()) + ROT(passInside()), true, i === sheets - 1);
+  }
+  return h;
+}
+function printPassports(kiosk, sheets = 1){ printSheet(passportPages(kiosk, sheets)); }
+/* --- Cartel de mostrador "Juntá stickers acá" (A4) --- */
+function counterSignHTML(kiosk){
+  const club = location.origin + location.pathname + '?qr=1';
+  const qr = 'https://api.qrserver.com/v1/create-qr-code/?size=600x600&margin=10&data=' + encodeURIComponent(club);
+  return `<div style="width:186mm;height:268mm;box-sizing:border-box;margin:0 auto;border-radius:6mm;border:1.4mm solid #FFD23F;${PASS_BG};font-family:Fredoka,Nunito,sans-serif;text-align:center;padding:10mm 12mm;display:flex;flex-direction:column;align-items:center">
+    <img src="icons/icon-512.png" alt="" style="width:42mm;height:42mm;border-radius:8mm">
+    <div style="font-size:16pt;font-weight:700;color:#39FF88;letter-spacing:1mm;margin-top:4mm">${esc(brandName())}</div>
+    <div style="font-size:40pt;font-weight:800;line-height:1.02;margin-top:3mm">¡Juntá<br>stickers acá!</div>
+    <div style="font-size:15pt;font-weight:700;color:#FFD23F;margin-top:4mm">🏪 ${kiosk ? esc(kiosk) : '________________________'}</div>
+    <div style="text-align:left;font-size:14pt;line-height:1.5;margin-top:8mm;width:150mm">
+      <div>🍦 <b>1.</b> Comprá tu marcianito</div><div>🪐 <b>2.</b> Pedí tu sticker y pegalo en tu pasaporte</div><div>🎁 <b>3.</b> Con 5 stickers, <b>¡te llevás 1 GRATIS!</b></div></div>
+    <div style="display:flex;align-items:center;gap:8mm;margin-top:auto">
+      <div style="background:#fff;border-radius:4mm;padding:2.5mm"><img src="${qr}" alt="" style="width:46mm;height:46mm;display:block"></div>
+      <div style="text-align:left;font-size:12pt;line-height:1.35;max-width:80mm"><b style="color:#39FF88;font-size:14pt">📱 Sumate al club</b><br>Álbum de figuritas, juegos y competencias con premios</div></div>
+  </div>`;
+}
+function printCounterSign(kiosk){ printSheet(counterSignHTML(kiosk)); }
+/* --- Kit del comercio: tarjeta del portal + cartel + pasaportes --- */
+function printKit(r){
+  const link = pvLink(r.code), qr = 'https://api.qrserver.com/v1/create-qr-code/?size=600x600&margin=12&data=' + encodeURIComponent(link);
+  const card = `<div style="width:120mm;margin:6mm auto 0;padding:10mm;box-sizing:border-box;border-radius:8mm;border:1.2mm solid #39FF88;${PASS_BG};text-align:center;font-family:Fredoka,Nunito,sans-serif">
+    <img src="icons/icon-512.png" alt="" style="width:30mm;height:30mm;border-radius:6mm">
+    <div style="font-size:22pt;font-weight:700;margin-top:3mm">${esc(brandName())}</div>
+    <div style="font-size:10pt;letter-spacing:1.2mm;color:#39FF88;font-weight:700">PORTAL MAYORISTA</div>
+    <div style="font-size:16pt;font-weight:700;margin:5mm 0 4mm;color:#FFD23F">🏪 ${esc(r.name)}</div>
+    <div style="background:#fff;border-radius:5mm;padding:3mm;display:inline-block"><img src="${qr}" style="width:70mm;height:70mm;display:block" alt=""></div>
+    <div style="font-size:12pt;font-weight:700;margin-top:4mm">📱 Escaneá para hacer tu pedido,<br>ver tus puntos y canjear premios</div>
+    <div style="font-size:8.5pt;color:#A8A2C8;margin-top:3mm">Este QR es solo para el comercio · no lo dejes a la vista del público</div></div>
+    <div style="width:150mm;margin:8mm auto 0;font-family:Nunito,sans-serif;font-size:10pt;color:#333;line-height:1.5"><b>Kit de ${esc(r.name)}</b><br>
+    ☐ Tarjeta del portal (esta hoja) · ☐ Cartel de mostrador · ☐ Pasaportes Galácticos · ☐ Hojas de mini stickers (1 por marcianito)</div>`;
+  printSheet(PAGE(card) + PAGE(counterSignHTML(r.name)) + passportPages(r.name, 1));
+}
+
 function printStampCards(kiosk, sheets = 1){
   printSheet(`<div class="ms-head">${esc(brand())} · Cartones de stickers${kiosk ? ' · ' + esc(kiosk) : ''} — 6 por hoja, imprimir en tamaño real (100%) y recortar</div>` +
     Array.from({length:6 * sheets}, () => stampCardHTML(kiosk)).join(''));
@@ -3156,6 +3296,8 @@ function renderResellers(){
         <button class="mini" data-pvsend="${esc(r.code)}">📤 Mandar acceso</button>
         <button class="mini" data-pvqr="${esc(r.code)}">🔳 QR</button>
         <button class="mini" data-pvedit="${esc(r.code)}">✏️ Editar</button>
+        <button class="mini gift" data-pvkit="${esc(r.code)}">🧰 Kit del comercio</button>
+        <button class="mini" data-pvpass="${esc(r.code)}">📕 Pasaportes</button>
         <button class="mini" data-pvprint="${esc(r.code)}">🎫 Cartones</button>
         <button class="mini" data-pvpause="${esc(r.code)}">${r.active ? '⏸️ Pausar' : '▶️ Reactivar'}</button>
         <button class="mini" data-pvdel="${esc(r.code)}" style="color:#FF8FA0;border-color:rgba(255,59,92,.5)">🗑️ Eliminar</button>
@@ -3197,6 +3339,13 @@ $('pvList').addEventListener('click', async e => {
     $('pvQrImg').src = 'https://api.qrserver.com/v1/create-qr-code/?size=600x600&margin=12&data=' + encodeURIComponent(link);
     $('pvQrTxt').textContent = `Portal de ${r.name}. Es secreto: solo para el comercio (no lo pegues en el mostrador).`;
     $('pvQrPrint').dataset.name = r.name; open('pvQrOverlay'); return;
+  }
+  if(t.dataset.pvkit){ const r = resellers.find(x => x.code === t.dataset.pvkit); if(r) printKit(r); return; }
+  if(t.dataset.pvpass){
+    const r = resellers.find(x => x.code === t.dataset.pvpass);
+    const n = Number(prompt(`¿Cuántas hojas de pasaportes para ${r.name}? (2 pasaportes por hoja A4, doble faz)`, '2')) || 0;
+    if(n > 0) printPassports(r.name, Math.min(10, Math.round(n)));
+    return;
   }
   if(t.dataset.pvpause){
     const r = resellers.find(x => x.code === t.dataset.pvpause);
@@ -3510,7 +3659,9 @@ const QL_TYPES = {
 function qlInfo(){
   const t = QL_TYPES[$('qlWhat').value], hojas = Number($('qlCopies').value) || 1;
   $('qlInfo').textContent = t ? `${t.per * hojas} ${t.name.toLowerCase()} de ${cm(t.w)} × ${cm(t.h)} cm (${t.per} por hoja).` : $('qlWhat').value === 'mayorista' ? 'El folleto para comercios sale en una hoja A4 completa. Su QR lleva a la página "Vendé AREA 51".' : 'El cartel sale en una hoja A4 completa.';
-  $('qlCopies').disabled = !t && $('qlWhat').value !== 'cartones';
+  $('qlCopies').disabled = !t && !['cartones','pasaporte'].includes($('qlWhat').value);
+  if($('qlWhat').value === 'pasaporte') $('qlInfo').textContent = `${2 * hojas} pasaportes (2 por hoja A4). Imprimí en cartulina, doble faz: primero una hoja de prueba para ver cómo da vuelta tu impresora. Para que salgan con el nombre del comercio, usá Puntos de venta → 📕 Pasaportes.`;
+  if($('qlWhat').value === 'mostrador') $('qlInfo').textContent = 'Cartel A4 para el mostrador del comercio, con un QR para sumarse al club. Con el nombre del comercio: Puntos de venta → 🧰 Kit del comercio.';
   if($('qlWhat').value === 'base') $('qlInfo').textContent += ' Antes de recortar, cubrí la hoja con cinta de embalar o contact transparente: así el sticker de sabor se despega fácil y se puede volver a pegar en el cartón. Imprimí los mini stickers de sabor en 2,5 cm.';
   if($('qlWhat').value === 'cartones') $('qlInfo').textContent = `${6 * hojas} cartones de 9,2 × 8,5 cm (6 por hoja), con una línea para escribir el comercio. Para que salgan con el nombre del kiosco, imprimilos desde Puntos de venta → 🎫 Cartones.`;
 }
@@ -3519,6 +3670,8 @@ $('qlPrint').addEventListener('click', () => {
   const what = $('qlWhat').value, hojas = Number($('qlCopies').value) || 1;
   if(what === 'cartel'){ printSheet('<img class="qposter" src="print/cartel-qr.jpg" alt="Cartel con QR">'); return; }
   if(what === 'cartones'){ printStampCards('', hojas); return; }
+  if(what === 'pasaporte'){ printPassports('', hojas); return; }
+  if(what === 'mostrador'){ printCounterSign(''); return; }
   if(what === 'mayorista'){ printSheet('<img class="qposter" src="print/folleto-mayorista.jpg" alt="Folleto para comercios">'); return; }
   const t = QL_TYPES[what], total = t.per * hojas;
   printSheet(`<div class="ms-head">${esc(brand())} · ${t.name} ${cm(t.w)} × ${cm(t.h)} cm — imprimir en tamaño real (100%) y recortar por el borde gris</div>` +
