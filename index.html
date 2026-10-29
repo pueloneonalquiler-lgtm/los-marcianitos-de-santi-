@@ -802,6 +802,7 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
   <button class="live-banner hidden" id="liveBanner"><span class="live-dot"></span>¡Carrera en vivo! Entrá ya 🏁</button>
 
 
+  <div class="pos-card hidden" id="myKiosk" style="margin-top:22px;border-color:#FF9A3D"></div>
   <section aria-labelledby="t-combos">
     <h2 id="t-combos">Combos espaciales</h2>
     <p class="sub">Elegí los sabores que quieras: el mejor combo se aplica solo.</p>
@@ -1164,6 +1165,7 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
       <div class="two">
         <div><label for="wsUnit">Precio mayorista x marcianito ($)</label><input id="wsUnit" type="number" inputmode="numeric" min="1"></div>
         <div><label for="wsMin">Pedido mínimo (marcianitos)</label><input id="wsMin" type="number" inputmode="numeric" min="1"></div>
+        <div><label for="wsRef">Puntos por marcianito que su cliente pide por la web</label><input id="wsRef" type="number" inputmode="decimal" min="0" step="0.5"></div>
         <div><label for="wsPts">Puntos por marcianito</label><input id="wsPts" type="number" inputmode="decimal" min="0" step="0.5"></div>
       </div>
       <p class="note" id="wsHint"></p>
@@ -1196,6 +1198,7 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
       <select class="inp" id="qlWhat">
         <option value="tira">⭐ Tira para marcianito CON QR 2,8 × 8 cm</option>
         <option value="tirasin">Tira para marcianito SIN QR 2,8 × 8 cm</option>
+        <option value="redondoqr">🔳 Redondo 4 cm CON QR "Escaneá y pedí" (venta directa)</option>
         <option value="redondos3">🟢 Logo redondo 3 cm (para pegar en los marcianitos)</option>
         <option value="redondos4">🟢 Logo redondo 4 cm (para pegar en los marcianitos)</option>
         <option value="redondos">🟢 Stickers redondos AREA 51 (5 cm)</option>
@@ -2773,6 +2776,7 @@ async function deliverOrder(id){
   save(); refreshOrderViews();
   const r = res || {}, nm = o.customer_name;
   if(r.pv){ toast(`🏪 Entregado · +${r.points} puntos para ${nm}`); fetchResellers(); return; }
+  if(r.ref_points) setTimeout(() => { toast(`🏪 +${r.ref_points} puntos para el kiosco de ${nm}`); fetchResellers(); }, 2600);
   if(r.voucher_requested && !r.voucher_used) alert(`⚠️ ${nm} pidió usar un vale que ya estaba usado. Cobrale el marcianito completo (${money(state.config.price)}).`);
   toast(r.skip === 'limite' ? `✅ Entregado · sin sticker: ${nm} ya sumó ${r.rule === 'semana' ? 'esta semana' : 'hoy'}`
       : r.skip === 'minimo' ? `✅ Entregado · sin sticker: el pedido tiene menos de ${r.min} marcianitos`
@@ -2961,6 +2965,25 @@ function wsQuote(ws, n, lvl){
   const cnt = {}; best[n].u.forEach(x => cnt[x] = (cnt[x] || 0) + 1);
   return {sub, total, disc:sub - total, ld, packs:Object.entries(cnt).map(([k, v]) => (v > 1 ? v + 'x ' : '') + k)};
 }
+/* --- Cliente de un kiosco (QR del mostrador) --- */
+const kPending = () => { try{ return localStorage.getItem('area51-kpend'); }catch(e){ return null; } };
+function renderMyKiosk(k){
+  const el = $('myKiosk');
+  if(!k){ el.classList.add('hidden'); return; }
+  const maps = k.maps && /^https?:\/\//i.test(k.maps) ? k.maps : (k.address ? 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(k.address) : '');
+  el.innerHTML = `<span class="pe" aria-hidden="true">🏪</span><div><b>Tu kiosco: ${esc(k.name)}</b>${k.address ? `<span>📍 ${esc(k.address)}</span>` : ''}${k.hours ? `<span>🕐 ${esc(k.hours)}</span>` : ''}<span>Comprá ahí y juntá stickers en tu pasaporte 📕</span></div>
+    ${maps ? `<a class="mini" href="${esc(maps)}" target="_blank" rel="noopener" style="text-decoration:none;color:var(--text)">🗺️ Mapa</a>` : ''}`;
+  el.classList.remove('hidden');
+}
+async function syncMyKiosk(){
+  if(!sb || !cardCode || !card) return;
+  const pend = kPending();
+  const {data, error} = pend ? await sb.rpc('link_card_pv', {p_card: cardCode, p_pub: pend}) : await sb.rpc('get_card_pv', {p_card: cardCode});
+  if(error) return;
+  if(pend){ try{ localStorage.removeItem('area51-kpend'); }catch(e){} }
+  renderMyKiosk(data);
+}
+
 /* --- Lista pública en la tienda --- */
 async function fetchPOS(){
   if(!sb) return;
@@ -2997,6 +3020,7 @@ function renderPortal(){
     <h3 style="margin:18px 0 6px;font-size:18px">🎁 Canjeá tus puntos</h3>
     ${ws.rewards.map(r => `<div class="pv-rw"><div>${esc(r.n)}</div><span>${r.cost} pts</span><button class="mini" data-pvrw="${esc(r.id)}" ${pv.points < r.cost ? 'disabled' : ''}>Canjear</button></div>`).join('')}
     ${pend.length ? `<p class="note" style="color:var(--yellow);font-weight:800;margin-top:8px">⏳ Premios por recibir: ${pend.map(r => esc(r.reward)).join(', ')}. Te los lleva Santi con el próximo pedido.</p>` : ''}
+    <div class="pv-rw" style="border:none"><div>👥 <b>${pv.ref_clients || 0}</b> clientes anotados con tu QR del mostrador${pv.ref_units ? ` · sus pedidos por la web te sumaron puntos por <b>${pv.ref_units}</b> marcianitos` : ''}</div></div>
     <h3 style="margin:18px 0 6px;font-size:18px">🎫 Cartones de stickers</h3>
     <p class="sub" style="margin:0 0 8px">Cuando un cliente completa su cartón con 5 stickers, dale su marcianito gratis, <b>guardá el cartón</b> y anotalo acá. Santi te repone 1 marcianito por cada cartón en tu próximo pedido.</p>
     <div class="pv-rw"><div>Cartones por reponer: <b style="font-family:var(--display);font-size:20px;color:var(--yellow)">${pv.cards_pending || 0}</b></div>
@@ -3147,8 +3171,8 @@ function passportPages(kiosk, sheets = 1){
 }
 function printPassports(kiosk, sheets = 1){ printSheet(passportPages(kiosk, sheets)); }
 /* --- Cartel de mostrador "Juntá stickers acá" (A4) --- */
-function counterSignHTML(kiosk){
-  const club = location.origin + location.pathname + '?qr=1';
+function counterSignHTML(kiosk, pub){
+  const club = location.origin + location.pathname + (pub ? '?k=' + pub : '?qr=1');
   const qr = 'https://api.qrserver.com/v1/create-qr-code/?size=600x600&margin=10&data=' + encodeURIComponent(club);
   return `<div style="width:186mm;height:268mm;box-sizing:border-box;margin:0 auto;border-radius:6mm;border:1.4mm solid #FFD23F;${PASS_BG};font-family:Fredoka,Nunito,sans-serif;text-align:center;padding:10mm 12mm;display:flex;flex-direction:column;align-items:center">
     <img src="icons/icon-512.png" alt="" style="width:42mm;height:42mm;border-radius:8mm">
@@ -3176,7 +3200,7 @@ function printKit(r){
     <div style="font-size:8.5pt;color:#A8A2C8;margin-top:3mm">Este QR es solo para el comercio · no lo dejes a la vista del público</div></div>
     <div style="width:150mm;margin:8mm auto 0;font-family:Nunito,sans-serif;font-size:10pt;color:#333;line-height:1.5"><b>Kit de ${esc(r.name)}</b><br>
     ☐ Tarjeta del portal (esta hoja) · ☐ Cartel de mostrador · ☐ Pasaportes Galácticos · ☐ Hojas de mini stickers (1 por marcianito)</div>`;
-  printSheet(PAGE(card) + PAGE(counterSignHTML(r.name)) + passportPages(r.name, 1));
+  printSheet(PAGE(card) + PAGE(counterSignHTML(r.name, r.pub_code)) + passportPages(r.name, 1));
 }
 
 function printStampCards(kiosk, sheets = 1){
@@ -3194,7 +3218,8 @@ async function fetchResellers(){
   if(!sb || !loggedIn) return;
   sb.from('reseller_requests').select('*').in('status', ['nueva','vista']).order('created_at', {ascending:false}).limit(30)
     .then(({data, error}) => { if(!error){ pvReqs = data || []; renderPvReqs(); updatePvAlerts(); } });
-  const {data, error} = await sb.from('resellers').select('*,reseller_redemptions(id,reward,cost,status,created_at)').order('created_at');
+  let {data, error} = await sb.from('resellers').select('*,reseller_redemptions(id,reward,cost,status,created_at),cards(count)').order('created_at');
+  if(error) ({data, error} = await sb.from('resellers').select('*,reseller_redemptions(id,reward,cost,status,created_at)').order('created_at'));
   if(error){ $('pvList').innerHTML = '<li class="empty" style="border:none;background:none">Falta correr supabase-puntos-de-venta.sql en Supabase.</li>'; return; }
   resellers = data || []; renderResellers(); updatePvAlerts();
 }
@@ -3292,6 +3317,7 @@ function renderResellers(){
     const lvl = wsLevel(ws, r.total_units), pend = (r.reseller_redemptions || []).filter(x => x.status === 'pendiente');
     return `<li style="${r.active ? '' : 'opacity:.6'}"><div class="top"><span class="name">🏪 ${esc(r.name)}${r.active ? '' : ' <span class="badge-soc no">⏸️ EN PAUSA</span>'}</span></div>
       <p class="note" style="margin:4px 0">${esc(lvl.e || '')} ${esc(lvl.n)} · ⭐ ${r.points} puntos · ${r.total_units} marcianitos comprados${r.address ? ` · 📍 ${esc(r.address)}` : ''}</p>
+      ${r.cards ? `<p class="note" style="margin:0 0 4px;color:#FF9A3D;font-weight:800">👥 ${(r.cards[0] && r.cards[0].count) || 0} clientes anotados con su QR · 🛵 ${r.ref_units || 0} marcianitos pedidos por la web</p>` : ''}
       ${pend.map(x => `<div class="pv-rw"><div>🎁 ${esc(x.reward)}</div><button class="mini gift" data-pvdeliv="${x.id}">✅ Entregado</button></div>`).join('')}
       ${r.cards_pending ? `<div class="pv-rw"><div>🎫 ${r.cards_pending} ${r.cards_pending === 1 ? 'cartón' : 'cartones'} canjeado${r.cards_pending === 1 ? '' : 's'}: reponé ${r.cards_pending} marcianito${r.cards_pending === 1 ? '' : 's'} (retirá los cartones)</div><button class="mini gift" data-pvcards="${esc(r.code)}">✅ Repuestos</button></div>` : ''}
       <div class="row">
@@ -3394,7 +3420,7 @@ $('pvQrPrint').addEventListener('click', () => {
 /* --- Santi: reglas mayoristas --- */
 function renderWholesale(){
   const ws = wsCfg(state.wholesale); state.wholesale = ws;
-  $('wsUnit').value = ws.unit; $('wsMin').value = ws.min; $('wsPts').value = ws.pointsPer;
+  $('wsUnit').value = ws.unit; $('wsMin').value = ws.min; $('wsPts').value = ws.pointsPer; $('wsRef').value = ws.refPts ?? 1;
   $('wsPacks').innerHTML = ws.packs.map(pk => `<div class="row" data-wspack="${esc(pk.id)}" style="margin-bottom:6px;align-items:center">
     <input data-k="n" type="text" maxlength="30" value="${esc(pk.n)}" aria-label="Nombre del pack" style="flex:2">
     <input data-k="k" type="number" min="2" value="${pk.k}" aria-label="Cantidad" style="flex:1">
@@ -3416,6 +3442,7 @@ function renderWholesale(){
 }
 function readWholesale(){
   const ws = state.wholesale, num = id => Number($(id).value) || 0;
+  ws.refPts = Math.max(0, num('wsRef'));
   ws.unit = Math.max(1, num('wsUnit')); ws.min = Math.max(1, Math.round(num('wsMin'))); ws.pointsPer = Math.max(0, num('wsPts'));
   document.querySelectorAll('#wsPacks [data-wspack]').forEach(row => { const pk = ws.packs.find(x => x.id === row.dataset.wspack); if(!pk) return;
     pk.n = row.querySelector('[data-k="n"]').value.replace(/\+/g, ' ').trim() || 'Pack'; pk.k = Math.max(2, Math.round(Number(row.querySelector('[data-k="k"]').value) || 2)); pk.d = Math.max(0, Math.min(60, Number(row.querySelector('[data-k="d"]').value) || 0)); });
@@ -3430,7 +3457,7 @@ function wsHint(){
     + (cost ? (mine > 0 ? `Vos ganás ${money(Math.round(mine))} por marcianito (${Math.round(mine / ws.unit * 100)}% del precio · +${Math.round(mine / cost * 100)}% sobre tu costo de ${money(Math.round(cost))}).` : `⚠️ Con tu costo de ${money(Math.round(cost))}, a ese precio perdés plata.`) : '');
 }
 ['wsPacks','wsRewards','wsLevels'].forEach(id => $(id).addEventListener('input', () => { readWholesale(); wsHint(); }));
-['wsUnit','wsMin','wsPts'].forEach(id => $(id).addEventListener('input', () => { readWholesale(); wsHint(); }));
+['wsUnit','wsMin','wsPts','wsRef'].forEach(id => $(id).addEventListener('input', () => { readWholesale(); wsHint(); }));
 $('wsAddPack').addEventListener('click', () => { readWholesale(); state.wholesale.packs.push({id:'w' + Date.now().toString(36), n:'Caja nueva', k:36, d:8}); renderWholesale(); });
 $('wsAddReward').addEventListener('click', () => { readWholesale(); state.wholesale.rewards.push({id:'r' + Date.now().toString(36), n:'Premio nuevo', cost:100}); renderWholesale(); });
 $('wsPacks').addEventListener('click', e => { const b = e.target.closest('[data-wsdelpack]'); if(b){ readWholesale(); state.wholesale.packs = state.wholesale.packs.filter(x => x.id !== b.dataset.wsdelpack); renderWholesale(); } });
@@ -3653,6 +3680,7 @@ const QL_TYPES = {
   tira:      {img:'print/tira-qr.jpg',     w:28, h:80, per:18, name:'Tiras para marcianito'},
   tirasin:   {img:'print/tira-sin-qr.jpg', w:28, h:80, per:18, name:'Tiras sin QR'},
   redondos:  {img:'print/sticker-redondo.jpg', w:50, h:50, per:15, name:'Stickers redondos', round:true, mx:4},
+  redondoqr: {img:'print/sticker-redondo-qr.jpg', w:40, h:40, per:24, name:'Redondos con QR', round:true, mx:0},
   redondos3: {img:'print/sticker-redondo.jpg', w:30, h:30, per:40, name:'Logos redondos', round:true, mx:0},
   redondos4: {img:'print/sticker-redondo.jpg', w:40, h:40, per:24, name:'Logos redondos', round:true, mx:0},
   base:      {img:'print/base-sticker.jpg', w:35, h:35, per:35, name:'Bases para mini stickers', round:true, mx:0},
@@ -3778,7 +3806,9 @@ try{ cardCode = localStorage.getItem(TKEY) || null; }catch(e){}
     const invN = inv.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^A-Z0-9]+/g, '-').replace(/^-+|-+$/g, '');
     if(/^[A-Z0-9-]{6,30}$/.test(invN)) pendingInvite = invN;
     if(u.searchParams.get('mayorista') === '1') window.__wsLand = true;
-    ['t','tarjeta','source','inv','qr','pv','mayorista'].forEach(k => u.searchParams.delete(k));
+    const kq = (u.searchParams.get('k') || '').toUpperCase();
+    if(/^[A-F0-9]{8}$/.test(kq)){ try{ localStorage.setItem('area51-kpend', kq); }catch(e){} qrArrive = true; }
+    ['t','tarjeta','source','inv','qr','pv','mayorista','k'].forEach(k => u.searchParams.delete(k));
     history.replaceState(history.state, '', u.pathname + u.search + u.hash);
   }catch(e){}
 })();
@@ -3816,6 +3846,7 @@ async function fetchCard(){
   renderCardChip(); renderCart(); renderClubLock();
   if(!$('cardOverlay').classList.contains('hidden')) renderCardBody();
   if(pendingInvite && !isMember()){ const c0 = pendingInvite; pendingInvite = null; openJoin(c0); return; }
+  if(card) syncMyKiosk();
   if(qrArrive){ qrArrive = false; if(!card){ openReg(); return; } toast(`👽 ¡Hola de nuevo, ${firstName(card.name)}!`); }
   if(pendingInvite && isMember()){ pendingInvite = null; toast('🪪 ¡Ya sos socio del club!'); }
   checkNewStickers();
@@ -5108,6 +5139,7 @@ function openReg(){
   regAvatar = null; regForce = false; $('regErr').textContent = ''; $('regGo').disabled = false;
   $('regDup').classList.add('hidden'); $('regGo').classList.remove('hidden');
   $('regHello').textContent = `Escribí tu nombre y recibí tu tarjeta de ${brand()} con un sticker de regalo 🎁`;
+  if(kPending()) sb.rpc('get_pv_public', {p_pub: kPending()}).then(({data}) => { if(data) $('regHello').textContent = `Te anotás como cliente de ${data.name} 🏪 Escribí tu nombre y recibí tu tarjeta con un sticker de regalo 🎁`; });
   $('t-reg').textContent = `¡Bienvenido/a a ${brandName()}! 👽`;
   $('regAvGrid').innerHTML = AVATARS.map((a, i) => `<button data-rav="${i}" aria-label="Avatar ${a.e}">${avHTML(i, 'md')}</button>`).join('');
   open('regOverlay'); setTimeout(() => $('regName').focus(), 300);
@@ -5136,7 +5168,7 @@ $('regGo').addEventListener('click', async () => {
   card = data; cardCode = data.code;
   try{ localStorage.setItem(TKEY, cardCode); if(regAvatar !== null) localStorage.setItem(AVKEY, String(regAvatar)); }catch(e){}
   if(!$('cName').value) $('cName').value = name;
-  renderCardChip(); renderCart(); renderClubLock(); fetchAlbum(); fetchRace(); fetchComp();
+  renderCardChip(); renderCart(); renderClubLock(); fetchAlbum(); fetchRace(); fetchComp(); syncMyKiosk();
   const fr = card.stickers || [];
   if(fr.length) showEnvelope(fr, true);                 // reemplaza el registro por el sobre de bienvenida
   else { markWelcome(); close('regOverlay'); toast('🪪 ¡Listo! Ya tenés tu tarjeta'); }
