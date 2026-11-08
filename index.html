@@ -808,6 +808,7 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
     <div><b>Unite a nuestro canal de WhatsApp</b><span>Ganadores, sabores nuevos y días de reparto</span></div>
     <a class="mini" id="waChBtn" href="#" target="_blank" rel="noopener" style="text-decoration:none;color:#fff;background:#25D366;border-color:#25D366">Unirme</a>
   </div>
+  <p class="note hidden" id="waChAlt" style="text-align:center;margin:8px 0 0"><a id="waChAltLink" href="#" target="_blank" rel="noopener">¿No te abre el canal? Recibí las novedades por mensaje</a></p>
   <section aria-labelledby="t-combos">
     <h2 id="t-combos">Combos espaciales</h2>
     <p class="sub">Elegí los sabores que quieras: el mejor combo se aplica solo.</p>
@@ -3399,9 +3400,13 @@ $('pvList').addEventListener('click', async e => {
   if(t.dataset.pvdel){
     const r = resellers.find(x => x.code === t.dataset.pvdel);
     if(!confirm(`¿Eliminar ${r.name} para siempre?\n\nSe borran sus puntos y canjes, y su link deja de funcionar. Si solo querés frenarlo un tiempo, usá "Pausar".`)) return;
-    if(prompt(`Para confirmar, escribí ELIMINAR`) !== 'ELIMINAR') return;
-    const {error} = await sb.from('resellers').delete().eq('code', r.code);
-    toast(error ? '⚠️ No se pudo eliminar' : `🗑️ ${r.name} eliminado`); fetchResellers(); fetchPOS(); return;
+    const word = prompt(`Para confirmar, escribí ELIMINAR`);
+    if(word === null) return;
+    if(word.trim().toUpperCase() !== 'ELIMINAR'){ toast('✋ No se eliminó: tenés que escribir la palabra ELIMINAR'); return; }
+    const {data:gone, error} = await sb.from('resellers').delete().eq('code', r.code).select('code');
+    if(error){ console.warn(error); toast('⚠️ No se pudo eliminar: ' + (error.message || '').slice(0, 70)); return; }
+    if(!gone || !gone.length){ toast('⚠️ No se pudo eliminar: volvé a entrar al Centro de Control y probá de nuevo'); return; }
+    toast(`🗑️ ${r.name} eliminado`); fetchResellers(); fetchPOS(); return;
   }
   if(t.dataset.pvprint){
     const r = resellers.find(x => x.code === t.dataset.pvprint);
@@ -5037,7 +5042,8 @@ function socialLinks(){
 }
 function renderHero(){
   const c = state.config, logo = c.logoImg || '', img = $('heroLogo');
-  { const ch = waChannel(); $('waChCard').classList.toggle('hidden', !ch); if(ch) $('waChBtn').href = ch; }
+  { const ch = waChannel(); $('waChCard').classList.toggle('hidden', !ch); $('waChAlt').classList.toggle('hidden', !ch); if(ch) $('waChBtn').href = ch;
+    if(ch) $('waChAltLink').href = `https://wa.me/${(c.phone || '').replace(/\D/g, '')}?text=${encodeURIComponent(`Hola, quiero recibir las novedades de ${brandName()} 👽`)}`; }
   img.classList.toggle('hidden', !logo);
   if(logo && img.getAttribute('src') !== logo) img.src = logo;
   img.alt = brand();
