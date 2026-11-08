@@ -803,6 +803,11 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
 
 
   <div class="pos-card hidden" id="myKiosk" style="margin-top:22px;border-color:#FF9A3D"></div>
+  <div class="pos-card hidden" id="waChCard" style="margin-top:16px;border-color:#25D366">
+    <span class="pe" aria-hidden="true">📣</span>
+    <div><b>Unite a nuestro canal de WhatsApp</b><span>Ganadores, sabores nuevos y días de reparto</span></div>
+    <a class="mini" id="waChBtn" href="#" target="_blank" rel="noopener" style="text-decoration:none;color:#fff;background:#25D366;border-color:#25D366">Unirme</a>
+  </div>
   <section aria-labelledby="t-combos">
     <h2 id="t-combos">Combos espaciales</h2>
     <p class="sub">Elegí los sabores que quieras: el mejor combo se aplica solo.</p>
@@ -1359,6 +1364,9 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
         <div><label for="sPhone">WhatsApp (sin +)</label><input id="sPhone" type="tel"></div>
         <div id="pinField"><label for="sPin">PIN</label><input id="sPin" type="text" inputmode="numeric" maxlength="6"></div>
       </div>
+      <label for="sWaCh">📣 Canal de WhatsApp (link)</label>
+      <input id="sWaCh" type="text" inputmode="url" maxlength="200" placeholder="https://whatsapp.com/channel/...">
+      <p class="note">Se muestra en la tienda, en el sobre de bienvenida y en los mensajes de bienvenida e invitaciones.</p>
       <label>Redes sociales (se muestran en la tienda si las completás)</label>
       <div class="two">
         <div><label for="sIg">📸 Instagram</label><input id="sIg" type="text" maxlength="100" placeholder="@area42club"></div>
@@ -1690,6 +1698,7 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
     </div>
     <p class="sub" id="envText">Tocá el sobre para abrirlo</p>
     <button class="btn primary" id="envBtn">Abrir sobre</button>
+    <a class="btn wa hidden" id="envWaCh" href="#" target="_blank" rel="noopener" style="text-decoration:none;margin-top:8px">📣 Unirme al canal de WhatsApp</a>
   </div>
 </div>
 
@@ -2567,7 +2576,7 @@ function renderSettings(){
   $('sAlbPagePrize').value = c.albumPagePrize || ''; $('sAlbPrize').value = c.albumPrize || '';
   $('sLogoOnly').checked = !!c.logoOnly; $('sStoreName').value = c.storeName || ''; $('sStorePill').value = c.storePill || '';
   $('sStoreTagline').value = c.storeTagline || ''; $('sStoreLine').value = c.storeLine || ''; $('sDeliveryArea').value = c.deliveryArea || '';
-  const so = c.social || {}; $('sIg').value = so.ig || ''; $('sFb').value = so.fb || ''; $('sTt').value = so.tt || ''; $('sWeb').value = so.web || '';
+  const so = c.social || {}; $('sWaCh').value = so.wach || ''; $('sIg').value = so.ig || ''; $('sFb').value = so.fb || ''; $('sTt').value = so.tt || ''; $('sWeb').value = so.web || '';
   $('sRaceOn').checked = c.raceOn !== false; $('sRaceGoal').value = c.raceGoal || 100; $('sRacePrize').value = c.racePrize || '';
   renderPrizeAdmin();
   $('raceStartNote').textContent = c.raceStart ? `Carrera actual desde el ${prettyDate(isoDay(c.raceStart))}. Cuentan los marcianitos entregados desde ese día.` : 'Cuentan todos los marcianitos entregados con tarjeta.';
@@ -2588,6 +2597,7 @@ $('setSave').addEventListener('click', () => {
   const start = $('sStart').value, end = $('sEnd').value;
   if(!start || !end || toMin(end) <= toMin(start)){ $('setErr').textContent = 'El horario de fin tiene que ser después del de inicio.'; return; }
   if(!(num('sPrice') > 0) || !(num('sGoalAmount') > 0)){ $('setErr').textContent = 'El precio y la meta tienen que ser mayores a 0.'; return; }
+  { const ch = $('sWaCh').value.trim(); if(ch && !waChannel(ch)){ $('setErr').textContent = 'El link del canal tiene que empezar con https://whatsapp.com/channel/ (copialo desde WhatsApp → tu canal → Compartir enlace).'; $('sWaCh').focus(); return; } }
   const pin = $('sPin').value.trim();
   const rg = Math.round(num('sRaceGoal'));
   if(!(rg >= 5 && rg <= 1000)){ $('setErr').textContent = 'La meta de la carrera tiene que ser entre 5 y 1000.'; return; }
@@ -2609,7 +2619,7 @@ $('setSave').addEventListener('click', () => {
     albumOn:$('sAlbumOn').checked, albumFor:$('sAlbumFor').value, albumPagePrize:$('sAlbPagePrize').value.trim().slice(0,80), albumPrize:$('sAlbPrize').value.trim().slice(0,80),
     logoOnly:$('sLogoOnly').checked, storeName:$('sStoreName').value.trim().slice(0,30) || 'AREA 51', storePill:$('sStorePill').value.trim().slice(0,16),
     storeTagline:$('sStoreTagline').value.trim().slice(0,50), storeLine:$('sStoreLine').value.trim().slice(0,60), deliveryArea:$('sDeliveryArea').value.trim().slice(0,60),
-    social:{ig:$('sIg').value.trim().slice(0,100), fb:$('sFb').value.trim().slice(0,100), tt:$('sTt').value.trim().slice(0,100), web:$('sWeb').value.trim().slice(0,200)},
+    social:{wach:$('sWaCh').value.trim().slice(0,200), ig:$('sIg').value.trim().slice(0,100), fb:$('sFb').value.trim().slice(0,100), tt:$('sTt').value.trim().slice(0,100), web:$('sWeb').value.trim().slice(0,200)},
     raceOn:$('sRaceOn').checked, raceGoal:rg, racePrize:$('sRacePrize').value.trim().slice(0,80)
   });
   syncCombos(); renderComboList();
@@ -2997,7 +3007,7 @@ async function fetchPOS(){
   }).join('');
 }
 /* --- Portal del comercio --- */
-let pv = null, pvCart = {};
+let pv = null, pvCart = {}, pvLastWa = null;
 const pvCode = () => { try{ return localStorage.getItem('area51-pv'); }catch(e){ return null; } };
 async function openPortal(){
   const code = pvCode(); if(!sb || !code) return;
@@ -3049,7 +3059,8 @@ function renderPortal(){
           <div class="lr" style="color:${gan > 0 ? 'var(--green)' : '#FF8FA0'};font-family:var(--display);font-size:18px"><span>${gan > 0 ? 'Tu ganancia con este pedido' : 'Ojo: con estos precios perdés'}</span><b>${money(Math.abs(gan))}${gan > 0 && venta ? ` (${Math.round(gan / venta * 100)}%)` : ''}</b></div>`; })() : ''}
     </div>
     <div class="err" id="pvOrdErr" role="alert">${n && n < ws.min ? `El pedido mínimo es de ${ws.min} marcianitos (te faltan ${ws.min - n}).` : ''}</div>
-    <button class="btn wa" id="pvSend" ${!n || n < ws.min ? 'disabled' : ''}>📤 Enviar pedido mayorista por WhatsApp</button>`;
+    <button class="btn wa" id="pvSend" ${!n || n < ws.min ? 'disabled' : ''}>📤 Enviar pedido mayorista por WhatsApp</button>
+    ${pvLastWa ? `<div class="pv-sum" style="border-color:#25D366;text-align:center"><p style="margin:0 0 10px;font-weight:800">✅ Tu pedido quedó guardado.</p><p class="note" style="margin:0 0 10px">Si no se abrió WhatsApp solo, tocá acá para mandárselo a Santi:</p><a class="btn wa" href="${esc(pvLastWa)}" style="text-decoration:none">💬 Abrir WhatsApp con el pedido</a></div>` : ''}`;
 }
 $('pvBody').addEventListener('click', async e => {
   const b = e.target.closest('[data-pvq]');
@@ -3085,9 +3096,13 @@ $('pvBody').addEventListener('click', async e => {
     if(pv.cards_pending) L.push(`🎫 Cartones canjeados para reponer: ${pv.cards_pending}`);
     const row = {customer_name:pv.name.slice(0, 60), address:(pv.address || 'Punto de venta').slice(0, 160), reference:null, items,
                  combo:q.packs.join(' + ').slice(0, 200) || null, qty:n, total:q.total, delivery:deliveryText().slice(0, 80), pv_code:pvCode(), card_code:null};
-    try{ const {error} = await sb.from('orders').insert(row); if(error) console.warn(error); }catch(err){ console.warn(err); }
-    openUrl(`https://wa.me/${(state.config.phone || '').replace(/\D/g, '')}?text=${encodeURIComponent(L.join('\n'))}`, '_blank', 'noopener');
-    pvCart = {}; renderPortal(); toast('📤 ¡Pedido enviado! Los puntos se suman cuando Santi lo entrega');
+    const wa = `https://wa.me/${(state.config.phone || '').replace(/\D/g, '')}?text=${encodeURIComponent(L.join('\n'))}`;
+    const btn = $('pvSend'); btn.disabled = true; btn.textContent = '📤 Enviando…';
+    // se guarda el pedido (con un tope de espera) y se abre WhatsApp en la misma pestaña: así el celular no lo bloquea como ventana emergente
+    try{ await Promise.race([sb.from('orders').insert(row).then(({error}) => { if(error) console.warn(error); }), new Promise(r => setTimeout(r, 4000))]); }catch(err){ console.warn(err); }
+    pvCart = {}; pvLastWa = wa; renderPortal();
+    toast('📤 ¡Pedido listo! Abriendo WhatsApp…');
+    window.location.href = wa;
   }
 });
 $('pvChip').addEventListener('click', openPortal);
@@ -3933,6 +3948,7 @@ function checkNewStickers(){
   if(openCardOnLoad && navState.ov === null){ openCardOnLoad = false; renderCardBody(); open('cardOverlay'); }
 }
 function showEnvelope(fresh, welcome = false){
+  $('envWaCh').classList.add('hidden');
   openCardOnLoad = false; envOpened = false; envWelcome = welcome;
   const list = fresh.slice(-5), n = list.length;
   $('envCards').innerHTML = list.map((x,i) => stickerHTML(x.id, `--dx:${Math.round((i-(n-1)/2)*58)}px;transition-delay:${(.3+i*.12).toFixed(2)}s`)).join('');
@@ -3959,6 +3975,7 @@ function openEnvelope(){
   $('envText').textContent = envWelcome ? `¡Tu primer sticker! Juntá 5 y canjeás un marcianito gratis 🍦`
     : n >= 5 ? '¡Completaste tu tarjeta! Tu sticker de CANJE te espera 🎟️' : `Ya tenés ${n} de 5. ¡Te falta${5-n===1?'':'n'} ${5-n}!`;
   $('envBtn').textContent = envWelcome ? '🍦 Ver los helados' : 'Guardar en mi tarjeta ⭐';
+  { const ch = waChannel(); $('envWaCh').classList.toggle('hidden', !(envWelcome && ch)); if(ch) $('envWaCh').href = ch; }
 }
 $('envelope').addEventListener('click', () => { if(!envOpened) openEnvelope(); });
 $('envelope').addEventListener('keydown', e => { if((e.key === 'Enter' || e.key === ' ') && !envOpened){ e.preventDefault(); openEnvelope(); } });
@@ -5006,6 +5023,8 @@ function brandName(){ return (state.config.storeName || 'AREA 51').trim(); }
 function brand(){ const p = (state.config.storePill || '').trim(); return brandName() + (p ? ' ' + p.charAt(0).toUpperCase() + p.slice(1).toLowerCase() : ''); }
 function brandLine(){ const t = (state.config.storeTagline || '').trim(); return brand() + (t ? ' · ' + t : ''); }
 function brandSub(){ return [state.config.storePill, state.config.storeTagline].map(x => (x || '').trim()).filter(Boolean).join(' · ').toUpperCase(); }
+// Link del canal de WhatsApp (solo links de WhatsApp, por seguridad)
+function waChannel(v){ const u = String(v ?? (state.config.social || {}).wach ?? '').trim(); return /^https:\/\/(whatsapp\.com\/channel\/|chat\.whatsapp\.com\/)[A-Za-z0-9_-]+\/?$/.test(u) ? u : ''; }
 function socialLinks(){
   const so = state.config.social || {}, out = [];
   const clean = v => v.trim().replace(/^@/, '').replace(/\s+/g, '');
@@ -5018,6 +5037,7 @@ function socialLinks(){
 }
 function renderHero(){
   const c = state.config, logo = c.logoImg || '', img = $('heroLogo');
+  { const ch = waChannel(); $('waChCard').classList.toggle('hidden', !ch); if(ch) $('waChBtn').href = ch; }
   img.classList.toggle('hidden', !logo);
   if(logo && img.getAttribute('src') !== logo) img.src = logo;
   img.alt = brand();
@@ -5219,7 +5239,7 @@ async function createMemberInvite(btn){
   toast('🎟️ ¡Invitación creada! Mandásela a tu amigo');
 }
 function inviteText(code, from){
-  return `👽 ¡${from ? from + ' te invita' : 'Te invitamos'} al club ${brandName()}!\n\n👇 Tocá acá para entrar:\n${inviteLink(code)}`;
+  return `👽 ¡${from ? from + ' te invita' : 'Te invitamos'} al club ${brandName()}!\n\n👇 Tocá acá para entrar:\n${inviteLink(code)}` + chLine();
 }
 async function shareInvite(code, from){
   const text = inviteText(code, from);
@@ -5242,11 +5262,12 @@ const WKEY = 'marcianitos-bienvenida';
 function welcomeSeen(){ try{ return localStorage.getItem(WKEY) === cardCode; }catch(e){ return false; } }
 function markWelcome(){ try{ localStorage.setItem(WKEY, cardCode); }catch(e){} }
 const firstName = n => { const w = (n || '').trim().split(/\s+/)[0] || ''; return w ? w[0].toUpperCase() + w.slice(1) : ''; };
+const chLine = () => waChannel() ? `\n\n📣 Ganadores y novedades en nuestro canal:\n${waChannel()}` : '';
 function welcomeText(c){
   if(c.member === false){
-    return `🍦 ¡Hola ${firstName(c.name)}! Esta es tu página de ${brand()}\n\n👇 Tocá acá para ver los helados y pedir:\n${cardLink(c.code)}`;
+    return `🍦 ¡Hola ${firstName(c.name)}! Esta es tu página de ${brand()}\n\n👇 Tocá acá para ver los helados y pedir:\n${cardLink(c.code)}` + chLine();
   }
-  return `👽 ¡Bienvenido/a al club ${brandName()}, ${firstName(c.name)}!\n\n👇 Tocá acá y entrá a tu página especial:\n${cardLink(c.code)}`;
+  return `👽 ¡Bienvenido/a al club ${brandName()}, ${firstName(c.name)}!\n\n👇 Tocá acá y entrá a tu página especial:\n${cardLink(c.code)}` + chLine();
 }
 /* --- Cliente: pantalla de bienvenida --- */
 function renderWelcome(){
