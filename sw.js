@@ -1,29 +1,32 @@
-// Cotizador Puelo Neón: funciona sin internet.
-// Al subir una versión nueva, cambiá el número de VERSION.
-const VERSION = 'cotizador-v27';
-const SHELL = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png'];
+/* Service worker de AREA 51 Club
+   Permite instalar la web como app. Siempre busca la versión nueva en internet
+   y solo usa la copia guardada si no hay conexión. */
+const CACHE = 'area51-v6';
+const BASICS = ['./', './index.html', './manifest.json', './icons/icon-192.png', './icons/icon-512.png'];
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(VERSION).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
+  self.skipWaiting();
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(BASICS)).catch(() => {}));
 });
+
 self.addEventListener('activate', e => {
-  e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== VERSION).map(k => caches.delete(k)))).then(() => self.clients.claim()));
+  e.waitUntil(
+    caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))
+      .then(() => self.clients.claim())
+  );
 });
+
 self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET') return;
-  // La nube (Supabase) nunca se guarda en caché: siempre va directo a internet.
-  const u = new URL(req.url);
-  if (u.hostname.endsWith('supabase.co') || /\/(rest|auth|storage)\/v1\//.test(u.pathname)) return;
-  // La página: primero internet (para tener siempre la última versión), si no hay, la guardada.
-  if (req.mode === 'navigate') {
-    e.respondWith(fetch(req).then(r => { const copy = r.clone(); caches.open(VERSION).then(c => c.put('./index.html', copy)); return r; })
-      .catch(() => caches.match('./index.html')));
-    return;
-  }
-  // Íconos y tipografías: primero lo guardado, si no está, se baja y se guarda.
-  e.respondWith(caches.match(req).then(hit => hit || fetch(req).then(r => {
-    if (r && (r.ok || r.type === 'opaque')) { const copy = r.clone(); caches.open(VERSION).then(c => c.put(req, copy)); }
-    return r;
-  }).catch(() => hit)));
+  const url = new URL(req.url);
+  if (url.origin !== self.location.origin) return;   // Supabase, WhatsApp y fuentes van directo
+  e.respondWith(
+    fetch(req)
+      .then(res => {
+        if (res.ok) { const copy = res.clone(); caches.open(CACHE).then(c => c.put(req, copy)); }
+        return res;
+      })
+      .catch(() => caches.match(req, { ignoreSearch: true }).then(r => r || caches.match('./index.html')))
+  );
 });
