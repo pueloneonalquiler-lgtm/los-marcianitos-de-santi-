@@ -1251,13 +1251,14 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
       <p class="sub">Para que nadie complete la tarjeta haciendo varios pedidos chiquitos el mismo día.</p>
       <label for="sStickerLimit">Stickers por compra</label>
       <select class="inp" id="sStickerLimit">
-        <option value="dia">Máximo 1 por día (recomendado)</option>
+        <option value="unidad">1 por cada marcianito, como el pasaporte de los kioscos (recomendado)</option>
+        <option value="dia">1 por pedido, máximo 1 por día</option>
         <option value="semana">Máximo 1 por semana</option>
-        <option value="libre">Sin límite: 1 por cada pedido</option>
+        <option value="libre">1 por cada pedido, sin límite</option>
       </select>
       <label for="sStickerMin">Compra mínima para sumar sticker</label>
       <select class="inp" id="sStickerMin"><option value="1">Cualquier pedido</option><option value="2">2 marcianitos o más</option><option value="3">3 marcianitos o más</option><option value="5">5 marcianitos o más</option></select>
-      <p class="note">El sobre de figuritas común sigue la misma regla. Los sobres de regalo de los combos grandes se dan siempre, y el "+1 sticker" de Santi en Tripulantes no tiene límite.</p>
+      <p class="note">El sobre de figuritas común sigue la misma regla. Los sobres de regalo de los combos grandes se dan siempre, y el "+1 sticker" de Santi en Tripulantes no tiene límite.<br>Con <b>"1 por cada marcianito"</b>: 4 marcianitos = 4 stickers. Si el pedido tiene un combo, el combo suma 1 sticker (ya tiene descuento) y cada marcianito suelto suma 1.</p>
     </div>
     <div class="panel">
       <h2>Sticker de bienvenida</h2>
@@ -2073,6 +2074,14 @@ function bestPrice(n){
   }
   return best[n];
 }
+/* Cuántos stickers da un pedido según la regla de Ajustes */
+function stickersForOrder(qty, usedCombos){
+  if((state.config.stickerLimit || 'dia') !== 'unidad') return 1;
+  const cu = (usedCombos || []).reduce((a, n) => { const c = (state.config.combos || []).find(x => x.n === n); return a + (c ? Number(c.k) || 0 : 0); }, 0);
+  const loose = Math.max(0, qty - cu);
+  return Math.min(20, loose === 0 ? 1 : loose + (cu > 0 ? 1 : 0));
+}
+const perUnit = () => (state.config.stickerLimit || 'dia') === 'unidad';
 function cartSummary(){
   const price = state.config.price;
   const items = FLAVORS.filter(f => cart[f.id]).map(f => ({f:{id:f.id, name:f.name, e:f.e}, q:cart[f.id], price}));
@@ -2092,7 +2101,7 @@ function cartSummary(){
   const c0 = state.config, mode = c0.shipMode || 'fee', min = Number(c0.shipMin) || 1;
   const short = count > 0 && mode !== 'none' && count < min;
   const ship = short && mode === 'fee' ? Math.max(0, Number(c0.shipFee) || 0) : 0;
-  return {items, count, mainCount, sub:bp.cost, total:bp.cost - disc + ship, full:mainCount*price + extra, comboText, voucher:v, disc,
+  return {items, count, mainCount, used:bp.used, sub:bp.cost, total:bp.cost - disc + ship, full:mainCount*price + extra, comboText, voucher:v, disc,
           ship, shipBlock:short && mode === 'block', shipMissing:short ? min - count : 0};
 }
 function deliveryText(){
@@ -2743,6 +2752,7 @@ function stickerHint(o){
   if(o.pv_code || !o.card_code || o.status !== 'pendiente') return '';
   if(o.qty < minQ) return `ℹ️ No suma sticker: menos de ${minQ} marcianitos`;
   if(lim === 'libre') return '';
+  if(lim === 'unidad'){ const n = stickersForOrder(o.qty, (o.combo || '').split(' + ').filter(Boolean).flatMap(p => { const m = p.match(/^(\d+)x (.+)$/); return m ? Array(Number(m[1])).fill(m[2]) : [p]; })); return n > 1 ? `⭐ Suma ${n} stickers al entregarlo` : ''; }
   const day = d => dstr(new Date(d));
   const wk = d => { const w = isoWeek(new Date(d)); return w.y + '-' + w.w; };
   const same = orders.some(x => x.id !== o.id && x.card_code === o.card_code && x.status === 'entregado' && x.delivered_at &&
@@ -2808,7 +2818,8 @@ async function deliverOrder(id){
   toast(r.skip === 'limite' ? `✅ Entregado · sin sticker: ${nm} ya sumó ${r.rule === 'semana' ? 'esta semana' : 'hoy'}`
       : r.skip === 'minimo' ? `✅ Entregado · sin sticker: el pedido tiene menos de ${r.min} marcianitos`
       : r.sticker_id == null ? `✅ Entregado (pedido sin tarjeta)`
-      : r.active >= 5 ? `🎟️ ¡${nm} completó su tarjeta! Ya puede canjear`
+      : r.active >= 5 ? `🎟️ ¡${nm} completó su tarjeta${r.stickers > 1 ? ` (+${r.stickers} stickers)` : ''}! Ya puede canjear`
+      : r.stickers > 1 ? `⭐ ${nm} ganó ${r.stickers} stickers (${r.active}/5)${r.member ? '' : ' · cliente'}`
       : `⭐ ${nm} ganó el sticker #${String(r.sticker_id).padStart(4,'0')} (${r.active}/5)${r.member ? '' : ' · cliente'}`);
   fetchCards(); fetchComp();
   setTimeout(checkMedals, 700);
@@ -3180,7 +3191,7 @@ function stampCardHTML(kiosk){
       <span style="flex:1;white-space:nowrap;overflow:hidden">🏪 ${kiosk ? `<b>${esc(kiosk)}</b>` : 'Comercio: ____________'}</span><span>Nombre: ____________</span>
     </div>
     <div style="display:grid;grid-template-columns:repeat(3,25mm);justify-content:space-between;row-gap:3mm">${[1,2,3,4,5].map(circ).join('')}${gift}</div>
-    <div style="margin-top:auto;font-size:6pt;color:#A8A2C8;text-align:center">Pegá el sticker de cada marcianito · 1 por compra · Canjeable solo en este comercio</div>
+    <div style="margin-top:auto;font-size:6pt;color:#A8A2C8;text-align:center">Pegá 1 sticker por cada marcianito · Canjeable solo en este comercio</div>
   </div>`;
 }
 /* --- Pasaporte Galáctico: tira de 27 × 8,5 cm que se dobla en 3 (2 por hoja A4 apaisada, doble faz) --- */
@@ -3981,7 +3992,7 @@ function renderCardBody(){
   const slots = [0,1,2,3,4].map(i => st[i] ? stickerHTML(st[i].id) : `<div class="slot">${i+1}</div>`).join('');
   let html = `<div class="card-me">${avHTML(myAvatar(), 'lg') || '<span class="av lg" aria-hidden="true">❔</span>'}${isMember() && card.member_no ? `<span class="memberno">SOCIO Nº ${memberNo(card.member_no)}</span>` : ''}<button class="mini" id="cardAvBtn">${myAvatar() === null ? 'Elegir mi avatar' : 'Cambiar avatar'}</button></div>
     ${sb && !isMember() ? '<p class="note" style="text-align:center;color:var(--green);font-weight:800">Tarjeta de cliente · 🔒 Con una invitación te hacés socio y conservás tus stickers</p>' : ''}
-    <p class="sub">${card ? `Tripulante <b>${esc(card.name)}</b>. ` : ''}Cada pedido entregado te suma 1 sticker único y numerado. Con 5 se activa tu sticker de CANJE.</p>
+    <p class="sub">${card ? `Tripulante <b>${esc(card.name)}</b>. ` : ''}${perUnit() ? 'Cada marcianito entregado te suma 1 sticker único y numerado' : 'Cada pedido entregado te suma 1 sticker único y numerado'}. Con 5 se activa tu sticker de CANJE.</p>
     <div class="album">${slots}</div>`;
   if(n >= 5){
     html += `<div class="coupon" id="coupon"><span class="shine"></span>
@@ -4853,7 +4864,7 @@ function renderComp(){
   else { cimg.classList.add('hidden'); cimg.removeAttribute('src'); }
   const end = c.compEnd, ended = end && end < today();
   $('compEndTxt').innerHTML = ended ? `🏁 La competencia terminó el ${prettyDate(end)}. ¡Felicitaciones al ganador!`
-    : `Gana quien junte <b>más stickers</b>${end ? ` hasta el <b>${prettyDate(end)}</b>` : ''}. Cada pedido entregado suma 1 ⭐`;
+    : `Gana quien junte <b>más stickers</b>${end ? ` hasta el <b>${prettyDate(end)}</b>` : ''}. ${perUnit() ? 'Cada marcianito entregado suma 1 ⭐' : 'Cada pedido entregado suma 1 ⭐'}`;
   const rows = comp.rows || [], medal = ['🥇','🥈','🥉'];
   const row = r => `<li class="crow ${r.me ? 'me' : ''}"><span class="cpos">${medal[r.pos-1] || r.pos}</span>
     <span class="cname">${avHTML(r.avatar,'sm')}${esc(r.name)}${r.me ? ' (vos)' : ''}${r.member ? '<span class="badge-soc si">🪪</span>' : ''}</span>
@@ -5184,12 +5195,14 @@ function renderCartAvatar(){
   const note = $('stickerNote');
   note.classList.toggle('lock', false);
   const c0 = state.config, minQ = Number(c0.stickerMinQty) || 1, lim = c0.stickerLimit || 'dia';
-  const rule = lim === 'libre' ? '' : ` (máximo 1 por ${lim === 'semana' ? 'semana' : 'día'}${minQ > 1 ? `, en pedidos de ${minQ} o más` : ''})`;
-  const cnt = cartSummary().count;
+  const rule = (lim === 'libre' || lim === 'unidad') ? '' : ` (máximo 1 por ${lim === 'semana' ? 'semana' : 'día'}${minQ > 1 ? `, en pedidos de ${minQ} o más` : ''})`;
+  const cs = cartSummary(), cnt = cs.count, nst = stickersForOrder(cnt, cs.used);
+  const stTxt = lim === 'unidad' ? (cnt ? `${nst} sticker${nst === 1 ? '' : 's'}${nst === 1 ? ' galáctico' : ' galácticos'}` : '1 sticker por cada marcianito') : '1 sticker galáctico';
   note.textContent = !sb ? '⭐ ¡Gracias por tu compra!'
     : (minQ > 1 && cnt && cnt < minQ) ? `⭐ Sumá ${minQ - cnt} marcianito${minQ - cnt === 1 ? '' : 's'} más y este pedido te da 1 sticker galáctico.`
-    : mem ? `⭐ Con esta compra sumás 1 sticker galáctico${rule}. ¡Juntá 5 y canjeás un marcianito gratis!`
-    : `⭐ Con esta compra sumás 1 sticker${rule}. ¡Juntá 5 y canjeás un marcianito gratis! 🔒 Los socios además corren la Carrera Galáctica.`;
+    : (lim === 'unidad' && nst >= 5) ? `⭐ Con esta compra sumás ${stTxt}: ¡te ganás ${Math.floor(nst / 5) === 1 ? '1 marcianito gratis' : Math.floor(nst / 5) + ' marcianitos gratis'} para tu próximo pedido! 🎁${mem ? '' : ' 🔒 Los socios además corren la Carrera Galáctica.'}`
+    : mem ? `⭐ Con esta compra sumás ${stTxt}${rule}. ¡Juntá 5 y canjeás un marcianito gratis!`
+    : `⭐ Con esta compra sumás ${stTxt}${rule}. ¡Juntá 5 y canjeás un marcianito gratis! 🔒 Los socios además corren la Carrera Galáctica.`;
   const a = myAvatar();
   $('cartAv').innerHTML = avHTML(a, 'md') || '<span class="av md" aria-hidden="true">❔</span>';
   $('cartAvBtn').textContent = a === null ? 'Elegir' : 'Cambiar';
