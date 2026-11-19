@@ -139,9 +139,13 @@ section{margin-top:34px}
 .nr-prize{background:var(--deep,#0b0726);border:1px solid #ffffff22;border-radius:14px;padding:8px;text-align:center;font-size:13px;font-weight:700}
 .nr-prize .im{width:100%;aspect-ratio:1;border-radius:10px;background:#ffffff10 center/cover no-repeat;display:grid;place-items:center;font-size:30px;margin-bottom:6px}
 .nr-prize .md{font-size:18px;display:block}
-.pvload-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px dashed var(--line)}
-.pvload-row b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.pvload-row input{width:90px;text-align:center}
+.pvload-row{display:grid;grid-template-columns:minmax(0,1fr) 100px;align-items:center;gap:10px;padding:8px 0;border-bottom:1px dashed var(--line)}
+.pvload-row b{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:16px;color:var(--text,#fff)}
+#pvLoadList .pvload-row input{width:100%!important;min-width:0;margin:0!important;text-align:center}
+.pvh-row{display:grid;grid-template-columns:minmax(0,1fr) 76px auto auto;gap:6px;align-items:center;padding:7px 0;border-bottom:1px dashed var(--line)}
+.pvh-row b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pvh-row small{display:block;color:var(--muted);font-size:12px}
+#pvLoadHist .pvh-row input{width:100%!important;margin:0!important;padding:10px 6px;text-align:center}
 .legal{font-size:14px;line-height:1.5;color:var(--muted)}
 .legal h3{font-size:16px;margin:16px 0 4px;color:var(--text,#fff)}
 .legal p{margin:0 0 7px}
@@ -1262,6 +1266,12 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
       </div>
       <p class="note" id="pr3Note"></p>
       <button class="btn ghost" id="pvRaceSave" style="margin-top:12px">💾 Guardar carrera</button>
+      <p class="note" id="pvRaceState" style="margin-top:10px;font-weight:800"></p>
+      <div class="two" style="margin-top:6px">
+        <button class="btn ghost" id="pvRaceNew">🚀 Empezar nueva carrera</button>
+        <button class="btn ghost" id="pvRaceStop">🏁 Terminar carrera ahora</button>
+      </div>
+      <p class="note">"Empezar nueva" pone a todas las naves en cero desde este momento (los puntos y niveles de los comercios no se tocan) y usa los premios y la fecha de fin que tengas cargados arriba. "Terminar ahora" cierra la carrera en este momento, guarda el podio y te arma el texto de ganadores.</p>
     </div>
     <div class="panel">
       <h2>🖨️ Mini stickers de sabores</h2>
@@ -1749,6 +1759,9 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
     <div id="pvLoadList"></div>
     <div class="err" id="pvLoadErr" role="alert"></div>
     <button class="btn primary" id="pvLoadGo">🚀 Sumar a la carrera</button>
+    <h3 id="pvLoadHistH" style="margin:20px 0 4px;font-size:18px">📋 Cargas anteriores</h3>
+    <p class="note" style="margin:0 0 6px">¿Te equivocaste de comercio o de cantidad? Cambiá el número y tocá 💾, o borrala con 🗑️. Se corrigen solos la carrera, los puntos y el nivel.</p>
+    <div id="pvLoadHist"><p class="note">Cargando…</p></div>
   </div>
 </div>
 
@@ -5444,6 +5457,11 @@ function pvRacePrizes(){
   const ps = [1, 2, 3].map(n => ({n, t:c['pvRaceP' + n] || '', img:c['pvRaceImg' + n] || ''})).filter(p => p.t || p.img);
   return ps.length ? `<div class="nr-prizes">${ps.map(p => `<div class="nr-prize">${p.img ? `<div class="im" style="background-image:url('${esc(p.img)}')"></div>` : ''}<span class="md">${['🥇','🥈','🥉'][p.n - 1]}</span>${esc(p.t)}</div>`).join('')}</div>` : '';
 }
+function pvRaceEnded(){
+  const c = state.config;
+  if(c.pvRaceEndAt) return Date.now() >= Date.parse(c.pvRaceEndAt);
+  return !!c.pvRaceEnd && dstr(new Date()) > c.pvRaceEnd;
+}
 function pvRaceDates(){
   const c = state.config;
   return c.pvRaceStart && c.pvRaceEnd ? `Del ${dmy(c.pvRaceStart)} al ${dmy(c.pvRaceEnd)}` : c.pvRaceEnd ? `Hasta el ${dmy(c.pvRaceEnd)}` : c.pvRaceStart ? `Desde el ${dmy(c.pvRaceStart)}` : '';
@@ -5452,9 +5470,17 @@ function pvRaceSection(portal){
   const c = state.config; if(!c.pvRaceOn) return '';
   const list = pvRace || [], me = list.find(x => x.me), pos = me ? list.indexOf(me) + 1 : 0;
   const ahead = me && pos > 1 ? (Number(list[pos - 2].units) || 0) - (Number(me.units) || 0) : 0;
-  const d = pvRaceDates(), goal = Number(c.pvRaceGoal) || 0;
+  const d = pvRaceDates(), goal = Number(c.pvRaceGoal) || 0, ended = pvRaceEnded();
+  const win = list.length && Number(list[0].units) > 0 ? list[0] : null;
+  const last = c.pvRaceLast, showLast = !ended && last && Array.isArray(last.rows) && last.rows.length;
+  if(ended) return `<h3 style="margin:18px 0 4px;font-size:18px">🏁 Carrera de Naves terminada</h3>
+    ${win ? `<p class="sub" style="margin:0 0 4px;color:var(--yellow);font-weight:800">🏆 ¡Ganó ${esc(win.name)} con ${win.units} marcianitos!</p>` : '<p class="sub" style="margin:0 0 4px">La carrera terminó.</p>'}
+    ${pvRacePrizes()}
+    ${list.length ? pvRaceTrack(list) : ''}
+    ${portal && me ? `<p class="note" style="font-weight:800;color:var(--green)">${pos <= 3 && Number(me.units) > 0 ? `🎉 ¡Terminaste ${pos}°! Santi te avisa cuándo te lleva tu premio.` : `🚀 Terminaste ${pos}°. ¡En la próxima carrera vamos por el podio!`}</p>` : ''}`;
   return `<h3 style="margin:18px 0 4px;font-size:18px">🏁 Carrera de Naves Mayoristas</h3>
     <p class="sub" style="margin:0 0 4px">Tu nave remolca cada marcianito que comprás. <b>Gana el comercio que más marcianitos compre</b>${d ? ` · ${esc(d)}` : ''}${goal ? ` · 🪐 Planeta meta: ${goal}` : ''}.</p>
+    ${showLast ? `<p class="note" style="margin:0 0 4px">🏆 Carrera anterior: ${last.rows.map((x, i) => `${['🥇','🥈','🥉'][i]} ${esc(x.name)}`).join(' · ')}</p>` : ''}
     ${pvRacePrizes()}
     ${list.length ? pvRaceTrack(list) : '<p class="note">Cargando la carrera…</p>'}
     ${portal && me ? `<p class="note" style="font-weight:800;color:${pos === 1 ? 'var(--green)' : 'var(--yellow)'}">${pos === 1 && Number(me.units) > 0 ? '👑 ¡Vas primero! Seguí sumando para que no te alcancen.' : pos > 1 ? `🚀 Vas ${pos}°: te faltan <b>${ahead + 1}</b> marcianito${ahead + 1 === 1 ? '' : 's'} para pasar al ${pos - 1}°.` : '🚀 ¡Hacé tu primer pedido y despegá!'}</p>` : ''}`;
@@ -5464,7 +5490,8 @@ function renderPvRaceAdmin(){
   const on = !!state.config.pvRaceOn && Array.isArray(pvRace);
   box.classList.toggle('hidden', !on);
   if(!on) return;
-  box.innerHTML = pvRaceSection(false) + `<div class="row" style="margin:-2px 0 12px"><button class="mini" id="pvRaceShare">📣 Texto de posiciones</button></div>`;
+  box.innerHTML = pvRaceSection(false) + `<div class="row" style="margin:-2px 0 12px"><button class="mini" id="pvRaceShare">📣 Texto de posiciones</button><button class="mini" id="pvRaceFix">✏️ Ver / corregir cargas</button></div>`;
+  $('pvRaceFix').onclick = () => { $('pvLoadBtn').click(); setTimeout(() => { const h = $('pvLoadHistH'); if(h) h.scrollIntoView({behavior:'smooth', block:'start'}); }, 350); };
   $('pvRaceShare').onclick = () => {
     const c = state.config, d = pvRaceDates();
     const prizes = [1, 2, 3].map(n => c['pvRaceP' + n] ? `${['🥇','🥈','🥉'][n - 1]} ${c['pvRaceP' + n]}` : '').filter(Boolean);
@@ -5474,24 +5501,81 @@ function renderPvRaceAdmin(){
 }
 $('pvRaceSave').addEventListener('click', () => {
   const c = state.config;
-  c.pvRaceOn = $('pvRaceOn').checked; c.pvRaceStart = $('pvRaceStart').value || ''; c.pvRaceEnd = $('pvRaceEnd').value || '';
+  const ns = $('pvRaceStart').value || '', ne = $('pvRaceEnd').value || '';
+  if(ns !== (c.pvRaceStart || '')) c.pvRaceStartAt = '';
+  if(ne !== (c.pvRaceEnd || '')) c.pvRaceEndAt = '';
+  c.pvRaceOn = $('pvRaceOn').checked; c.pvRaceStart = ns; c.pvRaceEnd = ne;
   if(c.pvRaceStart && c.pvRaceEnd && c.pvRaceEnd < c.pvRaceStart) return toast('⚠️ La fecha de fin es anterior al inicio');
   c.pvRaceGoal = Math.max(0, Math.min(100000, parseInt($('pvRaceGoal').value, 10) || 0));
   [1, 2, 3].forEach(n => c['pvRaceP' + n] = $('pvRaceP' + n).value.trim().slice(0, 80));
   save(); pushConfig(); pvRace = null; fetchPvRace(); renderPvRaceAdmin();
+  pvRaceStateNote();
   toast(c.pvRaceOn ? '🏁 Carrera guardada y visible en los portales' : '💾 Carrera guardada (oculta)');
 });
+function pvRaceStateNote(){
+  const c = state.config, el = $('pvRaceState'); if(!el) return;
+  el.textContent = !c.pvRaceOn ? '⚪ Carrera oculta' : pvRaceEnded() ? `🏁 Terminada${c.pvRaceEnd ? ` el ${dmy(c.pvRaceEnd)}` : ''}: los comercios ven el podio` : `🟢 En curso${pvRaceDates() ? ` · ${pvRaceDates()}` : ''}`;
+  $('pvRaceStop').disabled = !c.pvRaceOn || pvRaceEnded();
+}
+$('pvRaceNew').addEventListener('click', () => {
+  const c = state.config, today = dstr(new Date()), fe = $('pvRaceEnd').value || '';
+  const end = fe > today ? fe : '';
+  if(!confirm(`¿Empezar una carrera nueva desde ahora?\n\nTodas las naves arrancan en 0${end ? ` y termina el ${dmy(end)}` : ' (sin fecha de fin: la terminás vos)'}.${!pvRaceEnded() && c.pvRaceOn ? '\n\nOjo: la carrera actual no está terminada. Si querés guardar el podio, primero tocá "Terminar carrera ahora".' : ''}`)) return;
+  c.pvRaceOn = true; c.pvRaceStart = today; c.pvRaceStartAt = new Date().toISOString(); c.pvRaceEnd = end; c.pvRaceEndAt = '';
+  c.pvRaceGoal = Math.max(0, Math.min(100000, parseInt($('pvRaceGoal').value, 10) || 0));
+  [1, 2, 3].forEach(n => c['pvRaceP' + n] = $('pvRaceP' + n).value.trim().slice(0, 80));
+  save(); pushConfig(); loadPvRaceForm(); pvRace = null; setTimeout(fetchPvRace, 600); renderPvRaceAdmin();
+  toast('🚀 ¡Nueva carrera en marcha! Todas las naves en la largada'); confetti();
+});
+$('pvRaceStop').addEventListener('click', async () => {
+  const c = state.config;
+  if(sb){ const {data} = await sb.rpc('get_pv_race', {p_code: null}); if(Array.isArray(data)) pvRace = data; }
+  const list = pvRace || [], top = list.filter(x => Number(x.units) > 0).slice(0, 3);
+  if(!confirm(`¿Terminar la carrera ahora?${top.length ? `\n\nPodio:\n${top.map((x, i) => `${i + 1}° ${x.name} (${x.units})`).join('\n')}` : '\n\nTodavía nadie sumó marcianitos.'}`)) return;
+  c.pvRaceEndAt = new Date().toISOString(); c.pvRaceEnd = dstr(new Date());
+  c.pvRaceLast = {end:c.pvRaceEnd, rows:top.map(x => ({name:x.name, units:Number(x.units) || 0}))};
+  save(); pushConfig(); loadPvRaceForm(); renderPvRaceAdmin();
+  const prizes = [1, 2, 3].map(n => c['pvRaceP' + n] || '');
+  const txt = `🏁 ¡Terminó la Carrera de Naves Mayoristas ${brandName()}! 🛸\n\n${top.length ? top.map((x, i) => `${['🥇','🥈','🥉'][i]} ${x.name}: ${x.units} marcianitos${prizes[i] ? ` → ${prizes[i]}` : ''}`).join('\n') : 'Esta vez no hubo ganadores.'}\n\n¡Gracias a todos los comercios por sumarse! 💚 Muy pronto, nueva carrera 🚀`;
+  pvShare('🏆 Carrera terminada', 'Texto de ganadores para mandar a los comercios o publicar en el canal:', txt, true);
+});
 function loadPvRaceForm(){
+  pvRaceStateNote();
   const c = state.config;
   $('pvRaceOn').checked = !!c.pvRaceOn; $('pvRaceStart').value = c.pvRaceStart || ''; $('pvRaceEnd').value = c.pvRaceEnd || '';
   $('pvRaceGoal').value = c.pvRaceGoal || ''; [1, 2, 3].forEach(n => $('pvRaceP' + n).value = c['pvRaceP' + n] || '');
 }
+async function renderPvLoadHist(){
+  const box = $('pvLoadHist'); if(!box || !sb) return;
+  const {data, error} = await sb.from('reseller_loads').select('id,pv_code,units,note,created_at').order('id', {ascending:false}).limit(60);
+  if(error){ box.innerHTML = '<p class="note">No se pudieron leer las cargas. ¿Corriste supabase-carrera-mayoristas.sql?</p>'; return; }
+  if(!data.length){ box.innerHTML = '<p class="note">Todavía no cargaste repartos.</p>'; return; }
+  const nm = c => (resellers.find(r => r.code === c) || {}).name || '¿comercio borrado?';
+  box.innerHTML = data.map(l => { const d = new Date(l.created_at);
+    return `<div class="pvh-row"><div><b>🏪 ${esc(nm(l.pv_code))}</b><small>${prettyDate(dstr(d))} · ${pad(d.getHours())}:${pad(d.getMinutes())} hs</small></div>
+      <input type="number" inputmode="numeric" min="0" max="2000" value="${l.units}" data-lhid="${l.id}" aria-label="Cantidad">
+      <button class="mini" data-lhsave="${l.id}" aria-label="Guardar">💾</button><button class="mini" data-lhdel="${l.id}" aria-label="Borrar">🗑️</button></div>`; }).join('');
+}
+$('pvLoadHist').addEventListener('click', async e => {
+  const b = e.target.closest('button'); if(!b) return;
+  const id = Number(b.dataset.lhsave || b.dataset.lhdel); if(!id) return;
+  const inp = document.querySelector(`[data-lhid="${id}"]`);
+  const n = b.dataset.lhdel ? 0 : parseInt(inp.value, 10);
+  if(!Number.isFinite(n) || n < 0 || n > 2000) return toast('⚠️ Cantidad entre 0 y 2000');
+  if(n === 0 && !confirm('¿Borrar esta carga? Se resta de la carrera, los puntos y el nivel del comercio.')) return;
+  b.disabled = true;
+  const {error} = await sb.rpc('pv_load_edit', {p_id:id, p_units:n});
+  b.disabled = false;
+  if(error){ console.warn(error); return toast('⚠️ No se pudo corregir. ¿Corriste de nuevo supabase-carrera-mayoristas.sql?'); }
+  toast(n === 0 ? '🗑️ Carga borrada' : '✅ Carga corregida');
+  renderPvLoadHist(); fetchResellers(); fetchPvRace();
+});
 $('pvLoadBtn').addEventListener('click', () => {
   const list = resellers.filter(r => r.active);
   if(!list.length) return toast('No hay puntos de venta activos');
   $('pvLoadErr').textContent = '';
   $('pvLoadList').innerHTML = list.map(r => `<div class="pvload-row"><b>🏪 ${esc(r.name)}</b><input type="number" inputmode="numeric" min="0" max="2000" placeholder="0" data-pvload="${esc(r.code)}" aria-label="Marcianitos para ${esc(r.name)}"></div>`).join('');
-  open('pvLoadOverlay');
+  open('pvLoadOverlay'); renderPvLoadHist();
 });
 $('pvLoadGo').addEventListener('click', async () => {
   const items = [...document.querySelectorAll('[data-pvload]')].map(i => ({code:i.dataset.pvload, n:parseInt(i.value, 10) || 0})).filter(x => x.n > 0);
@@ -5504,7 +5588,8 @@ $('pvLoadGo').addEventListener('click', async () => {
   for(const x of items){ const {error} = await sb.rpc('pv_load_units', {p_code:x.code, p_units:x.n, p_note:'reparto'}); if(error){ bad++; console.warn(error); } }
   $('pvLoadGo').disabled = false;
   if(bad){ $('pvLoadErr').textContent = bad === items.length ? 'No se pudo cargar. ¿Corriste supabase-carrera-mayoristas.sql?' : `${bad} no se pudieron cargar. Revisá y probá de nuevo.`; fetchResellers(); return; }
-  close('pvLoadOverlay'); toast(`🚚 ¡${total} marcianitos sumados a la carrera!`); confetti();
+  document.querySelectorAll('[data-pvload]').forEach(i => i.value = ''); renderPvLoadHist();
+  toast(`🚚 ¡${total} marcianitos sumados a la carrera!`); confetti();
   fetchResellers(); fetchPvRace();
 });
 
