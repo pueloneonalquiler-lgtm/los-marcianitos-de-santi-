@@ -117,6 +117,37 @@ section{margin-top:34px}
 
 /* ---------- Footer ---------- */
 .foot{text-align:center;color:var(--muted);font-size:14px;margin-top:40px}
+.nr{position:relative;border-radius:18px;padding:10px 10px 4px;margin:8px 0 10px;overflow:hidden;
+  background:radial-gradient(1.5px 1.5px at 12% 20%,#fff9,transparent),radial-gradient(1px 1px at 38% 70%,#fff8,transparent),radial-gradient(1.5px 1.5px at 66% 30%,#fff7,transparent),radial-gradient(1px 1px at 84% 80%,#fff9,transparent),radial-gradient(1px 1px at 52% 12%,#fff6,transparent),linear-gradient(160deg,#0b0726,#1c0f4a 60%,#0d1b3d);border:1px solid #ffffff22}
+.nr-lane{position:relative;height:66px;border-bottom:1px dashed #ffffff1f}
+.nr-lane:last-of-type{border-bottom:none}
+.nr-lane.me{background:linear-gradient(90deg,#39ff8818,transparent 70%);border-radius:12px}
+.nr-name{position:absolute;left:6px;top:4px;font-size:12px;font-weight:800;color:#d9d3ff;white-space:nowrap;max-width:70%;overflow:hidden;text-overflow:ellipsis}
+.nr-lane.me .nr-name{color:var(--green)}
+.nr-finish{position:absolute;right:0;top:0;bottom:0;width:40px;display:grid;place-items:center;font-size:26px;
+  background:repeating-linear-gradient(0deg,#ffffff30 0 6px,transparent 6px 12px) left/3px 100% no-repeat}
+.nr-ship{position:absolute;top:22px;display:flex;align-items:center;gap:0;transition:left 1.4s cubic-bezier(.2,.8,.2,1);transform:translateX(-100%)}
+.nr-trail{display:flex;gap:3px;align-items:center;margin-right:4px}
+.nr-tube{width:7px;height:20px;border-radius:4px 4px 3px 3px;box-shadow:0 0 6px #ffffff40;transform:rotate(-8deg)}
+.nr-tube:nth-child(even){transform:rotate(6deg) translateY(2px)}
+.nr-ufo{font-size:30px;line-height:1;filter:drop-shadow(0 0 8px #7cf7ff99);animation:nrbob 1.6s ease-in-out infinite;position:relative}
+.nr-ufo .cr{position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:15px}
+.nr-cnt{margin-left:4px;font-family:var(--display);font-size:15px;color:var(--yellow);background:#00000066;border-radius:10px;padding:1px 7px;white-space:nowrap}
+@keyframes nrbob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@media (prefers-reduced-motion: reduce){.nr-ufo{animation:none}.nr-ship{transition:none}}
+.nr-prizes{display:grid;grid-template-columns:repeat(auto-fit,minmax(92px,1fr));gap:8px;margin:8px 0}
+.nr-prize{background:var(--deep,#0b0726);border:1px solid #ffffff22;border-radius:14px;padding:8px;text-align:center;font-size:13px;font-weight:700}
+.nr-prize .im{width:100%;aspect-ratio:1;border-radius:10px;background:#ffffff10 center/cover no-repeat;display:grid;place-items:center;font-size:30px;margin-bottom:6px}
+.nr-prize .md{font-size:18px;display:block}
+.pvload-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px dashed var(--line)}
+.pvload-row b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pvload-row input{width:90px;text-align:center}
+.legal{font-size:14px;line-height:1.5;color:var(--muted)}
+.legal h3{font-size:16px;margin:16px 0 4px;color:var(--text,#fff)}
+.legal p{margin:0 0 7px}
+.legal b{color:var(--text,#fff)}
+.legal .lg-free{border:1px solid var(--line,#ffffff33);border-radius:12px;padding:8px 10px;margin:6px 0 8px}
+.legal-ok{margin-top:6px}
 .linkbtn{background:none;border:none;color:var(--cyan);text-decoration:underline;padding:10px;font-weight:700}
 
 /* ---------- FAB + Sheet ---------- */
@@ -905,6 +936,7 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
   <div class="foot">
     <div class="socials hidden" id="footSocials"></div>
     <p>Hecho con 🚀 por Santi</p>
+    <button class="linkbtn" id="openLegal">📜 Bases y condiciones</button>
     <button class="linkbtn" id="openAdmin">Centro de Control</button>
   </div>
 </main>
@@ -1045,8 +1077,9 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
         <ul class="crew" id="pvReqList"></ul>
       </div>
       <div class="panel">
-        <div class="ohead"><h2>🏪 Puntos de venta</h2><button class="mini" id="pvNew">＋ Nuevo</button></div>
+        <div class="ohead"><h2>🏪 Puntos de venta</h2><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="mini gift" id="pvLoadBtn">🚚 Cargar reparto</button><button class="mini gift" id="pvAllAnn">📣 Lista para el canal</button><button class="mini" id="pvNew">＋ Nuevo</button></div></div>
         <p class="sub">Cada comercio tiene su <b>portal mayorista</b> (link o QR secreto) para hacer pedidos, juntar puntos y canjear premios. Los precios, packs y premios se configuran en Ajustes → Reglas mayoristas.</p>
+        <div id="pvRaceAdm" class="hidden"></div>
         <ul class="crew" id="pvList"></ul>
       </div>
     </div>
@@ -1184,6 +1217,51 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
       <label style="margin-top:12px">Niveles (según marcianitos comprados en total)</label>
       <div id="wsLevels"></div>
       <button class="btn ghost" id="wsSave" style="margin-top:12px">💾 Guardar reglas mayoristas</button>
+    </div>
+    <div class="panel">
+      <h2>🏁 Carrera de Naves Mayoristas</h2>
+      <p class="sub">Solo para puntos de venta. Cada comercio es una nave que remolca los marcianitos que compra: gana el que más compra entre las fechas. Cuentan los pedidos del portal entregados y los repartos que cargás vos con <b>🚚 Cargar reparto</b>.</p>
+      <label class="checkrow"><input type="checkbox" id="pvRaceOn"> Mostrar la carrera en los portales de los comercios</label>
+      <div class="two">
+        <div><label for="pvRaceStart">Empieza</label><input id="pvRaceStart" type="date"></div>
+        <div><label for="pvRaceEnd">Termina</label><input id="pvRaceEnd" type="date"></div>
+      </div>
+      <label for="pvRaceGoal">🪐 Planeta meta (marcianitos, opcional)</label>
+      <input id="pvRaceGoal" type="number" inputmode="numeric" min="0" placeholder="Vacío = la nave que va primera marca la meta">
+      <label for="pvRaceP1">🥇 Premio 1° puesto</label>
+      <input id="pvRaceP1" type="text" maxlength="80" placeholder="Ej: 20 marcianitos gratis">
+      <div class="prize-admin">
+        <div class="pa-prev" id="pr1Prev">🥇</div>
+        <div class="pa-btns">
+          <label class="mini filebtn" for="pr1File">📷 Subir imagen</label>
+          <input type="file" id="pr1File" accept="image/*" hidden>
+          <button class="mini" id="pr1Del">🗑️ Quitar imagen</button>
+        </div>
+      </div>
+      <p class="note" id="pr1Note"></p>
+      <label for="pvRaceP2">🥈 Premio 2° puesto</label>
+      <input id="pvRaceP2" type="text" maxlength="80" placeholder="Ej: 10 marcianitos gratis">
+      <div class="prize-admin">
+        <div class="pa-prev" id="pr2Prev">🥈</div>
+        <div class="pa-btns">
+          <label class="mini filebtn" for="pr2File">📷 Subir imagen</label>
+          <input type="file" id="pr2File" accept="image/*" hidden>
+          <button class="mini" id="pr2Del">🗑️ Quitar imagen</button>
+        </div>
+      </div>
+      <p class="note" id="pr2Note"></p>
+      <label for="pvRaceP3">🥉 Premio 3° puesto</label>
+      <input id="pvRaceP3" type="text" maxlength="80" placeholder="Ej: Cartel luminoso AREA 51">
+      <div class="prize-admin">
+        <div class="pa-prev" id="pr3Prev">🥉</div>
+        <div class="pa-btns">
+          <label class="mini filebtn" for="pr3File">📷 Subir imagen</label>
+          <input type="file" id="pr3File" accept="image/*" hidden>
+          <button class="mini" id="pr3Del">🗑️ Quitar imagen</button>
+        </div>
+      </div>
+      <p class="note" id="pr3Note"></p>
+      <button class="btn ghost" id="pvRaceSave" style="margin-top:12px">💾 Guardar carrera</button>
     </div>
     <div class="panel">
       <h2>🖨️ Mini stickers de sabores</h2>
@@ -1369,6 +1447,16 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
       <label for="sWaCh">📣 Canal de WhatsApp (link)</label>
       <input id="sWaCh" type="text" inputmode="url" maxlength="200" placeholder="https://whatsapp.com/channel/...">
       <p class="note">Se muestra en la tienda, en el sobre de bienvenida y en los mensajes de bienvenida e invitaciones.</p>
+      <label>📜 Bases y condiciones: datos del responsable</label>
+      <div class="two">
+        <div><label for="sLgOrg">Nombre y apellido (adulto)</label><input id="sLgOrg" type="text" maxlength="60"></div>
+        <div><label for="sLgId">DNI o CUIT</label><input id="sLgId" type="text" maxlength="20"></div>
+      </div>
+      <div class="two">
+        <div><label for="sLgAddr">Domicilio</label><input id="sLgAddr" type="text" maxlength="80" placeholder="Calle y número, Lago Puelo"></div>
+        <div><label for="sLgSince">Vigentes desde</label><input id="sLgSince" type="date"></div>
+      </div>
+      <p class="note">Se muestran en "Bases y condiciones" al pie de la tienda (la ley pide identificar al organizador de las promociones). Link directo para compartir: tu web con <b>?bases=1</b> al final.</p>
       <label>Redes sociales (se muestran en la tienda si las completás)</label>
       <div class="two">
         <div><label for="sIg">📸 Instagram</label><input id="sIg" type="text" maxlength="100" placeholder="@area42club"></div>
@@ -1646,8 +1734,30 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
       <a class="btn wa" id="regDupWa" href="#" target="_blank" rel="noopener">💬 Pedirle mi link a Santi</a>
       <button class="btn ghost" id="regDupOther">Soy otra persona con el mismo nombre</button>
     </div>
+    <p class="note legal-ok">Al pedir tu tarjeta aceptás las <button type="button" class="linkbtn" data-legal style="padding:0">bases y condiciones</button>. Si sos menor de 18, con permiso de un adulto.</p>
     <button class="btn primary" id="regGo">🎁 Quiero mi tarjeta</button>
     <button class="btn ghost" data-close="regOverlay">Ahora no, solo mirar los helados</button>
+  </div>
+</div>
+
+<!-- Cargar reparto mayorista -->
+<div class="overlay hidden" id="pvLoadOverlay" role="dialog" aria-modal="true" aria-labelledby="t-pvload">
+  <div class="sheet">
+    <div class="sheet-head"><h2 id="t-pvload">🚚 Cargar reparto</h2><button class="close" data-close="pvLoadOverlay" aria-label="Cerrar">✕</button></div>
+    <p class="sub">Anotá cuántos marcianitos le dejaste a cada comercio que <b>no</b> pidió por el portal. Suma a la Carrera de Naves, a sus puntos y a su nivel.</p>
+    <p class="note">Los pedidos hechos por el portal ya se suman solos cuando los marcás como entregados: no los cargues de nuevo.</p>
+    <div id="pvLoadList"></div>
+    <div class="err" id="pvLoadErr" role="alert"></div>
+    <button class="btn primary" id="pvLoadGo">🚀 Sumar a la carrera</button>
+  </div>
+</div>
+
+<!-- Bases y condiciones -->
+<div class="overlay hidden" id="legalOverlay" role="dialog" aria-modal="true" aria-labelledby="t-legal">
+  <div class="sheet">
+    <div class="sheet-head"><h2 id="t-legal">📜 Bases y condiciones</h2><button class="close" data-legalclose aria-label="Cerrar">✕</button></div>
+    <div class="legal" id="legalBody"></div>
+    <button class="btn ghost" data-legalclose>Volver</button>
   </div>
 </div>
 
@@ -1662,6 +1772,7 @@ select.inp{width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--l
     <label>Elegí tu avatar</label>
     <div class="avgrid" id="joinAvGrid" style="margin-top:6px"></div>
     <div class="err" id="joinErr" role="alert"></div>
+    <p class="note legal-ok">Al entrar aceptás las <button type="button" class="linkbtn" data-legal style="padding:0">bases y condiciones</button>. Si sos menor de 18, con permiso de un adulto.</p>
     <button class="btn primary" id="joinGo">🚀 Entrar al club</button>
   </div>
 </div>
@@ -1876,7 +1987,7 @@ function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.remove('
    Cada pantalla y ventana abierta crea una entrada en el historial del navegador.
    Así, la flecha "atrás" cierra la ventana abierta o vuelve a la pantalla anterior
    en lugar de salir del sitio. */
-const OVERLAYS = ['cartOverlay','pinOverlay','celebrate','flavorOverlay','cardOverlay','envOverlay','installOverlay','avatarOverlay','welcomeOverlay','welcomeSend','joinOverlay','packOverlay','gameOverlay','liveOverlay','regOverlay','comboOverlay','lineOverlay','pvOverlay','pvEditOverlay','pvQrOverlay','wsLandOverlay','reqOverlay','talOverlay'];
+const OVERLAYS = ['cartOverlay','pinOverlay','celebrate','flavorOverlay','cardOverlay','envOverlay','installOverlay','avatarOverlay','welcomeOverlay','welcomeSend','joinOverlay','packOverlay','gameOverlay','liveOverlay','regOverlay','comboOverlay','lineOverlay','pvOverlay','pvEditOverlay','pvQrOverlay','wsLandOverlay','reqOverlay','talOverlay','legalOverlay','pvLoadOverlay'];
 const HOME_NAV = {screen:'shop', view:'home', ov:null};
 let navState = {...HOME_NAV};
 let adminUnlocked = false;
@@ -2602,6 +2713,8 @@ function renderSettings(){
   $('sAlbPagePrize').value = c.albumPagePrize || ''; $('sAlbPrize').value = c.albumPrize || '';
   $('sLogoOnly').checked = !!c.logoOnly; $('sStoreName').value = c.storeName || ''; $('sStorePill').value = c.storePill || '';
   $('sStoreTagline').value = c.storeTagline || ''; $('sStoreLine').value = c.storeLine || ''; $('sDeliveryArea').value = c.deliveryArea || '';
+  loadPvRaceForm();
+  const lg = c.legal || {}; $('sLgOrg').value = lg.org || ''; $('sLgId').value = lg.id || ''; $('sLgAddr').value = lg.addr || ''; $('sLgSince').value = lg.since || '';
   const so = c.social || {}; $('sWaCh').value = so.wach || ''; $('sIg').value = so.ig || ''; $('sFb').value = so.fb || ''; $('sTt').value = so.tt || ''; $('sWeb').value = so.web || '';
   $('sRaceOn').checked = c.raceOn !== false; $('sRaceGoal').value = c.raceGoal || 100; $('sRacePrize').value = c.racePrize || '';
   renderPrizeAdmin();
@@ -2645,6 +2758,7 @@ $('setSave').addEventListener('click', () => {
     albumOn:$('sAlbumOn').checked, albumFor:$('sAlbumFor').value, albumPagePrize:$('sAlbPagePrize').value.trim().slice(0,80), albumPrize:$('sAlbPrize').value.trim().slice(0,80),
     logoOnly:$('sLogoOnly').checked, storeName:$('sStoreName').value.trim().slice(0,30) || 'AREA 51', storePill:$('sStorePill').value.trim().slice(0,16),
     storeTagline:$('sStoreTagline').value.trim().slice(0,50), storeLine:$('sStoreLine').value.trim().slice(0,60), deliveryArea:$('sDeliveryArea').value.trim().slice(0,60),
+    legal:{org:$('sLgOrg').value.trim().slice(0,60), id:$('sLgId').value.trim().slice(0,20), addr:$('sLgAddr').value.trim().slice(0,80), since:$('sLgSince').value || ''},
     social:{wach:$('sWaCh').value.trim().slice(0,200), ig:$('sIg').value.trim().slice(0,100), fb:$('sFb').value.trim().slice(0,100), tt:$('sTt').value.trim().slice(0,100), web:$('sWeb').value.trim().slice(0,200)},
     raceOn:$('sRaceOn').checked, raceGoal:rg, racePrize:$('sRacePrize').value.trim().slice(0,80)
   });
@@ -3045,6 +3159,7 @@ async function openPortal(){
   pv = data; pv.ws = wsCfg(data.wholesale); renderPortal();
   $('pvChip').classList.remove('hidden');
   pvCelebrate(code, data);
+  fetchPvRace(code);
 }
 /* Felicitaciones del portal: primera visita y clientes/puntos nuevos desde la última vez */
 const PV_CH_TXT = 'En nuestro canal de WhatsApp anunciamos a los comercios que venden AREA 51, así los vecinos saben dónde encontrarnos.';
@@ -3087,6 +3202,7 @@ function renderPortal(){
     <div class="pv-head"><div class="pn">🏪 ${esc(pv.name)}</div><span class="sub">Punto de venta oficial de ${esc(brand())}</span></div>
     <div class="pv-lvl"><span class="le">${esc(lvl.e || '🏅')}</span><div><b>Nivel ${esc(lvl.n)}</b><div class="sub" style="margin:0">${lvl.d ? `${lvl.d}% de descuento extra en tus pedidos` : 'Comprá más para subir de nivel'}${nx ? `<br>Te faltan ${nx.min - pv.total_units} marcianitos para ${esc(nx.e || '')} ${esc(nx.n)} (${nx.d}%)` : ''}</div></div>
       <div class="pv-pts">${pv.points}<small>puntos</small></div></div>
+    <div id="pvRaceBox">${pvRaceSection(true)}</div>
     <h3 style="margin:18px 0 6px;font-size:18px">🎁 Canjeá tus puntos</h3>
     ${ws.rewards.map(r => `<div class="pv-rw"><div>${esc(r.n)}</div><span>${r.cost} pts</span><button class="mini" data-pvrw="${esc(r.id)}" ${pv.points < r.cost ? 'disabled' : ''}>Canjear</button></div>`).join('')}
     ${pend.length ? `<p class="note" style="color:var(--yellow);font-weight:800;margin-top:8px">⏳ Premios por recibir: ${pend.map(r => esc(r.reward)).join(', ')}. Te los lleva Santi con el próximo pedido.</p>` : ''}
@@ -3326,6 +3442,7 @@ async function fetchResellers(){
   if(error) ({data, error} = await sb.from('resellers').select('*,reseller_redemptions(id,reward,cost,status,created_at)').order('created_at'));
   if(error){ $('pvList').innerHTML = '<li class="empty" style="border:none;background:none">Falta correr supabase-puntos-de-venta.sql en Supabase.</li>'; return; }
   resellers = data || []; renderResellers(); updatePvAlerts();
+  fetchPvRace();
 }
 function renderPvReqs(){
   $('pvReqPanel').classList.toggle('hidden', !pvReqs.length);
@@ -3426,6 +3543,7 @@ function renderResellers(){
       ${r.cards_pending ? `<div class="pv-rw"><div>🎫 ${r.cards_pending} ${r.cards_pending === 1 ? 'cartón' : 'cartones'} canjeado${r.cards_pending === 1 ? '' : 's'}: reponé ${r.cards_pending} marcianito${r.cards_pending === 1 ? '' : 's'} (retirá los cartones)</div><button class="mini gift" data-pvcards="${esc(r.code)}">✅ Repuestos</button></div>` : ''}
       <div class="row">
         <button class="mini" data-pvsend="${esc(r.code)}">📤 Mandar acceso</button>
+        <button class="mini gift" data-pvann="${esc(r.code)}">📣 Anunciar en el canal</button>
         <button class="mini" data-pvqr="${esc(r.code)}">🔳 QR</button>
         <button class="mini" data-pvedit="${esc(r.code)}">✏️ Editar</button>
         <button class="mini gift" data-pvkit="${esc(r.code)}">🧰 Kit del comercio</button>
@@ -3461,25 +3579,46 @@ $('pvSave').addEventListener('click', async () => {
   close('pvEditOverlay'); toast(pvEdit ? '✅ Punto de venta actualizado' : '🏪 ¡Punto de venta creado! Mandale su acceso'); fetchResellers(); fetchPOS();
   if(wasNew) setTimeout(() => pvAnnounce(row), 400);
 });
+const pvMaps = r => r.maps && /^https?:\/\//i.test(r.maps) ? r.maps : '';   // solo el link de Maps cargado a mano (los automáticos son muy largos)
+const siteUrl = () => location.origin.startsWith('http') ? location.origin : 'https://los-marcianitos-de-santi.vercel.app';
 function pvAnnText(r){
-  return `🛸 ¡Nuevo punto de venta ${brandName()}!\n\n🏪 ${r.name}${r.address ? `\n📍 ${r.address}` : ''}${r.hours ? `\n🕐 ${r.hours}` : ''}\n\nYa podés conseguir nuestros marcianitos ahí. ¡Gracias por sumarse a la tripulación! 👽💚${r.maps ? `\n🗺️ ${r.maps}` : ''}`;
+  const m = pvMaps(r);
+  return `🛸 ¡Nuevo punto de venta ${brandName()}! 🎉\n\n🏪 *${r.name}* se sumó a la tripulación 👽${r.address ? `\n📍 ${r.address}` : ''}${r.hours ? `\n🕐 ${r.hours}` : ''}${m ? `\n🗺️ ${m}` : ''}\n\nYa podés conseguir nuestros marcianitos ahí 🍦\n⭐ Promo 5 + 1: pedí tu Pasaporte Galáctico, juntá 5 stickers y te llevás 1 GRATIS 🎁\n\n¡Gracias, ${r.name}, por sumarse al club! 💚`;
 }
-function pvAnnounce(r){
-  const txt = pvAnnText(r), ch = waChannel();
-  $('celebrateBody').innerHTML = `<div class="me">🎉</div><h2>¡Nuevo punto de venta!</h2>
-    <h3 style="font-size:21px">${esc(r.name)}</h3>
-    <p class="sub" style="margin-top:6px">1️⃣ Mandale su acceso con <b>📤</b> (le llega con un “¡Felicidades!” y la invitación al canal).<br>2️⃣ Anuncialo en el canal: copiá este texto y pegalo ahí.</p>
-    <textarea readonly rows="7" style="width:100%;margin-top:8px;font-size:14px" aria-label="Texto para el canal">${esc(txt)}</textarea>
-    <button class="btn wa" id="pvAnnCopy" style="margin-top:8px">📋 Copiar texto${ch ? ' y abrir el canal' : ''}</button>`;
-  open('celebrate'); confetti(); sfx('bright');
+function pvAllText(list){
+  const nums = ['1️⃣','2️⃣','3️⃣','4️⃣','5️⃣','6️⃣','7️⃣','8️⃣','9️⃣','🔟'];
+  const rows = list.map((r, i) => { const m = pvMaps(r); return `${nums[i] || '🏪'} *${r.name}*${r.address ? `\n📍 ${r.address}` : ''}${r.hours ? `\n🕐 ${r.hours}` : ''}${m ? `\n🗺️ ${m}` : ''}`; });
+  return `🛸 ¿Dónde conseguir ${brandName()}? 👽\n\nNuestros puntos de venta:\n\n${rows.join('\n\n')}\n\n⭐ En todos: promo 5 + 1 con el Pasaporte Galáctico 🎁\n🛵 O pedí a domicilio y sacá tu tarjeta del club:\n${siteUrl()}/?qr=1`;
+}
+function pvShare(title, sub, txt, party){
+  const ch = waChannel();
+  $('celebrateBody').innerHTML = `<div class="me">📣</div><h2>${title}</h2>
+    <p class="sub" style="margin-top:6px">${sub}</p>
+    <textarea readonly rows="9" style="width:100%;margin-top:8px;font-size:14px" aria-label="Texto para el canal">${esc(txt)}</textarea>
+    <button class="btn wa" id="pvAnnCopy" style="margin-top:8px">📋 Copiar texto${ch ? ' y abrir el canal' : ''}</button>
+    <p class="note" style="margin-top:6px">En el canal: dejá apretado en la casilla → Pegar → Enviar. Podés sumarle una foto del comercio con el 📎.</p>`;
+  open('celebrate'); if(party){ confetti(); sfx('bright'); }
   $('pvAnnCopy').onclick = async () => {
     try{ await navigator.clipboard.writeText(txt); toast('📋 Texto copiado: pegalo en el canal'); }catch(e){ prompt('Copiá el texto:', txt); }
     if(ch) openUrl(ch);
   };
 }
+function pvAnnounce(r, fresh = true){
+  pvShare(fresh ? '¡Nuevo punto de venta!' : `Anunciar ${esc(r.name)}`,
+    fresh ? `1️⃣ Mandale su acceso con <b>📤</b> (le llega con un “¡Felicidades!” y la invitación al canal).<br>2️⃣ Anuncialo en el canal con este texto:` : 'Texto listo para publicar en el canal:',
+    pvAnnText(r), fresh);
+}
+$('pvAllAnn').addEventListener('click', () => {
+  const list = resellers.filter(r => r.active && r.is_public);
+  if(!list.length) return toast('No hay puntos de venta activos y visibles en la web');
+  const hidden = resellers.filter(r => r.active && !r.is_public).length;
+  pvShare('Todos los puntos de venta', `${list.length} comercio${list.length === 1 ? '' : 's'} activo${list.length === 1 ? '' : 's'} y visible${list.length === 1 ? '' : 's'} en la web.${hidden ? ` (${hidden} no se incluye${hidden === 1 ? '' : 'n'} porque no está${hidden === 1 ? '' : 'n'} marcado${hidden === 1 ? '' : 's'} como visible en la web.)` : ''} Ideal para fijarlo en el canal y actualizarlo cuando se suma uno nuevo.`,
+    pvAllText(list), false);
+});
 $('pvList').addEventListener('click', async e => {
   const t = e.target.closest('button'); if(!t) return;
   if(t.dataset.pvedit) return openPvEdit(t.dataset.pvedit);
+  if(t.dataset.pvann){ const r = resellers.find(x => x.code === t.dataset.pvann); if(r) pvAnnounce(r, false); return; }
   if(t.dataset.pvsend){
     const r = resellers.find(x => x.code === t.dataset.pvsend);
     const ch = waChannel();
@@ -3935,9 +4074,10 @@ try{ cardCode = localStorage.getItem(TKEY) || null; }catch(e){}
     const invN = inv.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^A-Z0-9]+/g, '-').replace(/^-+|-+$/g, '');
     if(/^[A-Z0-9-]{6,30}$/.test(invN)) pendingInvite = invN;
     if(u.searchParams.get('mayorista') === '1') window.__wsLand = true;
+    if(u.searchParams.get('bases') === '1') setTimeout(openLegal, 900);
     const kq = (u.searchParams.get('k') || '').toUpperCase();
     if(/^[A-F0-9]{8}$/.test(kq)){ try{ localStorage.setItem('area51-kpend', kq); }catch(e){} qrArrive = true; }
-    ['t','tarjeta','source','inv','qr','pv','mayorista','k'].forEach(k => u.searchParams.delete(k));
+    ['t','tarjeta','source','inv','qr','pv','mayorista','k','bases'].forEach(k => u.searchParams.delete(k));
     history.replaceState(history.state, '', u.pathname + u.search + u.hash);
   }catch(e){}
 })();
@@ -4956,6 +5096,9 @@ const IMG_SLOTS = {
     on:'Se muestra al lado del premio de la carrera.', off:'Si subís una foto del premio, aparece al lado de la meta y el premio.'},
   compPrizeImg:{file:'sCompFile', del:'sCompDel', prev:'cpPrev', note:'cpNote', prefix:'premio-stickers', ph:'⭐',
     on:'Se muestra al lado del premio de la competencia.', off:'Si subís una foto del premio, aparece en la competencia.'},
+  pvRaceImg1:{file:'pr1File', del:'pr1Del', prev:'pr1Prev', note:'pr1Note', prefix:'carrera-pv-1', ph:'🥇', on:'Se muestra en la carrera de los comercios.', off:'Subí una foto del premio del 1° puesto.'},
+  pvRaceImg2:{file:'pr2File', del:'pr2Del', prev:'pr2Prev', note:'pr2Note', prefix:'carrera-pv-2', ph:'🥈', on:'Se muestra en la carrera de los comercios.', off:'Subí una foto del premio del 2° puesto.'},
+  pvRaceImg3:{file:'pr3File', del:'pr3Del', prev:'pr3Prev', note:'pr3Note', prefix:'carrera-pv-3', ph:'🥉', on:'Se muestra en la carrera de los comercios.', off:'Subí una foto del premio del 3° puesto.'},
   logoImg:{file:'sLogoFile', del:'sLogoDel', prev:'lgPrev', note:'lgNote', prefix:'logo', ph:'🛸', png:true,
     on:'El logo reemplaza al platito volador de la portada.', off:'Si subís un logo (mejor PNG con fondo transparente), aparece arriba de todo.'},
 };
@@ -4981,7 +5124,7 @@ async function shrinkImage(file, max = 900, type = 'image/jpeg'){
   } finally { URL.revokeObjectURL(url); }
 }
 function prizePath(url){ const m = (url || '').match(/\/premios\/([^?]+)/); return m ? decodeURIComponent(m[1]) : null; }
-function afterImageChange(){ renderPrizeAdmin(); renderRace(); renderComp(); renderHero(); }
+function afterImageChange(){ renderPvRaceAdmin(); renderPrizeAdmin(); renderRace(); renderComp(); renderHero(); }
 Object.entries(IMG_SLOTS).forEach(([key, sl]) => {
   $(sl.file).addEventListener('change', async () => {
     const f = $(sl.file).files[0]; $(sl.file).value = '';
@@ -5271,6 +5414,177 @@ async function openJoin(code){
 }
 /* --- Registro por QR (ferias) --- */
 let regAvatar = null, regForce = false;
+/* =================== CARRERA DE NAVES MAYORISTAS =================== */
+let pvRace = null;
+const dmy = d => d ? d.split('-').reverse().slice(0, 2).join('/') : '';
+async function fetchPvRace(code){
+  if(!sb || !state.config.pvRaceOn) return;
+  const {data, error} = await sb.rpc('get_pv_race', {p_code: code || null});
+  if(error || !Array.isArray(data)) return;
+  pvRace = data;
+  const box = $('pvRaceBox'); if(box) box.innerHTML = pvRaceSection(true);
+  renderPvRaceAdmin();
+}
+function pvRaceTrack(list){
+  const c = state.config, goal = Number(c.pvRaceGoal) || 0;
+  const max = Math.max(goal, ...list.map(x => Number(x.units) || 0), 1);
+  const lead = list.length && Number(list[0].units) > 0 ? list[0].name : null;
+  const fl = FLAVORS.length ? FLAVORS : DEFAULT_FLAVORS;
+  return `<div class="nr" role="img" aria-label="Carrera de naves: ${esc(list.map(x => `${x.name} ${x.units}`).join(', '))}">${list.map((x, i) => {
+    const u = Number(x.units) || 0, pct = Math.min(1, u / max), tubes = u ? Math.max(1, Math.min(9, Math.round(pct * 9))) : 0;
+    const G = tubes * 10 + 84;
+    const trail = Array.from({length: tubes}, (_, k) => { const f = fl[(i * 3 + k) % fl.length], cc = f.c || ['#FFF59D', '#39FF88']; return `<i class="nr-tube" style="background:linear-gradient(${cc[0]},${cc[1]})"></i>`; }).join('');
+    return `<div class="nr-lane${x.me ? ' me' : ''}"><span class="nr-name">${i < 3 && u ? ['🥇','🥈','🥉'][i] + ' ' : ''}${esc(x.name)}${x.me ? ' · TU NAVE' : ''}</span>
+      <div class="nr-ship" style="left:calc(${G}px + (100% - 46px - ${G}px) * ${pct.toFixed(3)})"><span class="nr-trail">${trail}</span><span class="nr-ufo">🛸${x.name === lead ? '<span class="cr">👑</span>' : ''}</span><span class="nr-cnt">${u}</span></div>
+      <span class="nr-finish">🪐</span></div>`;
+  }).join('')}</div>`;
+}
+function pvRacePrizes(){
+  const c = state.config;
+  const ps = [1, 2, 3].map(n => ({n, t:c['pvRaceP' + n] || '', img:c['pvRaceImg' + n] || ''})).filter(p => p.t || p.img);
+  return ps.length ? `<div class="nr-prizes">${ps.map(p => `<div class="nr-prize">${p.img ? `<div class="im" style="background-image:url('${esc(p.img)}')"></div>` : ''}<span class="md">${['🥇','🥈','🥉'][p.n - 1]}</span>${esc(p.t)}</div>`).join('')}</div>` : '';
+}
+function pvRaceDates(){
+  const c = state.config;
+  return c.pvRaceStart && c.pvRaceEnd ? `Del ${dmy(c.pvRaceStart)} al ${dmy(c.pvRaceEnd)}` : c.pvRaceEnd ? `Hasta el ${dmy(c.pvRaceEnd)}` : c.pvRaceStart ? `Desde el ${dmy(c.pvRaceStart)}` : '';
+}
+function pvRaceSection(portal){
+  const c = state.config; if(!c.pvRaceOn) return '';
+  const list = pvRace || [], me = list.find(x => x.me), pos = me ? list.indexOf(me) + 1 : 0;
+  const ahead = me && pos > 1 ? (Number(list[pos - 2].units) || 0) - (Number(me.units) || 0) : 0;
+  const d = pvRaceDates(), goal = Number(c.pvRaceGoal) || 0;
+  return `<h3 style="margin:18px 0 4px;font-size:18px">🏁 Carrera de Naves Mayoristas</h3>
+    <p class="sub" style="margin:0 0 4px">Tu nave remolca cada marcianito que comprás. <b>Gana el comercio que más marcianitos compre</b>${d ? ` · ${esc(d)}` : ''}${goal ? ` · 🪐 Planeta meta: ${goal}` : ''}.</p>
+    ${pvRacePrizes()}
+    ${list.length ? pvRaceTrack(list) : '<p class="note">Cargando la carrera…</p>'}
+    ${portal && me ? `<p class="note" style="font-weight:800;color:${pos === 1 ? 'var(--green)' : 'var(--yellow)'}">${pos === 1 && Number(me.units) > 0 ? '👑 ¡Vas primero! Seguí sumando para que no te alcancen.' : pos > 1 ? `🚀 Vas ${pos}°: te faltan <b>${ahead + 1}</b> marcianito${ahead + 1 === 1 ? '' : 's'} para pasar al ${pos - 1}°.` : '🚀 ¡Hacé tu primer pedido y despegá!'}</p>` : ''}`;
+}
+function renderPvRaceAdmin(){
+  const box = $('pvRaceAdm'); if(!box) return;
+  const on = !!state.config.pvRaceOn && Array.isArray(pvRace);
+  box.classList.toggle('hidden', !on);
+  if(!on) return;
+  box.innerHTML = pvRaceSection(false) + `<div class="row" style="margin:-2px 0 12px"><button class="mini" id="pvRaceShare">📣 Texto de posiciones</button></div>`;
+  $('pvRaceShare').onclick = () => {
+    const c = state.config, d = pvRaceDates();
+    const prizes = [1, 2, 3].map(n => c['pvRaceP' + n] ? `${['🥇','🥈','🥉'][n - 1]} ${c['pvRaceP' + n]}` : '').filter(Boolean);
+    const txt = `🏁 Carrera de Naves Mayoristas ${brandName()} 🛸\n${d ? `📅 ${d}\n` : ''}\n${pvRace.map((x, i) => `${['🥇','🥈','🥉'][i] || `${i + 1}°`} ${x.name}: ${x.units} marcianitos`).join('\n')}${prizes.length ? `\n\n🏆 Premios:\n${prizes.join('\n')}` : ''}\n\n¡Cada marcianito que comprás empuja tu nave! 🚀`;
+    pvShare('Posiciones de la carrera', 'Para mandarle a los comercios o publicar en el canal:', txt, false);
+  };
+}
+$('pvRaceSave').addEventListener('click', () => {
+  const c = state.config;
+  c.pvRaceOn = $('pvRaceOn').checked; c.pvRaceStart = $('pvRaceStart').value || ''; c.pvRaceEnd = $('pvRaceEnd').value || '';
+  if(c.pvRaceStart && c.pvRaceEnd && c.pvRaceEnd < c.pvRaceStart) return toast('⚠️ La fecha de fin es anterior al inicio');
+  c.pvRaceGoal = Math.max(0, Math.min(100000, parseInt($('pvRaceGoal').value, 10) || 0));
+  [1, 2, 3].forEach(n => c['pvRaceP' + n] = $('pvRaceP' + n).value.trim().slice(0, 80));
+  save(); pushConfig(); pvRace = null; fetchPvRace(); renderPvRaceAdmin();
+  toast(c.pvRaceOn ? '🏁 Carrera guardada y visible en los portales' : '💾 Carrera guardada (oculta)');
+});
+function loadPvRaceForm(){
+  const c = state.config;
+  $('pvRaceOn').checked = !!c.pvRaceOn; $('pvRaceStart').value = c.pvRaceStart || ''; $('pvRaceEnd').value = c.pvRaceEnd || '';
+  $('pvRaceGoal').value = c.pvRaceGoal || ''; [1, 2, 3].forEach(n => $('pvRaceP' + n).value = c['pvRaceP' + n] || '');
+}
+$('pvLoadBtn').addEventListener('click', () => {
+  const list = resellers.filter(r => r.active);
+  if(!list.length) return toast('No hay puntos de venta activos');
+  $('pvLoadErr').textContent = '';
+  $('pvLoadList').innerHTML = list.map(r => `<div class="pvload-row"><b>🏪 ${esc(r.name)}</b><input type="number" inputmode="numeric" min="0" max="2000" placeholder="0" data-pvload="${esc(r.code)}" aria-label="Marcianitos para ${esc(r.name)}"></div>`).join('');
+  open('pvLoadOverlay');
+});
+$('pvLoadGo').addEventListener('click', async () => {
+  const items = [...document.querySelectorAll('[data-pvload]')].map(i => ({code:i.dataset.pvload, n:parseInt(i.value, 10) || 0})).filter(x => x.n > 0);
+  if(!items.length){ $('pvLoadErr').textContent = 'Anotá al menos una cantidad.'; return; }
+  if(items.some(x => x.n > 2000)){ $('pvLoadErr').textContent = 'Máximo 2000 por comercio.'; return; }
+  const total = items.reduce((a, x) => a + x.n, 0);
+  if(!confirm(`¿Sumar ${total} marcianitos en ${items.length} comercio${items.length === 1 ? '' : 's'}?`)) return;
+  $('pvLoadGo').disabled = true;
+  let bad = 0;
+  for(const x of items){ const {error} = await sb.rpc('pv_load_units', {p_code:x.code, p_units:x.n, p_note:'reparto'}); if(error){ bad++; console.warn(error); } }
+  $('pvLoadGo').disabled = false;
+  if(bad){ $('pvLoadErr').textContent = bad === items.length ? 'No se pudo cargar. ¿Corriste supabase-carrera-mayoristas.sql?' : `${bad} no se pudieron cargar. Revisá y probá de nuevo.`; fetchResellers(); return; }
+  close('pvLoadOverlay'); toast(`🚚 ¡${total} marcianitos sumados a la carrera!`); confetti();
+  fetchResellers(); fetchPvRace();
+});
+
+/* =================== BASES Y CONDICIONES =================== */
+function legalHTML(){
+  const c = state.config, lg = c.legal || {}, B = esc(brandName());
+  const ph = (c.phone || '').replace(/\D/g, ''), wa = ph ? `<a href="https://wa.me/${ph}" target="_blank" rel="noopener">+${ph}</a>` : 'el WhatsApp del club';
+  const since = lg.since ? lg.since.split('-').reverse().join('/') : '';
+  const org = lg.org ? `Lo organiza <b>${esc(lg.org)}</b>${lg.id ? `, DNI/CUIT ${esc(lg.id)}` : ''}${lg.addr ? `, con domicilio en ${esc(lg.addr)}` : ''} ("el Organizador"), adulto responsable del emprendimiento.`
+    : `Lo organiza el adulto responsable del emprendimiento ("el Organizador"), cuyos datos se informan por WhatsApp a quien los pida.`;
+  const unit = (c.stickerLimit || 'dia') === 'unidad';
+  const H = (t) => `<h3>${t}</h3>`, P = (t) => `<p>${t}</p>`;
+  return [
+    P(`Estas son las reglas del club y de sus promociones. Participar significa aceptarlas; si sos menor de 18, las acepta tu madre, padre o adulto responsable.`),
+    H('1. Organizador, alcance y vigencia'),
+    P(`1.1. <b>${B} · Club de helados</b> es un emprendimiento familiar de helados caseros ("marcianitos") de la Comarca Andina. ${org}`),
+    P(`1.2. Estas bases rigen el club y todas sus promociones: tarjeta de stickers, Álbum Galáctico, Competencia de Stickers, Carrera Galáctica, Arcade, Gran Premio en Vivo y Pasaporte Galáctico en comercios.`),
+    P(`1.3. Rigen ${since ? `desde el ${esc(since)} ` : ''}por tiempo indeterminado. Cada competencia o carrera tiene su fecha de inicio y, si corresponde, de cierre, que se publican en esta web.`),
+    P(`1.4. El ámbito es la Comarca Andina del Paralelo 42 (Lago Puelo, El Bolsón y alrededores), donde se hacen las entregas.`),
+    P(`1.5. Los precios, sabores y premios vigentes son los que muestra esta web en cada momento.`),
+    H('2. Quiénes pueden participar'),
+    P(`2.1. Cualquier persona desde los 12 años que tenga una tarjeta del club.`),
+    P(`2.2. Los menores de 18 años participan con la autorización y la supervisión de su madre, padre o adulto responsable, que acepta estas bases en su nombre y recibe los premios cuando haga falta.`),
+    P(`2.3. Hay dos tipos de tarjeta. <b>Clientes</b>: cualquiera que compre o se registre con un QR del club. <b>Socios</b>: personas invitadas con un código de invitación. Cada promoción indica en la web si es para todos, solo para socios o solo para clientes.`),
+    P(`2.4. Cada persona puede tener una sola tarjeta. Las tarjetas duplicadas se unifican y pueden quedar fuera de la competencia vigente.`),
+    P(`2.5. Los comercios que son puntos de venta no compiten por los premios de los clientes: tienen su propio programa de puntos.`),
+    P(`2.6. Los familiares de Santi que viven con él pueden jugar, pero no reciben premios de la Competencia ni de la Carrera.`),
+    H('3. Tarjeta, stickers y marcianito gratis'),
+    P(unit ? `3.1. Cada <b>marcianito entregado</b> con tarjeta suma 1 sticker galáctico, igual que en el Pasaporte de los comercios. Si un pedido incluye un combo con descuento, el combo suma 1 sticker y cada marcianito suelto suma 1.`
+           : `3.1. Cada <b>pedido entregado</b> con tarjeta suma 1 sticker galáctico, con los límites que indica la tienda.`),
+    P(`3.2. El sticker se acredita cuando el pedido se entrega, no cuando se manda. La compra mínima para sumar es la que indica la tienda.`),
+    P(`3.3. Las tarjetas nuevas reciben 1 sticker de bienvenida.`),
+    P(`3.4. <b>Con 5 stickers se canjea 1 marcianito gratis</b>, del sabor disponible que elijas. Se entrega con el próximo pedido o en una entrega acordada.`),
+    P(`3.5. Los stickers son personales: no se transfieren entre tarjetas, no se venden y no se cambian por dinero.`),
+    P(`3.6. Canjear stickers no descuenta lo ya sumado en la Competencia ni en la Carrera.`),
+    H('4. Álbum Galáctico (sin obligación de compra)'),
+    `<div class="lg-free">${P(`4.1. <b>Sin obligación de compra.</b> Se puede participar del álbum sin comprar: (a) jugando al Arcade del club, que da sobres como premio; o (b) pidiendo 1 sobre gratis por semana por WhatsApp a ${wa}, con el nombre de tu tarjeta. Los sobres gratis tienen las mismas chances que los demás.`)}</div>`,
+    P(`4.2. Cada pedido entregado da 1 sobre con 3 figuritas al azar. Algunos packs indicados en la web dan sobres extra. Al canjear 5 stickers llega un sobre dorado con 5 figuritas.`),
+    P(`4.3. Con 3 figuritas repetidas se pide un sobre nuevo.`),
+    P(`4.4. Completar una página da: <b>${esc(c.albumPagePrize || 'el premio que indica la web')}</b>. Completar el álbum da: <b>${esc(c.albumPrize || 'el premio que indica la web')}</b>.`),
+    P(`4.5. Las figuritas son digitales, quedan en tu tarjeta y no se intercambian entre tarjetas.`),
+    H('5. Competencia de Stickers y Carrera Galáctica'),
+    P(`En las dos gana quien más junta: no hay sorteo ni azar.`),
+    P(`5.1. <b>Competencia:</b> gana quien tenga más stickers ganados desde su inicio hasta la fecha de cierre. <b>Carrera:</b> gana quien llegue primero a la meta de marcianitos entregados con tarjeta. Quién participa, el premio y las fechas se muestran en la web antes de empezar. Si una competencia no tiene fecha de cierre, se anuncia con al menos 7 días de aviso.`),
+    P(`5.2. <b>Empates:</b> en la Competencia gana quien llegó primero a esa cantidad; en la Carrera, quien tuvo el primer pedido entregado que alcanzó la meta.`),
+    P(`5.3. Los talones del Pasaporte Galáctico cargados por el Organizador suman a la Competencia y a la Carrera.`),
+    P(`5.4. En los rankings se muestra solo el nombre con la inicial del apellido y el avatar. Quien no quiera aparecer puede pedir que lo oculten y sigue participando.`),
+    P(`5.5. Los ganadores se anuncian en la web y en el canal de WhatsApp del club, con nombre e inicial.`),
+    H('6. Arcade y Gran Premio en Vivo'),
+    P(`6.1. Los juegos son gratis y cualquiera puede jugar, compre o no.`),
+    P(`6.2. Ganar un juego da el premio que indica la web (1 sticker o 1 sobre), una vez por el período que indique la web, a quien tiene tarjeta.`),
+    P(`6.3. El Gran Premio en Vivo es una carrera en tiempo real que abre el Organizador. Es gratis y el premio de cada sala se anuncia antes de empezar. Si hay empate, se juega un desempate.`),
+    P(`6.4. Un premio ganado con trampas, errores del juego o varias tarjetas se anula.`),
+    H('7. Pasaporte Galáctico en comercios'),
+    P(`7.1. En los puntos de venta, cada marcianito comprado da un sticker de sabor para pegar en el Pasaporte de papel.`),
+    P(`7.2. Con 5 stickers, el comercio da 1 marcianito gratis, anota tu nombre en el talón y se lo queda.`),
+    P(`7.3. El Organizador carga los talones en el club: cada uno suma 5 stickers a la Competencia y 5 marcianitos a la Carrera a tu nombre. Si no tenés tarjeta, se te crea una. Un talón sin nombre, ilegible o adulterado no se carga.`),
+    H('8. Premios'),
+    P(`8.1. Los premios son los que muestra la web en cada momento. Las fotos son ilustrativas: si un premio no está disponible, se cambia por uno de valor igual o mayor.`),
+    P(`8.2. El Organizador avisa al ganador por WhatsApp o por la web, y el premio se entrega en la Comarca Andina, en la próxima entrega o en un lugar y horario acordados.`),
+    P(`8.3. El ganador tiene 30 días desde el aviso para recibirlo; pasado ese plazo sin respuesta, lo pierde.`),
+    P(`8.4. Los premios son personales y no se cambian por dinero ni por otro premio. A los menores se les entrega con su adulto responsable presente o con su autorización.`),
+    H('9. Juego limpio'),
+    P(`9.1. No vale: tener varias tarjetas, escanear QR ajenos, revender stickers o figuritas, ni usar fallas de la web o de los juegos.`),
+    P(`9.2. Si pasa, el Organizador puede anular lo obtenido así, quitar la tarjeta de la competencia vigente o, si se repite, darla de baja. Antes de decidir, escribe al titular o a su adulto responsable para escuchar su versión.`),
+    P(`9.3. Los reclamos sobre los helados se rigen por la Ley de Defensa del Consumidor (Ley 24.240).`),
+    H('10. Datos personales'),
+    P(`10.1. El club guarda solo lo necesario: nombre, avatar, WhatsApp de contacto, dirección de entrega, stickers, figuritas y pedidos. Se usan solo para los pedidos, el club y los premios; no se venden ni se comparten con terceros, salvo los servicios que hacen funcionar la web.`),
+    P(`10.2. En público aparece solo el nombre con la inicial del apellido. No se publican fotos de participantes sin permiso del adulto responsable. El canal de WhatsApp es solo de anuncios: nadie ve el número de los demás.`),
+    P(`10.3. El titular o su adulto responsable puede pedir por WhatsApp ver, corregir o borrar sus datos (Ley 25.326). Borrar la tarjeta hace perder los stickers y figuritas.`),
+    H('11. Cambios y contacto'),
+    P(`11.1. El Organizador puede cambiar estas bases o terminar una promoción avisando en la web y en el canal con al menos 7 días de anticipación. Lo ya ganado se respeta.`),
+    P(`11.2. Consultas y reclamos: por WhatsApp a ${wa}.`)
+  ].join('');
+}
+let legalPrev = null;
+function openLegal(){ legalPrev = navState.ov && navState.ov !== 'legalOverlay' ? navState.ov : null; $('legalBody').innerHTML = legalHTML(); open('legalOverlay'); $('legalBody').parentElement.scrollTop = 0; }
+document.addEventListener('click', e => { if(!e.target.closest('[data-legalclose]')) return; const p = legalPrev; legalPrev = null; if(p) open(p); else close('legalOverlay'); });
+$('openLegal').addEventListener('click', openLegal);
+document.addEventListener('click', e => { if(e.target.closest('[data-legal]')){ e.preventDefault(); openLegal(); } });
 function openReg(){
   if(!sb || state.config.qrRegister === false || hasCard()) return;
   regAvatar = null; regForce = false; $('regErr').textContent = ''; $('regGo').disabled = false;
