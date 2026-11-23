@@ -3440,20 +3440,29 @@ function freezerSignHTML(kiosk, pub){
 }
 const freezerPage = (kiosk, pub, last) => `<div style="width:100%;display:grid;grid-template-columns:92mm 92mm;gap:3mm;justify-content:center;${last ? '' : 'break-after:page;page-break-after:always'}">${[0,1,2,3].map(() => freezerSignHTML(kiosk, pub)).join('')}</div>`;
 function printFreezer(kiosk, pub){ printSheet(freezerPage(kiosk, pub, true)); }
-/* --- Kit del comercio: tarjeta del portal + cartel + pasaportes --- */
+/* --- Kit del comercio: cartel A4 + carteles del freezer + cartones 5+1 + tarjeta del portal --- */
+function portalCardHTML(r){
+  // Tarjeta chica del portal mayorista (8,5 × 5,5 cm): QR secreto del comercio
+  const qr = 'https://api.qrserver.com/v1/create-qr-code/?size=500x500&margin=8&data=' + encodeURIComponent(pvLink(r.code));
+  return `<div style="width:92mm;height:85mm;display:flex;align-items:center;justify-content:center;break-inside:avoid">
+    <div style="width:85mm;height:55mm;box-sizing:border-box;border-radius:4mm;border:.8mm solid #39FF88;${PASS_BG};font-family:Fredoka,Nunito,sans-serif;display:flex;align-items:center;gap:3mm;padding:3.5mm;outline:.25mm dashed #999;outline-offset:1.5mm">
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;height:100%">
+        <div style="display:flex;align-items:center;gap:2mm"><img src="icons/icon-512.png" alt="" style="width:10mm;height:10mm;border-radius:2.2mm">
+          <div style="line-height:1"><div style="font-size:12pt;font-weight:800">${esc(brandName())}</div><div style="font-size:5.8pt;letter-spacing:.5mm;color:#39FF88;font-weight:700;margin-top:.6mm">PORTAL MAYORISTA</div></div></div>
+        <div style="font-size:9.5pt;font-weight:800;color:#FFD23F;margin-top:2.5mm;line-height:1.1;overflow:hidden;max-height:9mm">🏪 ${esc(r.name)}</div>
+        <div style="font-size:6.8pt;font-weight:700;line-height:1.3;margin-top:1.5mm">📱 Escaneá para pedir, ver tus puntos, canjear premios y la Carrera de Naves</div>
+        <div style="font-size:5.4pt;color:#A8A2C8;margin-top:auto;line-height:1.2">🔒 Solo para el comercio: no lo dejes a la vista del público</div>
+      </div>
+      <div style="background:#fff;border-radius:2.5mm;padding:1.2mm;flex:none"><img src="${qr}" alt="" style="width:33mm;height:33mm;display:block"></div>
+    </div></div>`;
+}
 function printKit(r){
-  const link = pvLink(r.code), qr = 'https://api.qrserver.com/v1/create-qr-code/?size=600x600&margin=12&data=' + encodeURIComponent(link);
-  const card = `<div style="width:120mm;margin:6mm auto 0;padding:10mm;box-sizing:border-box;border-radius:8mm;border:1.2mm solid #39FF88;${PASS_BG};text-align:center;font-family:Fredoka,Nunito,sans-serif">
-    <img src="icons/icon-512.png" alt="" style="width:30mm;height:30mm;border-radius:6mm">
-    <div style="font-size:22pt;font-weight:700;margin-top:3mm">${esc(brandName())}</div>
-    <div style="font-size:10pt;letter-spacing:1.2mm;color:#39FF88;font-weight:700">PORTAL MAYORISTA</div>
-    <div style="font-size:16pt;font-weight:700;margin:5mm 0 4mm;color:#FFD23F">🏪 ${esc(r.name)}</div>
-    <div style="background:#fff;border-radius:5mm;padding:3mm;display:inline-block"><img src="${qr}" style="width:70mm;height:70mm;display:block" alt=""></div>
-    <div style="font-size:12pt;font-weight:700;margin-top:4mm">📱 Escaneá para hacer tu pedido,<br>ver tus puntos y canjear premios</div>
-    <div style="font-size:8.5pt;color:#A8A2C8;margin-top:3mm">Este QR es solo para el comercio · no lo dejes a la vista del público</div></div>
-    <div style="width:150mm;margin:8mm auto 0;font-family:Nunito,sans-serif;font-size:10pt;color:#333;line-height:1.5"><b>Kit de ${esc(r.name)}</b><br>
-    ☐ Tarjeta del portal (esta hoja) · ☐ 4 carteles para el freezer y el mostrador · ☐ Pasaportes Galácticos · ☐ Hojas de mini stickers (1 por marcianito)</div>`;
-  printSheet(PAGE(card) + freezerPage(r.name, r.pub_code) + passportPages(r.name, 1));
+  // Kit del comercio: 1) cartel A4 con nombre y QR · 2) 4 carteles chicos para el freezer · 3) cartones 5+1 + tarjeta del portal
+  const ans = prompt(`Kit de ${r.name}\n\n¿Cuántas hojas de cartones 5+1? (6 por hoja; en la primera va también la tarjeta del portal del comercio)`, '2');
+  if(ans === null) return;
+  const hojas = Math.max(1, Math.min(10, parseInt(ans, 10) || 1));
+  const cards = n => `<div style="width:100%;display:grid;grid-template-columns:92mm 92mm;gap:3mm;justify-content:center;align-content:start${n < hojas - 1 ? ';break-after:page;page-break-after:always' : ''}">${n === 0 ? portalCardHTML(r) : ''}${Array.from({length:n === 0 ? 5 : 6}, () => stampCardHTML(r.name)).join('')}</div>`;
+  printSheet(PAGE(counterSignHTML(r.name, r.pub_code)) + freezerPage(r.name, r.pub_code) + Array.from({length:hojas}, (_, n) => cards(n)).join(''));
 }
 
 /* --- Etiqueta para pegar en cartones/pasaportes ya impresos (8,6 × 1,9 cm · 26 por hoja) --- */
